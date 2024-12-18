@@ -1,6 +1,5 @@
 // import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./vendor/bootstrap/css/bootstrap.min.css";
 import "./fonts/font-awesome-4.7.0/css/font-awesome.min.css";
 import "./fonts/iconic/css/material-design-iconic-font.min.css";

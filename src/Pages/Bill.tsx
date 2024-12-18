@@ -33,7 +33,7 @@ const Bill = () => {
             </tr>
           </thead>
           <tbody>
-            {data?.products.map((item) => (
+            {data?.products.map((item: any) => (
               <tr key={item._id}>
                 <th scope="row">
                   {item.productId.name.slice(0, 30) + "..."} X {item.quantity}

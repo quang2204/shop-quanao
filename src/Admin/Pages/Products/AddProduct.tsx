@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   Form,
   Input,
-  message,
   Select,
   Spin,
   TreeSelect,
@@ -25,7 +24,7 @@ const AddProduct = () => {
   const [classify1, setClassify1] = useState(false);
   const [select, setSelect] = useState<string>("");
   const [select1, setSelect1] = useState<string>("");
-  const { mutate, isLoading } = useAddProduct();
+  const { mutate } = useAddProduct();
   const [types, setTypes] = useState<any>([
     {
       id: 0,
@@ -46,7 +45,7 @@ const AddProduct = () => {
   const [selectedvalue, setSelectedvalue] = useState<object[]>([]);
   const [selectedIds1, setSelectedIds1] = useState<number[]>([0]);
   const [selectedvalue1, setSelectedvalue1] = useState<object[]>([]);
-  const handleScroll = (ref) => {
+  const handleScroll = (ref: any) => {
     ref.current.scrollIntoView({ behavior: "smooth" });
     setTabs(ref.current.id);
   };
@@ -59,7 +58,7 @@ const AddProduct = () => {
   const [value, setValue] = useState<string>();
   const [fileList, setFileList] = useState<Portfolio[]>([]);
   const [fileList1, setFileList1] = useState<Portfolio[]>([]);
-  const handleSelect = (id: number, value) => {
+  const handleSelect = (id: number, value: any) => {
     const check = classifys.filter((item) => item.id == id);
     if (check.length > 0) return;
     setClassifys([...classifys, { id }]);
@@ -67,7 +66,7 @@ const AddProduct = () => {
     setSelectedvalue([...selectedvalue, value]);
     setTypes([...types, { id, type: value }]);
   };
-  const handleSelect1 = (id: number, value) => {
+  const handleSelect1 = (id: any, value: any) => {
     const check = classifys1.filter((item) => item.id == id);
     if (check.length > 0) return;
     setClassifys1([...classifys1, { id }]);
@@ -94,7 +93,7 @@ const AddProduct = () => {
   const onChange = (newValue: string) => {
     setValue(newValue);
   };
-  const onPopupScroll: TreeSelectProps["onPopupScroll"] = (e) => {
+  const onPopupScroll: TreeSelectProps["onPopupScroll"] = () => {
     // console.log("onPopupScroll", e);
   };
   const onhandluploadimg = (e: any) => {
@@ -143,7 +142,6 @@ const AddProduct = () => {
     ]);
     setSelect1("");
     setSelectedvalue1([]);
-    const type = types.map((items) => items.type);
     const check = selectedvalue ? selectedvalue : selectedvalue1;
     const result = check.map((item, index) => ({
       id: index,
@@ -166,7 +164,7 @@ const AddProduct = () => {
     setFileList1(newFileList);
     // setImg(!img);
   };
-  const onSearch = (value: string) => {
+  const onSearch = () => {
     // console.log("search:", value);
   };
   const handleDelete = (id: number) => {
@@ -178,7 +176,7 @@ const AddProduct = () => {
     setClassifys(classifys.filter((item) => item.id !== id));
     setSelectedvalue(selectedvalue.filter((_, i) => i !== id));
   };
-  const handleDelete1 = (id: number) => {
+  const handleDelete1 = (id: any) => {
     setSelectedIds1(selectedIds.filter((item) => item !== id));
     setClassifys1(classifys.filter((item) => item.id !== id));
     setSelectedvalue1(selectedvalue.filter((_, i) => i !== id));
@@ -573,43 +571,43 @@ const AddProduct = () => {
                                     options={
                                       select
                                         ? [
-                                            {
-                                              value:
-                                                select === "color" ? "đỏ" : "m",
-                                              label:
-                                                select === "color" ? "Đỏ" : "M",
-                                              disabled:
-                                                selectedvalue.includes(
-                                                  select === "color"
-                                                    ? "đỏ"
-                                                    : "m",
-                                                ) &&
-                                                selectedvalue[index] !==
-                                                  (select === "color"
-                                                    ? "đỏ"
-                                                    : "m"),
-                                            },
-                                            {
-                                              value:
+                                          {
+                                            value:
+                                              select === "color" ? "đỏ" : "m",
+                                            label:
+                                              select === "color" ? "Đỏ" : "M",
+                                            disabled:
+                                              selectedvalue.includes(
+                                                select === "color"
+                                                  ? "đỏ"
+                                                  : "m",
+                                              ) &&
+                                              selectedvalue[index] !==
+                                              (select === "color"
+                                                ? "đỏ"
+                                                : "m"),
+                                          },
+                                          {
+                                            value:
+                                              select === "color"
+                                                ? "vàng"
+                                                : "s",
+                                            label:
+                                              select === "color"
+                                                ? "Vàng"
+                                                : "S",
+                                            disabled:
+                                              selectedvalue.includes(
                                                 select === "color"
                                                   ? "vàng"
                                                   : "s",
-                                              label:
-                                                select === "color"
-                                                  ? "Vàng"
-                                                  : "S",
-                                              disabled:
-                                                selectedvalue.includes(
-                                                  select === "color"
-                                                    ? "vàng"
-                                                    : "s",
-                                                ) &&
-                                                selectedvalue[index] !==
-                                                  (select === "color"
-                                                    ? "vàng"
-                                                    : "s"),
-                                            },
-                                          ]
+                                              ) &&
+                                              selectedvalue[index] !==
+                                              (select === "color"
+                                                ? "vàng"
+                                                : "s"),
+                                          },
+                                        ]
                                         : []
                                     }
                                   />
@@ -697,47 +695,47 @@ const AddProduct = () => {
                                     options={
                                       select1
                                         ? [
-                                            {
-                                              value:
+                                          {
+                                            value:
+                                              select1 === "color"
+                                                ? "đỏ"
+                                                : "m",
+                                            label:
+                                              select1 === "color"
+                                                ? "Đỏ"
+                                                : "M",
+                                            disabled:
+                                              selectedvalue1.includes(
                                                 select1 === "color"
                                                   ? "đỏ"
                                                   : "m",
-                                              label:
-                                                select1 === "color"
-                                                  ? "Đỏ"
-                                                  : "M",
-                                              disabled:
-                                                selectedvalue1.includes(
-                                                  select1 === "color"
-                                                    ? "đỏ"
-                                                    : "m",
-                                                ) &&
-                                                selectedvalue1[index] !==
-                                                  (select1 === "color"
-                                                    ? "đỏ"
-                                                    : "m"),
-                                            },
-                                            {
-                                              value:
+                                              ) &&
+                                              selectedvalue1[index] !==
+                                              (select1 === "color"
+                                                ? "đỏ"
+                                                : "m"),
+                                          },
+                                          {
+                                            value:
+                                              select1 === "color"
+                                                ? "vàng"
+                                                : "s",
+                                            label:
+                                              select1 === "color"
+                                                ? "Vàng"
+                                                : "S",
+                                            disabled:
+                                              selectedvalue1.includes(
                                                 select1 === "color"
                                                   ? "vàng"
                                                   : "s",
-                                              label:
-                                                select1 === "color"
-                                                  ? "Vàng"
-                                                  : "S",
-                                              disabled:
-                                                selectedvalue1.includes(
-                                                  select1 === "color"
-                                                    ? "vàng"
-                                                    : "s",
-                                                ) &&
-                                                selectedvalue1[index] !==
-                                                  (select1 === "color"
-                                                    ? "vàng"
-                                                    : "s"),
-                                            },
-                                          ]
+                                              ) &&
+                                              selectedvalue1[index] !==
+                                              (select1 === "color"
+                                                ? "vàng"
+                                                : "s"),
+                                          },
+                                        ]
                                         : []
                                     }
                                   />
@@ -787,8 +785,8 @@ const AddProduct = () => {
                                 value && value > 1000
                                   ? Promise.resolve()
                                   : Promise.reject(
-                                      new Error("Giá phải lớn hơn 1.000"),
-                                    ),
+                                    new Error("Giá phải lớn hơn 1.000"),
+                                  ),
                             },
                           ]}
                         >
@@ -822,8 +820,8 @@ const AddProduct = () => {
                                 value && value > 0
                                   ? Promise.resolve()
                                   : Promise.reject(
-                                      new Error("Kho hàng phải lớn hơn 0"),
-                                    ),
+                                    new Error("Kho hàng phải lớn hơn 0"),
+                                  ),
                             },
                           ]}
                         >
@@ -1039,10 +1037,10 @@ const AddProduct = () => {
                                           value && value > 1000
                                             ? Promise.resolve()
                                             : Promise.reject(
-                                                new Error(
-                                                  "Giá phải lớn hơn 1.000",
-                                                ),
+                                              new Error(
+                                                "Giá phải lớn hơn 1.000",
                                               ),
+                                            ),
                                       },
                                     ]}
                                   >

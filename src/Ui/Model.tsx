@@ -1,10 +1,7 @@
 import React, { useState } from "react";
-import { Button, Modal } from "antd";
+import {  Modal } from "antd";
 const Model = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
   const handleOk = () => {
     setIsModalOpen(false);
   };

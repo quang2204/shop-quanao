@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import Slide from "../Interface/Slide";
 import { useProduct } from "../Hook/useProduct";
 import { Empty, Spin } from "antd";

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useMutation, useQueryClient } from 'react-query';
 import { updateUser } from '../Apis/Api';
 import { message } from 'antd';
