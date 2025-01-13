@@ -279,7 +279,7 @@ const Product = () => {
           </div>
         </div>
         <div className="row isotope-grid">
-          {data.length > 0 ? (
+          {data ? (
             data.map((item, index) => (
               <div
                 className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women"

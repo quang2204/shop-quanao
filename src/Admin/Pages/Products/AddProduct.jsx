@@ -219,9 +219,9 @@ const AddProduct = () => {
   }
   return (
     <>
-      <section className="grid grid-cols-12 gap-4 mt-4 ">
+      <section className="grid grid-cols-12 gap-4 px-4">
         <div
-          className="col-span-3 bg-white rounded-xl h-[200px] sticky top-0 mt-[40px]"
+          className="col-span-3 bg-white rounded-xl h-[220px] "
           style={{ boxShadow: "0px 0px 4px 1px #d1d1d1" }}
         >
           <div
@@ -250,40 +250,42 @@ const AddProduct = () => {
           </div>
         </div>
         <section className="col-span-9" ref={section1Ref} id="section1">
+          <div
+            className="  bg-white rounded-xl z-50 "
+            style={{ boxShadow: "0px 0px 4px 1px #d1d1d1" }}
+          >
+            <div className="relative">
+              <div
+                className="tabs flex w-full justify-between flex-none "
+                style={{ transform: "translateX(0px)" }}
+              >
+                <button
+                  className={`${tabs === "section1" ? "active" : ""} tab`}
+                  onClick={() => handleScroll(section1Ref)}
+                >
+                  Thông tin cơ bản
+                </button>
+
+                <button
+                  // href={"/admin/addproduct/#chitiet"}
+
+                  className={`${tabs === "section2" ? "active" : ""} tab`}
+                  onClick={() => handleScroll(section2Ref)}
+                >
+                  Thông tin bán hàng
+                </button>
+              </div>
+              <div
+                className="tab-link-bar"
+                style={{
+                  transform: `translateX(${tabs === "section1" ? "0" : "760"}px)`,
+                  width: "130px",
+                }}
+              ></div>
+            </div>
+          </div>
           <Form onFinish={onSubmit}>
             <section>
-              <div className="fixed w-[63.4%] top-0 bg-white rounded-xl z-50">
-                <div className="relative">
-                  <div
-                    className="tabs flex w-full justify-between flex-none "
-                    style={{ transform: "translateX(0px)" }}
-                  >
-                    <button
-                      className={`${tabs === "section1" ? "active" : ""} tab`}
-                      onClick={() => handleScroll(section1Ref)}
-                    >
-                      Thông tin cơ bản
-                    </button>
-
-                    <button
-                      // href={"/admin/addproduct/#chitiet"}
-
-                      className={`${tabs === "section2" ? "active" : ""} tab`}
-                      onClick={() => handleScroll(section2Ref)}
-                    >
-                      Thông tin bán hàng
-                    </button>
-                  </div>
-                  <div
-                    className="tab-link-bar"
-                    style={{
-                      transform: `translateX(${tabs === "section1" ? "0" : "820"}px)`,
-                      width: "130px",
-                    }}
-                  ></div>
-                </div>
-              </div>
-
               <section
                 className={`bg-white mt-10 px-4 rounded-xl  py-2 text-left`}
                 style={{ boxShadow: "0px 0px 4px 1px #d1d1d1" }}
@@ -311,7 +313,6 @@ const AddProduct = () => {
                       data={{
                         upload_preset: "image1",
                       }}
-                      
                       accept="image/*"
                       maxCount={5}
                       onChange={(e) => onhandluploadimg(e)}
@@ -470,7 +471,7 @@ const AddProduct = () => {
               <br />
             </section>
             <section
-              className="bg-white px-4 rounded-xl mt-1 py-2 text-left mb-8"
+              className="bg-white px-4 rounded-xl mt-1 py-2 text-left mb-24"
               style={{ boxShadow: "0px 0px 4px 1px #d1d1d1" }}
             >
               <div>
@@ -1071,7 +1072,7 @@ const AddProduct = () => {
               </div>
             </section>
             <div
-              className="flex gap-4 justify-content-end bg-white p-3 rounded-lg mb-1 text-[1rem] fixed bottom-0 w-[63.3%]"
+              className="flex gap-4 justify-content-end bg-white p-3 rounded-lg mb-1 text-[1rem] fixed bottom-0 w-[60%]"
               style={{ boxShadow: "rgb(209, 209, 209) 0px 0px 4px 1px" }}
             >
               <button className="py-2 px-4 bg-white border-2 border-[#EBEBEB] rounded-lg border-solid text-black">

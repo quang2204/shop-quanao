@@ -1,6 +1,8 @@
 import { Link, NavLink } from "react-router-dom";
 import useCart from "../Hook/useCart";
 import { useState } from "react";
+import logo from "../images/icons/logo-02.png";
+import logo1 from "../images/icons/logo-01.png";
 const Header = () => {
   const user = JSON.parse(localStorage.getItem("user") || "null");
   const [show, setShow] = useState(false);
@@ -14,10 +16,7 @@ const Header = () => {
           <div className="wrap-menu-desktop top-0 ">
             <nav className="limiter-menu-desktop container">
               <Link to="/" className="logo">
-                <img
-                  src="http://quang2204.000.pe/view/images/icons/logo-02.png"
-                  alt="IMG-LOGO"
-                />
+                <img src={logo} alt="IMG-LOGO" />
               </Link>
               <div className="menu-desktop">
                 <ul className="main-menu">
@@ -106,10 +105,7 @@ const Header = () => {
         <div className="wrap-header-mobile fixed w-full top-0 h-[84px] z-50">
           <div className="logo-mobile">
             <Link to="/">
-              <img
-                src="http://quang2204.000.pe/view/images/icons/logo-01.png"
-                alt="IMG-LOGO"
-              />
+              <img src={logo1} alt="IMG-LOGO" />
             </Link>
           </div>
           <div className="wrap-icon-header flex-w flex-r-m m-r-15">

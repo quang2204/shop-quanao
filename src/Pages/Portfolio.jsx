@@ -40,11 +40,10 @@ const Portfolio = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm <
-  Portfolio >
-  {
+  } = useForm({
     resolver: zodResolver(schema),
-  };
+  });
+
   useEffect(() => {
     if (data) {
       reset({
@@ -135,11 +134,11 @@ const Portfolio = () => {
           </div>
         </div>
         <div className="thongbao">
-          <a href="?act=order">
+          <Link to="/order">
             <h5>
               <i className="fa fa-cart-arrow-down" /> Order
             </h5>
-          </a>
+          </Link>
         </div>
       </div>
       <form
@@ -228,7 +227,10 @@ const Portfolio = () => {
               upload_preset: "image1",
             }}
             fileList={fileList}
-            onChange={(e) => onhandluploadimg(e)}
+            preview={{
+              width: 500,
+              height: 500,
+            }}
           >
             {fileList.length == 1 ? null : (
               <button

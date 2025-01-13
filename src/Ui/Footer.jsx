@@ -1,3 +1,8 @@
+import iconMomo from "../images/icons/paypal.png";
+import iconVisa from "../images/icons/visa.png";
+import icon1 from "../images/icons/3.png";
+import icon2 from "../images/icons/4.png";
+
 const Footer = () => {
   return (
     <>
@@ -112,38 +117,19 @@ const Footer = () => {
           <div className="p-t-40">
             <div className="flex-c-m flex-w p-b-18">
               <div className="m-all-1">
-                <img
-                  src="http://quang2204.000.pe/view/images/icons/icon-pay-01.png"
-                  alt="ICON-PAY"
-                />
+                <img src={iconMomo} alt="ICON-PAY" />
               </div>
 
               <div className="m-all-1">
-                <img
-                  src="http://quang2204.000.pe/view/images/icons/icon-pay-02.png"
-                  alt="ICON-PAY"
-                />
+                <img src={iconVisa} alt="ICON-PAY" />
               </div>
 
               <div className="m-all-1">
-                <img
-                  src="http://quang2204.000.pe/view/images/icons/icon-pay-03.png"
-                  alt="ICON-PAY"
-                />
+                <img src={icon1} alt="ICON-PAY" />
               </div>
 
               <div className="m-all-1">
-                <img
-                  src="http://quang2204.000.pe/view/images/icons/icon-pay-04.png"
-                  alt="ICON-PAY"
-                />
-              </div>
-
-              <div className="m-all-1">
-                <img
-                  src="http://quang2204.000.pe/view/images/icons/icon-pay-05.png"
-                  alt="ICON-PAY"
-                />
+                <img src={icon2} alt="ICON-PAY" />
               </div>
             </div>
 

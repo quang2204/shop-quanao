@@ -37,7 +37,7 @@ const Order = () => {
           <div className="name">
             <span>
               <strong>quang </strong>
-              <Link to="">
+              <Link to="/portfolio">
                 <p style={{ color: "black" }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
