@@ -21,7 +21,10 @@ import LayoutAdmin from "../Admin/Ui/Layout.jsx";
 import Products from "../Admin/Pages/Products/Products.jsx";
 import AddProduct from "../Admin/Pages/Products/AddProduct.jsx";
 import Detail from "../Admin/Pages/Products/Detail.jsx";
-import Advance_ui_animation from "../Admin/velzon/advance_ui_animation.jsx";
+import Customers from "../Admin/Pages/User/Customers.jsx";
+import Order_Detail from "../Admin/Pages/Orders/Order_Detail.jsx";
+import Logout from "../Pages/Logout.jsx";
+import Profile from "../Admin/Pages/Profile.jsx";
 
 const Router = () => {
   ScrollToTop();
@@ -53,9 +56,12 @@ const Router = () => {
         <Route path="/admin" element={<LayoutAdmin />}>
           <Route index element={<Products />}></Route>
           <Route path="addproduct" element={<AddProduct />}></Route>
-          <Route path="animation" element={<Advance_ui_animation />}></Route>
           <Route path="detailproduct/:id" element={<Detail />}></Route>
+          <Route path="customers" element={<Customers />}></Route>
+          <Route path="order_detail" element={<Order_Detail />}></Route>
+          <Route path="profile" element={<Profile />}></Route>
         </Route>
+        <Route path="logout" element={<Logout />} />
         <Route path="*" element={<Error />} />
       </Routes>
     </div>

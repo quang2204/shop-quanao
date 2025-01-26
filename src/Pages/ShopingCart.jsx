@@ -6,8 +6,8 @@ import useCart from "../Hook/useCart.jsx";
 import { deleteCart, getVouchers, updateCart } from "../Apis/Api.jsx";
 import { useEffect, useState } from "react";
 const ShopingCart = () => {
-  const [voucherid, setVoucherId] = useState < number > 0;
-  const [voucher, setVoucher] = useState < number > 0;
+  const [voucherid, setVoucherId] = useState(0);
+  const [voucher, setVoucher] = useState(0);
   const queryCline = useQueryClient();
   const { mutate, isLoading: isLoadingCart } = useMutation({
     mutationFn: ({ data, id }) => updateCart(data, id),
@@ -384,7 +384,7 @@ const Voucher = ({
                       Giảm tối đa <FormatPrice price={item.discount} />
                     </p>
                     <p className="text-muted text-lg">
-                      Hạn sử dụng :{new Date(item.expire).toLocaleDa("vi-VN")}
+                      {/* Hạn sử dụng :{new Date(item?.expire).toLocaleDa("vi-VN")} */}
                     </p>
                   </div>
                 </div>

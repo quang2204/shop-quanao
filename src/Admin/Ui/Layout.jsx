@@ -3922,7 +3922,7 @@ const Layout = () => {
                       <div className="page-title-right">
                         <ol className="breadcrumb m-0">
                           <li className="breadcrumb-item">
-                            <a href="javascript: void(0);">Advance UI</a>
+                            <Link>Advance UI</Link>
                           </li>
                           <li className="breadcrumb-item active">Animation</li>
                         </ol>
