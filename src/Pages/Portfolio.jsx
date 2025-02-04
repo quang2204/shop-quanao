@@ -15,7 +15,7 @@ const Portfolio = () => {
     // Nếu upload thành công, cập nhật URL
     newFileList = newFileList.map((file) => {
       if (file.response) {
-        file.url = file.response.url; // URL trả về từ server
+        file.url = file.response.url; 
       }
       return file;
     });

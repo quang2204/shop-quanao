@@ -2,11 +2,13 @@ import { useQuery, useMutation, useQueryClient } from "react-query";
 import {
   addProduct,
   categoryProduct,
+  deleteProduct,
   getProducts,
   productsPagination,
 } from "../Apis/Api";
 import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
+import { use } from "react";
 
 export const useProduct = (pages) => {
   const { data: products, isLoading: isProducts } = useQuery({
@@ -47,5 +49,22 @@ export const useAddProduct = () => {
       message.error("Thêm sản phẩm không thành công");
     },
   });
+  return { mutate, isLoading };
+};
+export const useDeleteProduct = (onSuccessCallback) => {
+  const queryClient = useQueryClient();
+
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (id) => deleteProduct(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      message.success("Xóa sản phẩm thành công");
+      onSuccessCallback?.(); 
+    },
+    onError: () => {
+      message.error("Xóa sản phẩm không thành công");
+    },
+  });
+
   return { mutate, isLoading };
 };

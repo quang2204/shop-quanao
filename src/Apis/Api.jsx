@@ -15,10 +15,15 @@ export const categoryProduct = async (id) => {
   const res = await Axios.get(`/products/category/${id}`);
   return res.data;
 };
+
 export const productsPagination = async (page) => {
   const res = await Axios.get(`/products/${page}`);
   return res.data;
 };
+export const deleteProduct = async (id) => {
+  const res = await Axios.delete(`/products/${id}`);
+  return res.data;
+}
 export const signin = async (data) => {
   const res = await Axios.post(`/login`, data);
   return res.data;

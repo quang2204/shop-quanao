@@ -568,7 +568,7 @@
     align-items: center;
     padding: .625rem 1.5rem;
     color: var(--vz-vertical-menu-item-color);
-    font-size: .9375rem;
+    font-size: 1rem;
     font-family: hkgrotesk, sans-serif
 }
 
@@ -657,7 +657,7 @@
     color: var(--vz-vertical-menu-sub-item-color);
     white-space: none;
     position: relative;
-    font-size: .813rem;
+    font-size: .9rem;
     font-family: Poppins, sans-serif
 }
 
@@ -4509,7 +4509,7 @@ code {
     --vz-vertical-menu-dropdown-box-shadow: 0 2px 4px rgba(15, 34, 58, 0.12)
 }
 
-:root[data-sidebar=dark] {
+:root {
     --vz-vertical-menu-bg: #405189;
     --vz-vertical-menu-border: #405189;
     --vz-vertical-menu-item-color: #abb9e8;

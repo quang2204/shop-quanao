@@ -1,10 +1,27 @@
-import { useProducts } from "../../../Hook/useProduct.jsx";
+import { useDeleteProduct, useProducts } from "../../../Hook/useProduct.jsx";
 import { Button, Image, Spin, Table } from "antd";
 import FormatPrice from "../../../FormatPrice.jsx";
 import { Link } from "react-router-dom";
-
+import { useState } from "react";
 const Products = () => {
   const { isProducts, products } = useProducts();
+  const [id, setId] = useState("");
+  const [open, setOpen] = useState(false);
+  const { mutate, isLoading } = useDeleteProduct(() => {
+    setOpen(false);
+    setId("");
+  });
+  const openModal = (id) => {
+    setOpen(true);
+    setId(id);
+  };
+  const deleteProduct = () => {
+    mutate(id);
+  };
+  const closeModal = () => {
+    setOpen(false);
+    setId("");
+  };
   const columns = [
     {
       title: "Stt",
@@ -56,6 +73,7 @@ const Products = () => {
             color="danger"
             variant="dashed"
             style={{ marginRight: "10px" }}
+            onClick={() => openModal(text._id)}
           >
             Delete
           </Button>
@@ -83,6 +101,64 @@ const Products = () => {
       </div>
 
       <Table dataSource={products} columns={columns}></Table>
+      <div
+        className={`modal fade ${open ? "block" : ""} opacity-100`}
+        style={{ background: "rgba(0, 0, 0, 0.5)" }}
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div
+            className="modal-content"
+            style={{
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, 30%)",
+            }}
+          >
+            <div className="modal-header bg-light p-3">
+              <button
+                type="button"
+                className="btn-close "
+                onClick={closeModal}
+                disabled={isLoading}
+              />
+            </div>
+            <div className="modal-body">
+              <div className="mt-2 text-center">
+                <div className="max-w-[12rem] canva m-auto">
+                  <img
+                    src="https://media-public.canva.com/de2y0/MAFqwzde2y0/1/tl.png"
+                    alt=""
+                  />
+                </div>
+                <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                  <h4>Are you sure ?</h4>
+                  <p className="text-muted mx-4 mb-0">
+                    Are you sure you want to remove this Notification ?
+                  </p>
+                </div>
+              </div>
+              <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
+                <button
+                  type="button"
+                  className="px-3 py-2 bg-[#f3f6f9] rounded-md text-[0.99rem]"
+                  onClick={closeModal}
+                  disabled={isLoading}
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  className="px-3 py-2 rounded-md btn-danger text-sm"
+                  onClick={deleteProduct}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Đang xóa ..." : "Xác nhận xóa"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

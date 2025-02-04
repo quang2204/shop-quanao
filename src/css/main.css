@@ -4697,3 +4697,7 @@ ul,
 li {
   list-style-type: none !important;
 }
+
+.canva {
+  filter: invert(0) hue-rotate(180deg);
+}

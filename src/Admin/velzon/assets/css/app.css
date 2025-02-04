@@ -566,7 +566,7 @@ File: Main Css File
   top: 0;
   -webkit-box-shadow: var(--vz-vertical-menu-box-shadow);
   box-shadow: var(--vz-vertical-menu-box-shadow);
-  padding: 0 0 calc(70px + 25px) 0;
+
   -webkit-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
 }

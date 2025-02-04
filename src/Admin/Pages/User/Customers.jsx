@@ -235,7 +235,7 @@ const Customers = () => {
             </div>
 
             <div
-              className={`modal fade show-admin ${block ? "block opacity-100" : ""} `}
+              className={`modal fade  ${block ? "block opacity-100" : ""} `}
               style={{ background: "rgba(0, 0, 0, 0.5)" }}
             >
               <div

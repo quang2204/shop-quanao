@@ -1,7 +1,19 @@
 import React from "react";
 import background from "../velzon/assets/images/profile-bg.jpg";
 import avatar from "../velzon/assets/images/users/avatar-1.jpg";
+import UseDetailUser from "../../Hook/useDetailUser";
+import { Spin } from "antd";
 const Profile = () => {
+  const { data, isLoading } = UseDetailUser();
+  console.log(data);
+  if (isLoading) {
+    return (
+      <Spin
+        size="large"
+        className="h-[50vh] mt-[100px] flex items-center justify-center w-full "
+      />
+    );
+  }
   return (
     <div className="px-4">
       <div className="profile-foreground position-relative mx-n4 mt-n4">
@@ -14,7 +26,7 @@ const Profile = () => {
           <div className="col-auto">
             <div className="avatar-lg">
               <img
-                src={avatar}
+                src={data.avatar}
                 alt="user-img"
                 className="img-thumbnail rounded-circle"
               />
@@ -23,18 +35,8 @@ const Profile = () => {
           {/*end col*/}
           <div className="col">
             <div className="p-2">
-              <h3 className="text-white mb-1">Anna Adame</h3>
-              <p className="text-white text-opacity-75">Owner &amp; Founder</p>
-              <div className="hstack text-white-50 gap-1">
-                <div className="me-2">
-                  <i className="ri-map-pin-user-line me-1 text-white text-opacity-75 fs-16 align-middle" />
-                  California, United States
-                </div>
-                <div>
-                  <i className="ri-building-line me-1 text-white text-opacity-75 fs-16 align-middle" />
-                  Themesbrand
-                </div>
-              </div>
+              <h3 className="text-white mb-1">{data.username}</h3>
+              <p className="text-white text-opacity-75">{data.role}</p>
             </div>
           </div>
           {/*end col*/}
@@ -154,35 +156,34 @@ const Profile = () => {
                     <div className="card">
                       <div className="card-body">
                         <h5 className="card-title mb-3">Info</h5>
-                        <div className="table-responsive">
+                        <div
+                          className="table-responsive"
+                          style={{
+                            scrollbarWidth: "thin",
+                            scrollbarColor: "rgb(62 127 248) transparent",
+                          }}
+                        >
                           <table className="table table-borderless mb-0">
                             <tbody>
                               <tr className="text-[14px]">
                                 <th className="ps-0" scope="row">
                                   Full Name :
                                 </th>
-                                <td className="text-muted">Anna Adame</td>
+                                <td className="text-muted">{data.username}</td>
                               </tr>
                               <tr className="text-[14px]">
                                 <th className="ps-0" scope="row">
                                   Mobile :
                                 </th>
-                                <td className="text-muted">+(1) 987 6543</td>
+                                <td className="text-muted">{data.phone}</td>
                               </tr>
                               <tr className="text-[14px]">
                                 <th className="ps-0" scope="row">
                                   E-mail :
                                 </th>
-                                <td className="text-muted">
-                                  daveadame@velzon.com
-                                </td>
+                                <td className="text-muted">{data.email}</td>
                               </tr>
-                              <tr className="text-[14px]">
-                                <th className="ps-0" scope="row">
-                                  Location :
-                                </th>
-                                <td className="text-muted">California</td>
-                              </tr>
+
                               <tr className="text-[14px]">
                                 <th className="ps-0" scope="row">
                                   Joining Date

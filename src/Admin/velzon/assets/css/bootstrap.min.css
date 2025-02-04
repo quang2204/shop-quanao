@@ -6800,6 +6800,9 @@ fieldset:disabled .btn {
 
 .modal-content {
     position: relative;
+    /* top: 50%;
+    left: 50%;
+    transform: translate(-50%, 30%); */
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
