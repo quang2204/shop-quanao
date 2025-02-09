@@ -25,6 +25,7 @@ import Customers from "../Admin/Pages/User/Customers.jsx";
 import Order_Detail from "../Admin/Pages/Orders/Order_Detail.jsx";
 import Logout from "../Pages/Logout.jsx";
 import Profile from "../Admin/Pages/Profile.jsx";
+import FullScreenButton from "../Admin/Ui/FullScreen.jsx";
 
 const Router = () => {
   ScrollToTop();
@@ -60,6 +61,7 @@ const Router = () => {
           <Route path="customers" element={<Customers />}></Route>
           <Route path="order_detail" element={<Order_Detail />}></Route>
           <Route path="profile" element={<Profile />}></Route>
+          <Route path="test" element={<FullScreenButton />}></Route>
         </Route>
         <Route path="logout" element={<Logout />} />
         <Route path="*" element={<Error />} />

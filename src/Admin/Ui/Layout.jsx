@@ -4,6 +4,7 @@ import img from "../velzon/assets/images/logo-light.png";
 import avatar from "../velzon/assets/images/users/avatar-1.jpg";
 import UseDetailUser from "../../Hook/useDetailUser";
 import { Spin } from "antd";
+import FullScreenButton from "./FullScreen";
 const Layout = () => {
   const [open, setOpen] = useState(false);
   const [profile, setProfile] = useState(false);
@@ -234,13 +235,7 @@ const Layout = () => {
                     </div>
                   </div>
                   <div className="ms-1 header-item d-none d-sm-flex">
-                    <button
-                      type="button"
-                      className="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
-                      data-toggle="fullscreen"
-                    >
-                      <i className="bx bx-fullscreen fs-22" />
-                    </button>
+                    <FullScreenButton />
                   </div>
                   <div className="ms-1 header-item d-none d-sm-flex">
                     <button
