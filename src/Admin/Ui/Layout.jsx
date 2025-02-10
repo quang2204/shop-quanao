@@ -936,6 +936,12 @@ const Layout = () => {
                       <span data-key="t-layouts">Account Management</span>
                     </Link>
                   </li>
+                  <li className="nav-item">
+                    <Link to="twostep" className="nav-link menu-link">
+                      <i className="ri-layout-3-line" />
+                      <span data-key="t-layouts">Two Step Verification</span>
+                    </Link>
+                  </li>
                   {/* end Dashboard Menu */}
                   <li className="menu-title">
                     <i className="ri-more-fill" />
