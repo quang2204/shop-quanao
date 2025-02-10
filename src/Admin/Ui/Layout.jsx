@@ -913,15 +913,27 @@ const Layout = () => {
                   </li>
                   {/* end Dashboard Menu */}
                   <li className="nav-item">
-                    <Link to="products" className="nav-link menu-link ">
+                    <Link to="" className="nav-link menu-link ">
                       <i className="ri-apps-2-line" />
                       <span data-key="t-apps">Products</span>
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="orders" className="nav-link menu-link">
+                    <Link to="order_detail" className="nav-link menu-link">
                       <i className="ri-layout-3-line" />
-                      <span data-key="t-layouts">Order</span>
+                      <span data-key="t-layouts">Order-Detail</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="detailproduct/:id" className="nav-link menu-link">
+                      <i className="ri-layout-3-line" />
+                      <span data-key="t-layouts">Detail Product</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="customers" className="nav-link menu-link">
+                      <i className="ri-layout-3-line" />
+                      <span data-key="t-layouts">Account Management</span>
                     </Link>
                   </li>
                   {/* end Dashboard Menu */}

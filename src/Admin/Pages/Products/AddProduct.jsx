@@ -259,12 +259,12 @@ const AddProduct = () => {
                 className="tabs flex w-full justify-between flex-none "
                 style={{ transform: "translateX(0px)" }}
               >
-                <button
+                <buttonz
                   className={`${tabs === "section1" ? "active" : ""} tab`}
                   onClick={() => handleScroll(section1Ref)}
                 >
                   Thông tin cơ bản
-                </button>
+                </buttonz>
 
                 <button
                   // href={"/admin/addproduct/#chitiet"}

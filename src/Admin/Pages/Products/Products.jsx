@@ -77,7 +77,9 @@ const Products = () => {
           >
             Delete
           </Button>
-          <Link to={`detailproduct/${text._id}`}>
+          {/* sau này khi call api sẽ sửa thành idid */}
+          {/* <Link to={`detailproduct/${text._id}`}> */}
+          <Link to={`detailproduct/:id`}>
             <Button type="dashed">Detail</Button>
           </Link>
         </div>
