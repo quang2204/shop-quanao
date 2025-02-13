@@ -26,6 +26,8 @@ import Order_Detail from "../Admin/Pages/Orders/Order_Detail.jsx";
 import Logout from "../Pages/Logout.jsx";
 import Profile from "../Admin/Pages/Profile.jsx";
 import FullScreenButton from "../Admin/Ui/FullScreen.jsx";
+import Login from "../Admin/Pages/Login.jsx";
+import ResetPassword from "../Admin/Pages/Reset.jsx";
 
 const Router = () => {
   ScrollToTop();
@@ -61,6 +63,8 @@ const Router = () => {
           <Route path="customers" element={<Customers />}></Route>
           <Route path="order_detail" element={<Order_Detail />}></Route>
           <Route path="profile" element={<Profile />}></Route>
+          <Route path="login" element={<Login />}></Route>
+          <Route path="reset" element={<ResetPassword />}></Route>
           <Route path="test" element={<FullScreenButton />}></Route>
         </Route>
         <Route path="logout" element={<Logout />} />
