@@ -919,9 +919,27 @@ const Layout = () => {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="orders" className="nav-link menu-link">
+                    <Link to="order_detail" className="nav-link menu-link">
                       <i className="ri-layout-3-line" />
-                      <span data-key="t-layouts">Order</span>
+                      <span data-key="t-layouts">Order-Detail</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="detailproduct/:id" className="nav-link menu-link">
+                      <i className="ri-layout-3-line" />
+                      <span data-key="t-layouts">Detail Product</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="customers" className="nav-link menu-link">
+                      <i className="ri-layout-3-line" />
+                      <span data-key="t-layouts">Account Management</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="twostep" className="nav-link menu-link">
+                      <i className="ri-layout-3-line" />
+                      <span data-key="t-layouts">Two Step Verification</span>
                     </Link>
                   </li>
                   {/* end Dashboard Menu */}
