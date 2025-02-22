@@ -60,7 +60,7 @@ const Router = () => {
         <Route path="/admin" element={<LayoutAdmin />}>
           <Route index element={<Products />}></Route>
           <Route path="addproduct" element={<AddProduct />}></Route>
-          <Route path="detailproduct/:id" element={<Detail />}></Route>
+          <Route path="detailproduct" element={<Detail />}></Route>
           <Route path="customers" element={<Customers />}></Route>
           <Route path="twostep" element={<TwoStep />}></Route>
           <Route path="order_detail" element={<Order_Detail />}></Route>
