@@ -1,16 +1,22 @@
-import useDetailProduct from "../../../Hook/useDetailProduct.jsx";
-import { Spin } from "antd";
+import React from "react";
 import img1 from "../../velzon/assets/images/products/img-8.png";
+import img2 from "../../velzon/assets/images/products/img-7.png";
+import img3 from "../../velzon/assets/images/products/img-3.png";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Thumbs } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/thumbs";
 const Detail = () => {
-  // const { detailProduct, isDetailProduct } = useDetailProduct();
-  // if (isDetailProduct) {
-  //   return (
-  //     <Spin
-  //       size="large"
-  //       className="h-[50vh] mt-[100px] flex items-center justify-center w-full "
-  //     />
-  //   );
-  // }
+  const { detailProduct, isDetailProduct } = useDetailProduct();
+  if (isDetailProduct) {
+    return (
+      <Spin
+        size="large"
+        className="h-[50vh] mt-[100px] flex items-center justify-center w-full "
+      />
+    );
+  }
   return (
     <>
       <meta charSet="UTF-8" />

@@ -27,8 +27,11 @@ import Order_Detail from "../Admin/Pages/Orders/Order_Detail.jsx";
 import Logout from "../Pages/Logout.jsx";
 import Profile from "../Admin/Pages/Profile.jsx";
 import FullScreenButton from "../Admin/Ui/FullScreen.jsx";
+
 import Login from "../Admin/Pages/Login.jsx";
 import ResetPassword from "../Admin/Pages/Reset.jsx";
+import SignIn from "../Admin/Pages/SignIn.jsx";
+
 
 const Router = () => {
   ScrollToTop();
@@ -61,6 +64,10 @@ const Router = () => {
           <Route index element={<Products />}></Route>
           <Route path="addproduct" element={<AddProduct />}></Route>
           <Route path="detailproduct" element={<Detail />}></Route>
+
+          <Route path="detailproduct/:id" element={<Detail />}></Route>
+          <Route path="signin" element={<SignIn />}></Route>
+
           <Route path="customers" element={<Customers />}></Route>
           <Route path="twostep" element={<TwoStep />}></Route>
           <Route path="order_detail" element={<Order_Detail />}></Route>
