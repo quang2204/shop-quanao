@@ -1,13 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import img1 from "../../velzon/assets/images/products/img-8.png";
 import img2 from "../../velzon/assets/images/products/img-7.png";
 import img3 from "../../velzon/assets/images/products/img-3.png";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Thumbs } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 const Detail = () => {
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  
+  const images = [img1, img2, img3];
   return (
     <div className="row">
     <div className="col-lg-12">
@@ -16,37 +21,42 @@ const Detail = () => {
           <div className="row gx-lg-5">
           <div className="col-xl-4 col-md-8 mx-auto">
       <div className="product-img-slider sticky-side-div">
+      <button className="custom-prev">
+          <FaChevronLeft />
+        </button>
+        <button className="custom-next">
+          <FaChevronRight />
+        </button>
         {/* Main Product Slider */}
         <Swiper
           modules={[Navigation, Thumbs]}
-          navigation
+          navigation={{
+            prevEl: '.custom-prev',
+            nextEl: '.custom-next',
+          }}
+          loop
+          thumbs={{ swiper: thumbsSwiper }}
           className="product-thumbnail-slider p-2 rounded bg-light"
         >
-          <SwiperSlide>
-            <img src={img1} alt="Product" className="img-fluid d-block" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={img2}alt="Product" className="img-fluid d-block" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={img3} alt="Product" className="img-fluid d-block" />
-          </SwiperSlide>
+          {images.map((img, index) => (
+            <SwiperSlide key={index}>
+              <img src={img} alt="Product" className="img-fluid d-block" />
+            </SwiperSlide>
+          ))}
         </Swiper>
-
         {/* Thumbnail Navigation */}
-        <Swiper slidesPerView={4} spaceBetween={10} className="product-nav-slider mt-2">
-          <SwiperSlide>
-            <img src={img1} alt="Thumbnail" className="img-fluid d-block" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={img2} alt="Thumbnail" className="img-fluid d-block" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={img3}alt="Thumbnail" className="img-fluid d-block" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={img1}alt="Thumbnail" className="img-fluid d-block" />
-          </SwiperSlide>
+        <Swiper
+          onSwiper={setThumbsSwiper}
+          slidesPerView={4}
+          spaceBetween={10}
+          watchSlidesProgress
+          className="product-nav-slider mt-2"
+        >
+          {images.map((img, index) => (
+            <SwiperSlide key={index} className="thumbnail-slide">
+              <img src={img} alt="Thumbnail" className="img-fluid d-block" />
+            </SwiperSlide>
+          ))}
         </Swiper>
       </div>
     </div>
