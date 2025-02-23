@@ -20,14 +20,18 @@ import UpdatePassWord from "../Pages/UpdatePassWord.jsx";
 import LayoutAdmin from "../Admin/Ui/Layout.jsx";
 import Products from "../Admin/Pages/Products/Products.jsx";
 import AddProduct from "../Admin/Pages/Products/AddProduct.jsx";
-import Detail from "../Admin/Pages/Products/Detail.jsx";
 import Customers from "../Admin/Pages/User/Customers.jsx";
 import TwoStep from "../Admin/Pages/User/TwoStep.jsx";
 import Order_Detail from "../Admin/Pages/Orders/Order_Detail.jsx";
 import Logout from "../Pages/Logout.jsx";
 import Profile from "../Admin/Pages/Profile.jsx";
 import FullScreenButton from "../Admin/Ui/FullScreen.jsx";
+
+import Login from "../Admin/Pages/Login.jsx";
+import ResetPassword from "../Admin/Pages/Reset.jsx";
 import SignIn from "../Admin/Pages/SignIn.jsx";
+import Detail_Product from "../Admin/Pages/Products/Detail_Product.jsx";
+
 
 const Router = () => {
   ScrollToTop();
@@ -47,7 +51,6 @@ const Router = () => {
           <Route path="signup" element={<Signup />} />
           <Route path="blog" element={<Blog />} />
           <Route path="blog/:id" element={<BlogDetail />} />
-
           <Route path="pay" element={<Pay />} />
           <Route path="blog/:id" element={<Contact />} />
           <Route path="bill/:id" element={<Bill />} />
@@ -59,12 +62,14 @@ const Router = () => {
         <Route path="/admin" element={<LayoutAdmin />}>
           <Route index element={<Products />}></Route>
           <Route path="addproduct" element={<AddProduct />}></Route>
-          <Route path="detailproduct/:id" element={<Detail />}></Route>
+          <Route path="detailproduct/:id" element={<Detail_Product />}></Route>
           <Route path="signin" element={<SignIn />}></Route>
           <Route path="customers" element={<Customers />}></Route>
           <Route path="twostep" element={<TwoStep />}></Route>
           <Route path="order_detail" element={<Order_Detail />}></Route>
           <Route path="profile" element={<Profile />}></Route>
+          <Route path="login" element={<Login />}></Route>
+          <Route path="reset" element={<ResetPassword />}></Route>
           <Route path="test" element={<FullScreenButton />}></Route>
         </Route>
         <Route path="logout" element={<Logout />} />

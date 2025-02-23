@@ -970,12 +970,12 @@ const Layout = () => {
                           </Link>
                         </li>
                         <li className="nav-item">
-                          <Link to="" className="nav-link">
+                          <Link to="/admin/login" className="nav-link">
                             Sign Up
                           </Link>
                         </li>
                         <li className="nav-item">
-                          <Link to="" className="nav-link">
+                          <Link to="/admin/reset" className="nav-link">
                             Password Reset
                           </Link>
                         </li>

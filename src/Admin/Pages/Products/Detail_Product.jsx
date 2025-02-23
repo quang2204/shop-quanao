@@ -8,7 +8,7 @@ import { Navigation, Thumbs } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
-const Detail = () => {
+const Detail_Product = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   
@@ -881,4 +881,4 @@ const Detail = () => {
   )
 }
 
-export default Detail
+export default Detail_Product
