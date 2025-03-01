@@ -4701,3 +4701,7 @@ li {
 .canva {
   filter: invert(0) hue-rotate(180deg);
 }
+
+button {
+  font-family: 'Poppins', sans-serif;
+}

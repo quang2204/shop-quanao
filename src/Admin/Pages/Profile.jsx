@@ -5,7 +5,7 @@ import UseDetailUser from "../../Hook/useDetailUser";
 import { Spin } from "antd";
 const Profile = () => {
   const { data, isLoading } = UseDetailUser();
-  console.log(data);
+
   if (isLoading) {
     return (
       <Spin

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useProduct } from "../Hook/useProduct";
 import { Empty, Spin } from "antd";
 import { Link } from "react-router-dom";
-import FormatPrice from "../FormatPrice";
+import { FormatPrice } from "../Format";
 
 const Home = () => {
   const slide = [

@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button, message, Modal, Spin } from "antd";
 import useCart from "../Hook/useCart.jsx";
-import FormatPrice from "../FormatPrice.jsx";
+import { FormatPrice } from "../Format.jsx";
 import logomomo from "../images/logomomo.png";
 import logovnpay from "../images/logonvnpay.png";
 import cod from "../images/logoshipcod.png";
@@ -116,7 +116,7 @@ const Pay = () => {
         <input type="hidden" />
         <div id="t">
           <div className="form ">
-            <input type="hidden" name="user" defaultValue={76} />
+            <input type="hidden" name="user" />
             <h3
               style={{
                 marginBottom: "20px",
@@ -281,12 +281,7 @@ const Pay = () => {
     </div>
   );
 };
-const Modelpay = ({
-  show,
-  setShow,
-  pay,
-  setPay,
-}) => {
+const Modelpay = ({ show, setShow, pay, setPay }) => {
   const [pttt, setpttt] = useState("COD");
   const handleCancel = () => {
     setShow(false);

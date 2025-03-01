@@ -2,7 +2,7 @@ import { useState } from "react";
 import useDetailProduct from "../Hook/useDetailProduct.jsx";
 import { Image, message, Select, Spin, Tabs } from "antd";
 import { Link } from "react-router-dom";
-import FormatPrice from "../FormatPrice.jsx";
+import { FormatPrice } from "../Format.jsx";
 import useQuantity from "../Hook/useQuantity.jsx";
 import { useMutation, useQueryClient } from "react-query";
 import { addCart } from "../Apis/Api.jsx";

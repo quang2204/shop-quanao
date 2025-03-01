@@ -56,10 +56,18 @@ export const getVouchers = async () => {
   const res = await Axios.get(`/vouchers`);
   return res.data;
 };
+export const user= async (id) => {
+  const res = await Axios.get(`/user`);
+  return res.data;
+}
 export const detailUser = async (id) => {
   const res = await Axios.get(`/user/${id}`);
   return res.data;
 };
+export const deleteUser = async (id) => {
+  const res = await Axios.delete(`/user/${id}`);
+  return res.data;
+}
 export const addOrder = async (data) => {
   const res = await Axios.post(`/order`, data);
   return res.data;

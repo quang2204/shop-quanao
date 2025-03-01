@@ -1,6 +1,6 @@
 import { useDeleteProduct, useProducts } from "../../../Hook/useProduct.jsx";
 import { Button, Image, Spin, Table } from "antd";
-import FormatPrice from "../../../FormatPrice.jsx";
+import { FormatPrice } from "../../../Format.jsx";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 const Products = () => {
@@ -79,7 +79,7 @@ const Products = () => {
           </Button>
           {/* sau này khi call api sẽ sửa thành idid */}
           {/* <Link to={`detailproduct/${text._id}`}> */}
-          <Link to={`detailproduct/:id`}>
+          <Link to={`detailproduct/${text._id}`}>
             <Button type="dashed">Detail</Button>
           </Link>
         </div>
@@ -102,7 +102,7 @@ const Products = () => {
         </Link>
       </div>
 
-      <Table dataSource={products} columns={columns}></Table>
+      <Table dataSource={products} columns={columns} className="px-2"></Table>
       <div
         className={`modal fade ${open ? "block" : ""} opacity-100`}
         style={{ background: "rgba(0, 0, 0, 0.5)" }}

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import img from "../velzon/assets/images/logo-light.png";
+import img from "../../images/icons/logo-02.png";
 import avatar from "../velzon/assets/images/users/avatar-1.jpg";
 import UseDetailUser from "../../Hook/useDetailUser";
 import { Spin } from "antd";
@@ -21,7 +21,6 @@ const Layout = () => {
     };
   }, []);
   const { data, isLoading } = UseDetailUser();
-  console.log(data);
   if (isLoading) {
     return (
       <Spin
@@ -60,7 +59,6 @@ const Layout = () => {
                         placeholder="Search..."
                         autoComplete="off"
                         id="search-options"
-                        defaultValue=""
                       />
                       <span className="mdi mdi-magnify search-widget-icon" />
                       <span
@@ -100,29 +98,20 @@ const Layout = () => {
                           </h6>
                         </div>
                         {/* item*/}
-                        <a
-                          href="javascript:void(0);"
-                          className="dropdown-item notify-item"
-                        >
+                        <Link className="dropdown-item notify-item">
                           <i className="ri-bubble-chart-line align-middle fs-18 text-muted me-2" />
                           <span>Analytics Dashboard</span>
-                        </a>
+                        </Link>
                         {/* item*/}
-                        <a
-                          href="javascript:void(0);"
-                          className="dropdown-item notify-item"
-                        >
+                        <Link className="dropdown-item notify-item">
                           <i className="ri-lifebuoy-line align-middle fs-18 text-muted me-2" />
                           <span>Help Center</span>
-                        </a>
+                        </Link>
                         {/* item*/}
-                        <a
-                          href="javascript:void(0);"
-                          className="dropdown-item notify-item"
-                        >
+                        <Link className="dropdown-item notify-item">
                           <i className="ri-user-settings-line align-middle fs-18 text-muted me-2" />
                           <span>My account settings</span>
-                        </a>
+                        </Link>
                         {/* item*/}
                         <div className="dropdown-header mt-2">
                           <h6 className="text-overflow text-muted mb-2 text-uppercase">
@@ -131,10 +120,7 @@ const Layout = () => {
                         </div>
                         <div className="notification-list">
                           {/* item */}
-                          <a
-                            href="javascript:void(0);"
-                            className="dropdown-item notify-item py-2"
-                          >
+                          <Link className="dropdown-item notify-item py-2">
                             <div className="d-flex">
                               <img
                                 src="assets/images/users/avatar-2.jpg"
@@ -148,12 +134,9 @@ const Layout = () => {
                                 </span>
                               </div>
                             </div>
-                          </a>
+                          </Link>
                           {/* item */}
-                          <a
-                            href="javascript:void(0);"
-                            className="dropdown-item notify-item py-2"
-                          >
+                          <Link className="dropdown-item notify-item py-2">
                             <div className="d-flex">
                               <img
                                 src="assets/images/users/avatar-3.jpg"
@@ -167,10 +150,10 @@ const Layout = () => {
                                 </span>
                               </div>
                             </div>
-                          </a>
+                          </Link>
                           {/* item */}
-                          <a
-                            href="javascript:void(0);"
+                          <Link
+                            to="#"
                             className="dropdown-item notify-item py-2"
                           >
                             <div className="d-flex">
@@ -186,7 +169,7 @@ const Layout = () => {
                                 </span>
                               </div>
                             </div>
-                          </a>
+                          </Link>
                         </div>
                       </div>
                       <div className="text-center pt-3 pb-1">
@@ -370,7 +353,6 @@ const Layout = () => {
                                     <input
                                       className="form-check-input"
                                       type="checkbox"
-                                      defaultValue=""
                                       id="all-notification-check01"
                                     />
                                     <label
@@ -412,7 +394,6 @@ const Layout = () => {
                                     <input
                                       className="form-check-input"
                                       type="checkbox"
-                                      defaultValue=""
                                       id="all-notification-check02"
                                     />
                                     <label
@@ -450,7 +431,6 @@ const Layout = () => {
                                     <input
                                       className="form-check-input"
                                       type="checkbox"
-                                      defaultValue=""
                                       id="all-notification-check03"
                                     />
                                     <label
@@ -491,7 +471,6 @@ const Layout = () => {
                                     <input
                                       className="form-check-input"
                                       type="checkbox"
-                                      defaultValue=""
                                       id="all-notification-check04"
                                     />
                                     <label
@@ -554,7 +533,6 @@ const Layout = () => {
                                     <input
                                       className="form-check-input"
                                       type="checkbox"
-                                      defaultValue=""
                                       id="messages-notification-check01"
                                     />
                                     <label
@@ -596,7 +574,6 @@ const Layout = () => {
                                     <input
                                       className="form-check-input"
                                       type="checkbox"
-                                      defaultValue=""
                                       id="messages-notification-check02"
                                     />
                                     <label
@@ -638,7 +615,6 @@ const Layout = () => {
                                     <input
                                       className="form-check-input"
                                       type="checkbox"
-                                      defaultValue=""
                                       id="messages-notification-check03"
                                     />
                                     <label
@@ -679,7 +655,6 @@ const Layout = () => {
                                     <input
                                       className="form-check-input"
                                       type="checkbox"
-                                      defaultValue=""
                                       id="messages-notification-check04"
                                     />
                                     <label
@@ -888,11 +863,11 @@ const Layout = () => {
               {/* Dark Logo*/}
 
               {/* Light Logo*/}
-              <a href="index.html" className="logo">
+              <Link to={""} className="logo">
                 <span className="logo-lg ">
                   <img src={img} alt="" />
                 </span>
-              </a>
+              </Link>
             </div>
             <div
               id="scrollbar "

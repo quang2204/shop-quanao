@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Button, message, Modal, Spin } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import FormatPrice from "../FormatPrice.jsx";
+import { FormatPrice } from "../Format.jsx";
 import useCart from "../Hook/useCart.jsx";
 import { deleteCart, getVouchers, updateCart } from "../Apis/Api.jsx";
 import { useEffect, useState } from "react";

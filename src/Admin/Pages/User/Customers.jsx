@@ -1,11 +1,48 @@
 import React, { useState } from "react";
+import { useQuery } from "react-query";
+import { user } from "../../../Apis/Api";
+import { Link } from "react-router-dom";
+import { Button, Modal, Spin } from "antd";
+import { FormatDate } from "../../../Format";
+import { useDeleteUser } from "../../../Hook/useUser";
 const Customers = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [idDelete, setIdDelete] = useState("");
+  const showModal = (id) => {
+    setIdDelete(id);
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   const [block, useBlock] = useState(false);
+const { data,isLoading } = useQuery({
+  queryKey: ["customers"],
+  queryFn: () => user(),
+});
+
+const { mutate } = useDeleteUser();
+const handleOk = () => {
+  mutate(idDelete);
+  setIsModalOpen(false);
+  setIdDelete("");
+};
+if (isLoading) {
+  return (
+    <Spin
+      size="large"
+      className="h-[50vh] mt-[100px] flex items-center justify-center w-full "
+    />
+  );
+}
+
+
   return (
     <div className="row px-4">
       <div className="col-lg-12">
         <div className="card" id="customerList">
-          <div className="card-header border-bottom-dashed">
+          <div className="card-header border-bottom-dashed bg-none">
             <div className="row g-4 align-items-center">
               <div className="col-sm">
                 <div>
@@ -115,94 +152,87 @@ const Customers = () => {
                             className="form-check-input"
                             type="checkbox"
                             id="checkAll"
-                            defaultValue="option"
                           />
                         </div>
                       </th>
-                      <th className="sort" data-sort="customer_name">
-                        Customer
-                      </th>
-                      <th className="sort" data-sort="email">
-                        Email
-                      </th>
-                      <th className="sort" data-sort="phone">
-                        Phone
-                      </th>
-                      <th className="sort" data-sort="date">
-                        Joining Date
-                      </th>
-                      <th className="sort" data-sort="status">
-                        Status
-                      </th>
-                      <th className="sort" data-sort="action">
-                        Action
-                      </th>
+                      <th className="sort">Customer</th>
+                      <th className="sort">Email</th>
+                      <th className="sort">Phone</th>
+                      <th className="sort">Joining Date</th>
+                      <th className="sort">Status</th>
+                      <th className="sort">Role</th>
+                      <th className="sort">Action</th>
                     </tr>
                   </thead>
                   <tbody className="list form-check-all">
-                    <tr>
-                      <th scope="row">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            name="chk_child"
-                            defaultValue="option1"
-                          />
-                        </div>
-                      </th>
-                      <td className="id" style={{ display: "none" }}>
-                        <a
-                          href="javascript:void(0);"
-                          className="fw-medium link-primary"
-                        >
-                          #VZ2101
-                        </a>
-                      </td>
-                      <td className="customer_name">Mary Cousar</td>
-                      <td className="email">marycousar@velzon.com</td>
-                      <td className="phone">580-464-4694</td>
-                      <td className="date">06 Apr, 2021</td>
-                      <td className="status">
-                        <span className="badge bg-success-subtle text-success text-uppercase">
-                          Active
-                        </span>
-                      </td>
-                      <td>
-                        <ul className="list-inline hstack gap-2 mb-0">
-                          <li
-                            className="list-inline-item edit"
-                            data-bs-toggle="tooltip"
-                            data-bs-trigger="hover"
-                            data-bs-placement="top"
-                            title="Edit"
+                    {data?.map((item) => (
+                      <tr key={item._id}>
+                        <th scope="row">
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                            />
+                          </div>
+                        </th>
+                        <td className="id" style={{ display: "none" }}>
+                          <Link to="#" className="fw-medium link-primary">
+                            #VZ2101
+                          </Link>
+                        </td>
+                        <td className="customer_name"> {item.username}</td>
+                        <td className="email">{item.email}</td>
+                        <td className="phone">{item.phone}</td>
+                        <td className="date">
+                          {FormatDate({ date: item.createdAt })}
+                        </td>
+                        <td className="status">
+                          <span className="badge bg-success-subtle text-success text-uppercase">
+                            Active
+                          </span>
+                        </td>
+                        <td className="role">
+                          <span
+                            className={`badge ${item.role === "user" ? "text-success" : "text-red-600"}  text-uppercase`}
                           >
-                            <a
-                              href="#showModal"
-                              data-bs-toggle="modal"
-                              className="text-primary d-inline-block edit-item-btn"
+                            {item.role}
+                          </span>
+                        </td>
+                        <td>
+                          <ul className="list-inline hstack gap-2 mb-0">
+                            <li
+                              className="list-inline-item edit"
+                              data-bs-toggle="tooltip"
+                              data-bs-trigger="hover"
+                              data-bs-placement="top"
+                              title="Edit"
                             >
-                              <i className="ri-pencil-fill fs-16" />
-                            </a>
-                          </li>
-                          <li
-                            className="list-inline-item"
-                            data-bs-toggle="tooltip"
-                            data-bs-trigger="hover"
-                            data-bs-placement="top"
-                            title="Remove"
-                          >
-                            <a
-                              className="text-danger d-inline-block remove-item-btn"
-                              data-bs-toggle="modal"
-                              href="#deleteRecordModal"
+                              <a
+                                href="#showModal"
+                                data-bs-toggle="modal"
+                                className="text-primary d-inline-block edit-item-btn"
+                              >
+                                <i className="ri-pencil-fill fs-16" />
+                              </a>
+                            </li>
+                            <li
+                              className="list-inline-item"
+                              data-bs-toggle="tooltip"
+                              data-bs-trigger="hover"
+                              data-bs-placement="top"
+                              title="Remove"
                             >
-                              <i className="ri-delete-bin-5-fill fs-16" />
-                            </a>
-                          </li>
-                        </ul>
-                      </td>
-                    </tr>
+                              <button
+                                className="text-danger d-inline-block remove-item-btn"
+                                onClick={() => showModal(item._id)}
+                              >
+                                <i className="ri-delete-bin-5-fill fs-16" />
+                              </button>
+                            </li>
+                          </ul>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
                 <div className="noresult" style={{ display: "none" }}>
@@ -377,31 +407,23 @@ const Customers = () => {
               </div>
             </div>
             {/* Modal */}
-            <div
-              className="modal fade zoomIn"
-              id="deleteRecordModal"
-              tabIndex={-1}
-              aria-hidden="true"
+            <Modal
+              open={isModalOpen}
+              onOk={handleOk}
+              onCancel={handleCancel}
+              // className="modal fade zoomIn"
             >
               <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <button
-                      type="button"
-                      className="btn-close"
-                      id="deleteRecord-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    />
-                  </div>
+                <div className="modal-content border-none">
                   <div className="modal-body">
-                    <div className="mt-2 text-center">
-                      <lord-icon
-                        src="https://cdn.lordicon.com/gsqxdxog.json"
-                        trigger="loop"
-                        colors="primary:#f7b84b,secondary:#f06548"
-                        style={{ width: 100, height: 100 }}
-                      />
+                    <div className="mt-2 text-center ">
+                      <div className="flex justify-center">
+                        <img
+                          src="https://media-public.canva.com/de2y0/MAFqwzde2y0/1/tl.png"
+                          alt=""
+                          width={100}
+                        />
+                      </div>
                       <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
                         <h4>Are you sure ?</h4>
                         <p className="text-muted mx-4 mb-0">
@@ -409,26 +431,10 @@ const Customers = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                      <button
-                        type="button"
-                        className="btn w-sm btn-light"
-                        data-bs-dismiss="modal"
-                      >
-                        Close
-                      </button>
-                      <button
-                        type="button"
-                        className="btn w-sm btn-danger"
-                        id="delete-record"
-                      >
-                        Yes, Delete It!
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </Modal>
             {/*end modal */}
           </div>
         </div>

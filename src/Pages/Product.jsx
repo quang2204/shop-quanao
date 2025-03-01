@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import useCategory from "../Hook/useCategory.jsx";
 import { Empty, Spin } from "antd";
 import { useCategoryProducts, useProduct } from "../Hook/useProduct.jsx";
-import FormatPrice from "../FormatPrice.jsx";
+import { FormatPrice } from "../Format.jsx";
 const Product = () => {
   const navigate = useNavigate();
   const { caterory, pages } = useParams();

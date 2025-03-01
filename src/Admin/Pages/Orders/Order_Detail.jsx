@@ -458,9 +458,9 @@ const Order_Detail = () => {
                   Customer Details
                 </h5>
                 <div className="flex-shrink-0">
-                  <a href="javascript:void(0);" className="link-secondary">
+                  <Link to="" className="link-secondary">
                     View Profile
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

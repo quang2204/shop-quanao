@@ -92,7 +92,6 @@ const SignIn = () => {
                   <input
                     className="form-check-input"
                     type="checkbox"
-                    defaultValue=""
                     id="auth-remember-check"
                   />
                   <label
