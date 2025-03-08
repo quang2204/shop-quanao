@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import img from "../../images/icons/logo-02.png";
 import avatar from "../velzon/assets/images/users/avatar-1.jpg";
 import UseDetailUser from "../../Hook/useDetailUser";
@@ -20,6 +20,10 @@ const Layout = () => {
       document.removeEventListener("mousedown", handleClick);
     };
   }, []);
+  const {pathname}=useLocation();
+  const capitalizeFirstLetter = (str) =>str? str.charAt(0).toUpperCase() + str.slice(1):"Dashboards";
+
+  const thirdPathSegment = capitalizeFirstLetter(pathname.split("/")[2]);
   const { data, isLoading } = UseDetailUser();
   if (isLoading) {
     return (
@@ -722,10 +726,10 @@ const Layout = () => {
                         />
                         <span className="text-start ms-xl-2">
                           <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text">
-                            {data.username}
+                            {data.name}
                           </span>
                           <span className="d-none d-xl-block ms-1 fs-12 user-name-sub-text">
-                            {data.role}
+                            {data.role === 1 ? "Admin" : "User"}
                           </span>
                         </span>
                       </span>
@@ -888,33 +892,57 @@ const Layout = () => {
                   </li>
                   {/* end Dashboard Menu */}
                   <li className="nav-item">
-                    <Link to="" className="nav-link menu-link ">
+                    <Link to="products" className="nav-link menu-link ">
                       <i className="ri-apps-2-line" />
                       <span data-key="t-apps">Products</span>
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="order_detail" className="nav-link menu-link">
-                      <i className="ri-layout-3-line" />
-                      <span data-key="t-layouts">Order-Detail</span>
+                    <Link to="order" className="nav-link menu-link">
+                      <img
+                        src="https://media-public.canva.com/fQMlo/MAF38jfQMlo/1/tl.png"
+                        alt=""
+                        width={20}
+                        style={{ filter: "invert(1) hue-rotate(180deg)" }}
+                        className="me-2"
+                      />
+                      <span data-key="t-layouts">Order</span>
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="detailproduct/:id" className="nav-link menu-link">
+                    <Link to="order_detail" className="nav-link menu-link">
                       <i className="ri-layout-3-line" />
-                      <span data-key="t-layouts">Detail Product</span>
+                      <span data-key="t-layouts">Baner</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="order_detail" className="nav-link menu-link">
+                      <img
+                        src="https://media-public.canva.com/TbR0s/MADa1xTbR0s/2/tl.png"
+                        alt=""
+                        width={20}
+                        style={{ filter: "invert(1) hue-rotate(180deg)" }}
+                        className="me-2"
+                      />
+                      <span data-key="t-layouts">Blogs</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="categories" className="nav-link menu-link">
+                      <i className="ri-layout-3-line" />
+                      <span data-key="t-layouts">Categories</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="order_detail" className="nav-link menu-link">
+                      <i class="fa fa-comment"></i>
+                      <span data-key="t-layouts">Comments</span>
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link to="customers" className="nav-link menu-link">
-                      <i className="ri-layout-3-line" />
-                      <span data-key="t-layouts">Account Management</span>
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="twostep" className="nav-link menu-link">
-                      <i className="ri-layout-3-line" />
-                      <span data-key="t-layouts">Two Step Verification</span>
+                      <i class="fa fa-user"></i>
+                      <span data-key="t-layouts">User</span>
                     </Link>
                   </li>
                   {/* end Dashboard Menu */}
@@ -1001,13 +1029,13 @@ const Layout = () => {
                 <div className="row">
                   <div className="col-12">
                     <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-                      <h4 className="mb-sm-0">Animation</h4>
+                      <h4 className="mb-sm-0">{thirdPathSegment}</h4>
                       <div className="page-title-right">
                         <ol className="breadcrumb m-0">
                           <li className="breadcrumb-item">
-                            <Link>Advance UI</Link>
+                            <Link>Admin</Link>
                           </li>
-                          <li className="breadcrumb-item active">Animation</li>
+                          <li className="breadcrumb-item active">{thirdPathSegment}</li>
                         </ol>
                       </div>
                     </div>

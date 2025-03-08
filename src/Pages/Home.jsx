@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useProduct } from "../Hook/useProduct";
+import { useProduct, useProducts } from "../Hook/useProduct";
 import { Empty, Spin } from "antd";
 import { Link } from "react-router-dom";
 import { FormatPrice } from "../Format";
@@ -19,7 +19,7 @@ const Home = () => {
       image: "src/images/slide-06.jpg",
     },
   ];
-  const { products, isProducts } = useProduct();
+  const { products, isProducts } = useProducts();
 
   const [slick, setSlick] = useState(slide);
   const [count, setCount] = useState(0);

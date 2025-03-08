@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useOrder } from "../../../Hook/useOrder";
-import { Spin } from "antd";
-import { FormatDate, FormatDateTime, FormatPrice } from "../../../Format";
+import { Modal, Spin } from "antd";
+import { useCategory, useDeleteCategory } from "../../../Hook/useCategory";
 
-const Orders = () => {
-  const { data, isLoading } = useOrder();
-  console.log(data);
-  if (isLoading) {
+const Categories = () => {
+  const { category, isCategory } = useCategory();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [idDelete, setIdDelete] = useState("");
+  const showModal = (id) => {
+    setIdDelete(id);
+    setIsModalOpen(true);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  const { mutate } = useDeleteCategory();
+  const handleOk = () => {
+    mutate(idDelete);
+    setIsModalOpen(false);
+    setIdDelete("");
+  };
+  if (isCategory) {
     return (
       <Spin
         size="large"
@@ -57,140 +70,12 @@ const Orders = () => {
                     <i className="ri-search-line search-icon" />
                   </div>
                 </div>
-                {/*end col*/}
-                <div className="col-xxl-2 col-sm-3">
-                  <div>
-                    <input
-                      type="text"
-                      className="form-control"
-                      data-provider="flatpickr"
-                      data-date-format="d M, Y"
-                      data-range-date="true"
-                      id="demo-datepicker"
-                      placeholder="Select date"
-                    />
-                  </div>
-                </div>
-                {/*end col*/}
-                <div className="col-xxl-2 col-sm-2">
-                  <div>
-                    <select
-                      className="form-control"
-                      data-choices=""
-                      data-choices-search-false=""
-                      name="choices-single-default"
-                      id="idStatus"
-                    >
-                      <option value="">Status</option>
-                      <option value="all" selected="">
-                        All
-                      </option>
-                      <option value="Pending">Pending</option>
-                      <option value="Inprogress">Inprogress</option>
-                      <option value="Cancelled">Cancelled</option>
-                      <option value="Pickups">Pickups</option>
-                      <option value="Returns">Returns</option>
-                      <option value="Delivered">Delivered</option>
-                    </select>
-                  </div>
-                </div>
-                {/*end col*/}
-                <div className="col-xxl-2 col-sm-2">
-                  <div>
-                    <select
-                      className="form-control"
-                      data-choices=""
-                      data-choices-search-false=""
-                      name="choices-single-default"
-                      id="idPayment"
-                    >
-                      <option value="">Select Payment</option>
-                      <option value="all" selected="">
-                        All
-                      </option>
-                      <option value="Mastercard">Mastercard</option>
-                      <option value="Paypal">Paypal</option>
-                      <option value="Visa">Visa</option>
-                      <option value="COD">COD</option>
-                    </select>
-                  </div>
-                </div>
               </div>
               {/*end row*/}
             </form>
           </div>
           <div className="card-body pt-0">
             <div>
-              <ul
-                className="nav nav-tabs nav-tabs-custom nav-success mb-3"
-                role="tablist"
-              >
-                <li className="nav-item">
-                  <a
-                    className="nav-link active All py-3"
-                    data-bs-toggle="tab"
-                    id="All"
-                    href="#home1"
-                    role="tab"
-                    aria-selected="true"
-                  >
-                    <i className="ri-store-2-fill me-1 align-bottom" /> All
-                    Orders
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link py-3 Delivered"
-                    data-bs-toggle="tab"
-                    id="Delivered"
-                    href="#delivered"
-                    role="tab"
-                    aria-selected="false"
-                  >
-                    <i className="ri-checkbox-circle-line me-1 align-bottom" />{" "}
-                    Delivered
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link py-3 Pickups"
-                    data-bs-toggle="tab"
-                    id="Pickups"
-                    href="#pickups"
-                    role="tab"
-                    aria-selected="false"
-                  >
-                    <i className="ri-truck-line me-1 align-bottom" /> Pickups{" "}
-                    <span className="badge bg-danger align-middle ms-1">2</span>
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link py-3 Returns"
-                    data-bs-toggle="tab"
-                    id="Returns"
-                    href="#returns"
-                    role="tab"
-                    aria-selected="false"
-                  >
-                    <i className="ri-arrow-left-right-fill me-1 align-bottom" />{" "}
-                    Returns
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link py-3 Cancelled"
-                    data-bs-toggle="tab"
-                    id="Cancelled"
-                    href="#cancelled"
-                    role="tab"
-                    aria-selected="false"
-                  >
-                    <i className="ri-close-circle-line me-1 align-bottom" />{" "}
-                    Cancelled
-                  </a>
-                </li>
-              </ul>
               <div className="table-responsive table-card mb-1">
                 <table
                   className="table table-nowrap align-middle"
@@ -198,32 +83,14 @@ const Orders = () => {
                 >
                   <thead className="text-muted table-light">
                     <tr className="text-uppercase">
-                      <th scope="col" style={{ width: 25 }}>
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id="checkAll"
-                          />
-                        </div>
+                      <th className="sort" dangerouslySetInnerHTMLata-sort="id">
+                        #
                       </th>
                       <th className="sort" data-sort="id">
-                        Order ID
+                        Name
                       </th>
                       <th className="sort" data-sort="customer_name">
-                        Customer
-                      </th>
-                      <th className="sort" data-sort="date">
-                        Order Date
-                      </th>
-                      <th className="sort" data-sort="amount">
-                        Amount
-                      </th>
-                      <th className="sort" data-sort="payment">
-                        Payment Method
-                      </th>
-                      <th className="sort" data-sort="status">
-                        Delivery Status
+                        Active
                       </th>
                       <th className="sort" data-sort="city">
                         Action
@@ -231,74 +98,54 @@ const Orders = () => {
                     </tr>
                   </thead>
                   <tbody className="list form-check-all">
-                  {data.map((order) => (
-                      <tr>
-                      <th scope="row">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            name="checkAll"
-                          />
-                        </div>
-                      </th>
-                      <td className="id">
-                        <a
-                          href="apps-ecommerce-order-details.html"
-                          className="fw-medium link-primary"
+                    {category.map((item, index) => (
+                      <tr key={item.id}>
+                        <td>{index + 1}</td>
+                        <td className="id">
+                          <p className="fw-medium ">{item.name}</p>
+                        </td>
+                        <td
+                          className="customer_name"
+                          style={{
+                            color: item.is_active ? "green" : "red",
+                          }}
                         >
-                         {order.order_code}
-                        </a>
-                      </td>
-                      <td className="customer_name">{order.user_name}</td>
+                          {item.is_active ? "Active" : "Block"}
+                        </td>
 
-                      <td className="date">
-                       {<FormatDate date={order.created_at} />}
-                        <small className="text-muted">{<FormatDateTime dateString={order.created_at}/>}</small>
-                      </td>
-                      <td className="amount">{<FormatPrice price={order.total_amount} />}</td>
-                      <td className="payment text-center">{order.payment_method}</td>
-                      <td className="status">
-                        <span className="badge bg-warning-subtle text-warning text-uppercase">
-                          {order.status}
-                        </span>
-                      </td>
-                      <td>
-                        <ul className="list-inline hstack gap-2 mb-0">
-                          <li
-                            className="list-inline-item"
-                            data-bs-toggle="tooltip"
-                            data-bs-trigger="hover"
-                            data-bs-placement="top"
-                            title="View"
-                          >
-                            <Link
-                              to={`/admin/order_detail/6730c5042009824f08db8eab`}
-                              className="text-primary d-inline-block"
+                        <td>
+                          <ul className="list-inline hstack gap-2 mb-0">
+                            <li
+                              className="list-inline-item"
+                              data-bs-toggle="tooltip"
+                              data-bs-trigger="hover"
+                              data-bs-placement="top"
+                              title="View"
                             >
-                              <i className="ri-eye-fill fs-16" />
-                            </Link>
-                          </li>
-                          <li
-                            className="list-inline-item edit"
-                            data-bs-toggle="tooltip"
-                            data-bs-trigger="hover"
-                            data-bs-placement="top"
-                            title="Edit"
-                          >
-                            <a
-                              href="#showModal"
-                              data-bs-toggle="modal"
-                              className="text-primary d-inline-block edit-item-btn"
-                            >
-                              <i className="ri-pencil-fill fs-16" />
-                            </a>
-                          </li>
-                        </ul>
-                      </td>
-                    </tr>
-                  ))}
-                  
+                              <Link
+                                to={`/admin/order_detail/6730c5042009824f08db8eab`}
+                                className="text-primary d-inline-block"
+                              >
+                                <i className="ri-eye-fill fs-16" />
+                              </Link>
+                            </li>
+                            <li className="list-inline-item edit">
+                              <div className="text-primary d-inline-block edit-item-btn">
+                                <i className="ri-pencil-fill fs-16" />
+                              </div>
+                            </li>
+                            <li className="list-inline-item">
+                              <div
+                                class="text-danger d-inline-block remove-item-btn"
+                                onClick={() => showModal(item.id)}
+                              >
+                                <i class="ri-delete-bin-5-fill fs-16"></i>
+                              </div>
+                            </li>
+                          </ul>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
                 <div className="noresult" style={{ display: "none" }}>
@@ -577,9 +424,37 @@ const Orders = () => {
           </div>
         </div>
       </div>
+      <Modal
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        // className="modal fade zoomIn"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content border-none">
+            <div className="modal-body">
+              <div className="mt-2 text-center ">
+                <div className="flex justify-center">
+                  <img
+                    src="https://media-public.canva.com/de2y0/MAFqwzde2y0/1/tl.png"
+                    alt=""
+                    width={100}
+                  />
+                </div>
+                <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                  <h4>Are you sure ?</h4>
+                  <p className="text-muted mx-4 mb-0">
+                    Are you sure you want to remove this record ?
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
       {/*end col*/}
     </div>
   );
 };
 
-export default Orders;
+export default Categories;

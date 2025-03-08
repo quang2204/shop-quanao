@@ -39,7 +39,7 @@ const Signin = () => {
       navigate("/");
     },
     onError: (error) => {
-      message.error(error.response.data.message);
+      message.error(error.response.data.error);
     },
   });
   const onSubmit = (data) => {
@@ -76,7 +76,7 @@ const Signin = () => {
         </div>
         {errors.email?.message && (
           <p id="email-error" className="text-red-400">
-            {errors.email.message }
+            {errors.email.message}
           </p>
         )}
 
@@ -99,7 +99,7 @@ const Signin = () => {
         </div>
         {errors.password?.message && (
           <p id="password-error" className="text-red-400">
-            {errors.password.message }
+            {errors.password.message}
           </p>
         )}
         <div className="flex-row ">

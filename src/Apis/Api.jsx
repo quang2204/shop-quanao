@@ -1,12 +1,17 @@
 import Axios from "./Axios";
 export const getProducts = async () => {
-  const res = await Axios.get(`/products`);
+  const res = await Axios.get(`api/products`);
   return res.data;
 };
 export const getCategory = async () => {
-  const res = await Axios.get(`/categorys`);
+  const res = await Axios.get(`api/categories`);
+  console.log(res);
   return res.data;
 };
+export const deleteCategory = async (id) => {
+  const res = await Axios.delete(`api/categories/${id}`);
+  return res.data;
+}
 export const DetailProduct = async (id) => {
   const res = await Axios.get(`/product/${id}`);
   return res.data.data;
@@ -23,7 +28,7 @@ export const productsPagination = async (page) => {
 export const deleteProduct = async (id) => {
   const res = await Axios.delete(`/products/${id}`);
   return res.data;
-}
+};
 export const signin = async (data) => {
   const res = await Axios.post(`/login`, data);
   return res.data;
@@ -56,18 +61,26 @@ export const getVouchers = async () => {
   const res = await Axios.get(`/vouchers`);
   return res.data;
 };
-export const user= async (id) => {
-  const res = await Axios.get(`/user`);
+export const user = async (page) => {
+  const res = await Axios.get(`api/users/?page=${page}`);
   return res.data;
-}
+};
 export const detailUser = async (id) => {
-  const res = await Axios.get(`/user/${id}`);
+  const res = await Axios.get(`api/users/${id}`);
   return res.data;
 };
 export const deleteUser = async (id) => {
-  const res = await Axios.delete(`/user/${id}`);
+  const res = await Axios.delete(`api/users/${id}`);
+  return res.data;
+};
+export const addUsers = async (data) => {
+  const res = await Axios.post(`api/users`, data);
   return res.data;
 }
+export const getOrdersAdmin = async () => {
+  const res = await Axios.get(`api/orders`);
+  return res.data;
+};
 export const addOrder = async (data) => {
   const res = await Axios.post(`/order`, data);
   return res.data;
@@ -88,6 +101,10 @@ export const updateUser = async (data, id) => {
   const res = await Axios.patch(`/user/${id}`, data);
   return res.data;
 };
+export const deleteOrder = async (id) => {
+  const res = await Axios.delete(`api/order/${id}`);
+  return res.data;
+}
 export const updatePassword = async (data, id) => {
   const res = await Axios.patch(`/user/pass/${id}`, data);
   return res.data;
