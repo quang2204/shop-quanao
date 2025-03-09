@@ -5,7 +5,6 @@ export const getProducts = async () => {
 };
 export const getCategory = async () => {
   const res = await Axios.get(`api/categories`);
-  console.log(res);
   return res.data;
 };
 export const deleteCategory = async (id) => {

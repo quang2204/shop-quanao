@@ -6,7 +6,6 @@ const useCategory = () => {
     queryKey: ["category"],
     queryFn: () => getCategory(),
   });
-  console.log(category);
   return { category, isCategory };
 };
 const useDeleteCategory = (id) => {

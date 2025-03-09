@@ -35,6 +35,7 @@ import Orders from "../Admin/Pages/Orders/Orders.jsx";
 import Dashboards from "../Admin/Dashboards.jsx";
 import PrivateRouter from "./PrivateRouter.jsx";
 import Categories from "../Admin/Pages/Categories/Categories.jsx";
+import Categories_Detail from "../Admin/Pages/Categories/Categories_Detail.jsx";
 
 const Router = () => {
   ScrollToTop();
@@ -80,6 +81,7 @@ const Router = () => {
           <Route path="profile" element={<Profile />}/>
           <Route path="login" element={<Login />}/>
           <Route path="reset" element={<ResetPassword />}/>
+          <Route path="categories/:id" element={<Categories_Detail />}/>
           <Route path="test" element={<FullScreenButton />}/>
         </Route>
         <Route path="twostep" element={<TwoStep />}/>
