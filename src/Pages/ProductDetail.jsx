@@ -1,5 +1,8 @@
 import { useState } from "react";
-import useDetailProduct from "../Hook/useDetailProduct.jsx";
+import {
+  useDetailProduct,
+  useProductVariants,
+} from "../Hook/useDetailProduct.jsx";
 import { Image, message, Select, Spin, Tabs } from "antd";
 import { Link } from "react-router-dom";
 import { FormatPrice } from "../Format.jsx";
@@ -9,6 +12,8 @@ import { addCart } from "../Apis/Api.jsx";
 const ProductDetail = () => {
   const queryCline = useQueryClient();
   const { detailProduct, isDetailProduct } = useDetailProduct();
+  const { isProductVariants, productVariant } = useProductVariants();
+
   const {
     decreaseNumber,
     increaseNumber,
@@ -36,7 +41,7 @@ const ProductDetail = () => {
     mutate(data);
   };
 
-  if (isDetailProduct) {
+  if (isDetailProduct || isProductVariants) {
     return (
       <Spin
         size="large"
@@ -44,6 +49,7 @@ const ProductDetail = () => {
       />
     );
   }
+
   const pre = () => {
     if (indexImg == 0) {
       setindexImg(detailProduct.variant.length - 1);
@@ -58,13 +64,7 @@ const ProductDetail = () => {
       setindexImg(indexImg + 1);
     }
   };
-  const handleColor = (e) => {
-    detailProduct?.variant.filter((item) => {
-      if (item._id == e) {
-        setindexImg(detailProduct.variant.indexOf(item));
-      }
-    });
-  };
+  console.log(detailProduct);
   return (
     <div>
       <div className="container mt-28 ">
@@ -74,7 +74,7 @@ const ProductDetail = () => {
             <i aria-hidden="true" className="fa fa-angle-right m-l-9 m-r-10" />
           </Link>
           <Link className="stext-109 cl8 hov-cl1 trans-04" to="">
-            {detailProduct?.caterori?.name}
+            {detailProduct?.category?.name}
             <i aria-hidden="true" className="fa fa-angle-right m-l-9 m-r-10" />
           </Link>
           <span className="stext-109 cl4"> {detailProduct?.name}</span>
@@ -88,15 +88,15 @@ const ProductDetail = () => {
                 <div className="wrap-slick3 flex-sb flex-w">
                   <div className="wrap-slick3-dots">
                     <ul className="slick3-dots" role="tablist">
-                      {detailProduct?.variants.map((item, index) => (
+                      {/* {productVariant.map((item, index) => (
                         <li
                           className=""
-                          key={item._id}
+                          key={item.id}
                           onMouseOver={() => setindexImg(index)}
                         >
                           <Image src={item.imageUrl} />
                         </li>
-                      ))}
+                      ))} */}
                     </ul>
                   </div>
 
@@ -125,7 +125,7 @@ const ProductDetail = () => {
                         >
                           <div className="wrap-pic-w pos-relative">
                             <Image
-                              src={detailProduct?.variants[indexImg].imageUrl}
+                              src={detailProduct.img_thumb}
                               alt="IMG-PRODUCT"
                             />
                           </div>
@@ -142,11 +142,8 @@ const ProductDetail = () => {
                   {detailProduct?.name}
                 </h4>
                 <span className="mtext-106 cl2">
-                  {<FormatPrice price={detailProduct.price} />}
+                  {/* {<FormatPrice price={detailProduct.price} />} */}
                 </span>
-                <p className="stext-102 cl3 p-t-23">
-                  {detailProduct?.description}
-                </p>
                 <div className="p-t-33">
                   <div className="flex-w flex-r-m p-b-10">
                     <div className="size-203 flex-c-m respon6">Size</div>
@@ -154,17 +151,25 @@ const ProductDetail = () => {
                       <div className="rs1-select2 bg0">
                         <Select
                           showSearch
-                          placeholder="Select a person"
+                          placeholder="Select a size"
                           filterOption={(input, option) =>
                             (option?.label ?? "")
                               .toLowerCase()
                               .includes(input.toLowerCase())
                           }
-                          options={detailProduct?.variants.map((item) => ({
-                            value: item._id,
-                            label: item.size,
-                          }))}
+                          options={Array.from(
+                            new Map(
+                              productVariant
+                                ?.flatMap((variant) => variant.size) // Lấy tất cả size từ các biến thể
+                                ?.map((item) => [
+                                  item.id,
+                                  { value: item.id, label: item.name },
+                                ]) // Tạo key-value cho Map
+                            ).values() // Lấy các giá trị duy nhất
+                          )}
+                          className="w-[135px]"
                         />
+
                         <div className="dropDownSelect2" />
                       </div>
                     </div>
@@ -181,11 +186,17 @@ const ProductDetail = () => {
                               .toLowerCase()
                               .includes(input.toLowerCase())
                           }
-                          onChange={(e) => handleColor(e)}
-                          options={detailProduct?.variants.map((item) => ({
-                            value: item._id,
-                            label: item.color,
-                          }))}
+                          options={Array.from(
+                            new Map(
+                              productVariant
+                                ?.flatMap((variant) => variant.color) // Lấy tất cả size từ các biến thể
+                                ?.map((item) => [
+                                  item.id,
+                                  { value: item.id, label: item.name },
+                                ]) // Tạo key-value cho Map
+                            ).values() // Lấy các giá trị duy nhất
+                          )}
+                          className="w-[135px]"
                         />
                         <div className="dropDownSelect2" />
                       </div>
@@ -215,15 +226,24 @@ const ProductDetail = () => {
                           <i className="fs-16 zmdi zmdi-plus" />
                         </div>
                       </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-w flex-r-m p-b-10">
+                  <div className="size-204 flex-c-m respon6"></div>
+                  <div className="size-204 respon6-next">
+                    <div className="rs1-select2  bg0">
                       <button
-                        className="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 "
+                        className="flex-c-m stext-101 cl0 size-101 bg1 bor1 -ml-[20px] hov-btn1 trans-04 "
                         onClick={addToCart}
                       >
                         Add to cart
                       </button>
+                      <div className="dropDownSelect2" />
                     </div>
                   </div>
                 </div>
+
                 <div className="flex-w flex-m p-l-100 p-t-40 respon7">
                   <div className="flex-m bor9 p-r-10 m-r-11">
                     <a
@@ -284,7 +304,7 @@ const ProductDetail = () => {
         <div className="bg6 flex-c-m flex-w size-302 m-t-73 p-tb-15">
           <span className="stext-107 cl6 p-lr-25"> SKU: JAK-01 </span>
           <span className="stext-107 cl6 p-lr-25">
-            Categories : {detailProduct?.caterori.name}
+            {/* Categories : {detailProduct?.caterori.name} */}
           </span>
         </div>
       </section>

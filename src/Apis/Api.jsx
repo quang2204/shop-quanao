@@ -1,6 +1,6 @@
 import Axios from "./Axios";
-export const getProducts = async () => {
-  const res = await Axios.get(`api/products`);
+export const getProducts = async (page) => {
+  const res = await Axios.get(`api/products?page=${page}`);
   return res.data;
 };
 export const getCategory = async () => {
@@ -10,22 +10,29 @@ export const getCategory = async () => {
 export const deleteCategory = async (id) => {
   const res = await Axios.delete(`api/categories/${id}`);
   return res.data;
-}
+};
 export const DetailProduct = async (id) => {
-  const res = await Axios.get(`/product/${id}`);
-  return res.data.data;
+  const res = await Axios.get(`api/products/${id}`);
+  return res.data;
 };
 export const categoryProduct = async (id) => {
   const res = await Axios.get(`/products/category/${id}`);
   return res.data;
 };
-
+export const productVariants = async (id) => {
+  const res = await Axios.get(`api/product-variants/${id}`);
+  return res.data;
+};
+export const productGalleries = async (id) => {
+  const res = await Axios.get(`/products/gallery/${id}`);
+  return res.data;
+};
 export const productsPagination = async (page) => {
   const res = await Axios.get(`/products/${page}`);
   return res.data;
 };
 export const deleteProduct = async (id) => {
-  const res = await Axios.delete(`/products/${id}`);
+  const res = await Axios.delete(`api/products/${id}`);
   return res.data;
 };
 export const signin = async (data) => {
@@ -75,7 +82,7 @@ export const deleteUser = async (id) => {
 export const addUsers = async (data) => {
   const res = await Axios.post(`api/users`, data);
   return res.data;
-}
+};
 export const getOrdersAdmin = async () => {
   const res = await Axios.get(`api/orders`);
   return res.data;
@@ -103,7 +110,7 @@ export const updateUser = async (data, id) => {
 export const deleteOrder = async (id) => {
   const res = await Axios.delete(`api/order/${id}`);
   return res.data;
-}
+};
 export const updatePassword = async (data, id) => {
   const res = await Axios.patch(`/user/pass/${id}`, data);
   return res.data;
