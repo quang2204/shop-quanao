@@ -1,18 +1,18 @@
 import Axios from "./Axios";
 export const getProducts = async (page) => {
-  const res = await Axios.get(`api/products?page=${page}`);
+  const res = await Axios.get(`api/admin/products?page=${page}`);
   return res.data;
 };
 export const getCategory = async () => {
-  const res = await Axios.get(`api/categories`);
+  const res = await Axios.get(`api/admin/categories`);
   return res.data;
 };
 export const deleteCategory = async (id) => {
-  const res = await Axios.delete(`api/categories/${id}`);
+  const res = await Axios.delete(`api/admin/categories/${id}`);
   return res.data;
 };
 export const DetailProduct = async (id) => {
-  const res = await Axios.get(`api/products/${id}`);
+  const res = await Axios.get(`api/admin/products/${id}`);
   return res.data;
 };
 export const categoryProduct = async (id) => {
@@ -20,7 +20,7 @@ export const categoryProduct = async (id) => {
   return res.data;
 };
 export const productVariants = async (id) => {
-  const res = await Axios.get(`api/product-variants/${id}`);
+  const res = await Axios.get(`api/admin/product-variants/${id}`);
   return res.data;
 };
 export const productGalleries = async (id) => {
@@ -32,7 +32,7 @@ export const productsPagination = async (page) => {
   return res.data;
 };
 export const deleteProduct = async (id) => {
-  const res = await Axios.delete(`api/products/${id}`);
+  const res = await Axios.delete(`api/admin/products/${id}`);
   return res.data;
 };
 export const signin = async (data) => {
@@ -44,20 +44,32 @@ export const signup = async (data) => {
   return res.data;
 };
 export const getCart = async (userid) => {
-  const res = await Axios.get(`/cart/${userid}`);
+  const res = await Axios.get(`api/admin/carts/${userid}`);
   return res.data;
 };
 export const addCart = async (data, userid) => {
   const res = await Axios.post(`/cart/${userid}`, data);
   return res.data.data;
 };
+export const addCartItem = async (data) => {
+  const res = await Axios.post(`api/admin/cart-items`, data);
+  return res.data;
+}
+export const CartItem = async (data) => {
+  const res = await Axios.get(`api/admin/cart-items`, data);
+  return res.data;
+}
 export const deleteCart = async (id) => {
-  const res = await Axios.delete(`/cart/${id}`);
+  const res = await Axios.delete(`api/admin/cart-items/${id}`);
   return res.data.data;
 };
 export const deleteAllCart = async (id) => {
   const res = await Axios.delete(`/cart/${id}`);
   return res.data.data;
+};
+export const updateCartItem = async (data, id) => {
+  const res = await Axios.patch(`api/admin/cart-items/${id}`, data);
+  return res.data;
 };
 export const updateCart = async (data, id) => {
   const res = await Axios.patch(`/cart/${id}`, data);
@@ -68,23 +80,23 @@ export const getVouchers = async () => {
   return res.data;
 };
 export const user = async (page) => {
-  const res = await Axios.get(`api/users/?page=${page}`);
+  const res = await Axios.get(`api/admin/users/?page=${page}`);
   return res.data;
 };
 export const detailUser = async (id) => {
-  const res = await Axios.get(`api/users/${id}`);
+  const res = await Axios.get(`api/admin/users/${id}`);
   return res.data;
 };
 export const deleteUser = async (id) => {
-  const res = await Axios.delete(`api/users/${id}`);
+  const res = await Axios.delete(`api/admin/users/${id}`);
   return res.data;
 };
 export const addUsers = async (data) => {
-  const res = await Axios.post(`api/users`, data);
+  const res = await Axios.post(`api/admin/users`, data);
   return res.data;
 };
 export const getOrdersAdmin = async () => {
-  const res = await Axios.get(`api/orders`);
+  const res = await Axios.get(`api/admin/orders`);
   return res.data;
 };
 export const addOrder = async (data) => {
@@ -108,7 +120,7 @@ export const updateUser = async (data, id) => {
   return res.data;
 };
 export const deleteOrder = async (id) => {
-  const res = await Axios.delete(`api/order/${id}`);
+  const res = await Axios.delete(`api/admin/order/${id}`);
   return res.data;
 };
 export const updatePassword = async (data, id) => {

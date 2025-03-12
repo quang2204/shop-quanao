@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useDetailProduct,
   useProductVariants,
@@ -8,12 +8,14 @@ import { Link } from "react-router-dom";
 import { FormatPrice } from "../Format.jsx";
 import useQuantity from "../Hook/useQuantity.jsx";
 import { useMutation, useQueryClient } from "react-query";
-import { addCart } from "../Apis/Api.jsx";
+import { addCart, addCartItem } from "../Apis/Api.jsx";
 const ProductDetail = () => {
   const queryCline = useQueryClient();
   const { detailProduct, isDetailProduct } = useDetailProduct();
   const { isProductVariants, productVariant } = useProductVariants();
-
+  const [color, setColor] = useState();
+  const [size, setSize] = useState();
+  const [idVariants, setidVariants] = useState();
   const {
     decreaseNumber,
     increaseNumber,
@@ -24,9 +26,9 @@ const ProductDetail = () => {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [indexImg, setindexImg] = useState(0);
   const { mutate } = useMutation({
-    mutationFn: (data) => addCart(data, user._id),
+    mutationFn: (data) => addCartItem(data),
     onSuccess: () => {
-      queryCline.invalidateQueries(["cart"]);
+      queryCline.invalidateQueries(["cartItem"]);
       message.success("Thành công");
     },
     onError: (error) => {
@@ -36,11 +38,30 @@ const ProductDetail = () => {
   const addToCart = () => {
     const data = {
       quantity: Number(inputValue),
-      productid: detailProduct?._id,
+      product_variant_id: idVariants.id,
+      cart_id: 1,
     };
     mutate(data);
   };
+  useEffect(() => {
+    const checkid = productVariant?.filter(
+      (item) =>
+        item.size_id === size && item.color_id === color && item.quantity > 0
+    );
 
+    if (checkid?.length > 0) {
+      setidVariants(checkid[0]);
+    } else {
+      setidVariants(null);
+    }
+  }, [size, color, productVariant]);
+
+  const handleSize = (size) => {
+    setSize(size);
+  };
+  const handleColor = (color) => {
+    setColor(color);
+  };
   if (isDetailProduct || isProductVariants) {
     return (
       <Spin
@@ -64,7 +85,6 @@ const ProductDetail = () => {
       setindexImg(indexImg + 1);
     }
   };
-  console.log(detailProduct);
   return (
     <div>
       <div className="container mt-28 ">
@@ -141,8 +161,9 @@ const ProductDetail = () => {
                 <h4 className="mtext-105 cl2 js-name-detail p-b-14">
                   {detailProduct?.name}
                 </h4>
-                <span className="mtext-106 cl2">
-                  {/* {<FormatPrice price={detailProduct.price} />} */}
+                <span className="text-3xl text-red-500">
+                {<FormatPrice price={idVariants?.price ?? productVariant?.[0]?.price} />}
+
                 </span>
                 <div className="p-t-33">
                   <div className="flex-w flex-r-m p-b-10">
@@ -167,6 +188,7 @@ const ProductDetail = () => {
                                 ]) // Tạo key-value cho Map
                             ).values() // Lấy các giá trị duy nhất
                           )}
+                          onChange={handleSize}
                           className="w-[135px]"
                         />
 
@@ -196,6 +218,7 @@ const ProductDetail = () => {
                                 ]) // Tạo key-value cho Map
                             ).values() // Lấy các giá trị duy nhất
                           )}
+                          onChange={handleColor}
                           className="w-[135px]"
                         />
                         <div className="dropDownSelect2" />
@@ -226,20 +249,20 @@ const ProductDetail = () => {
                           <i className="fs-16 zmdi zmdi-plus" />
                         </div>
                       </div>
+                      <div>{idVariants?.quantity??productVariant.reduce((acc, item) => acc + item.quantity, 0)} sản phẩm có sẵn</div>
                     </div>
                   </div>
                 </div>
                 <div className="flex-w flex-r-m p-b-10">
                   <div className="size-204 flex-c-m respon6"></div>
                   <div className="size-204 respon6-next">
-                    <div className="rs1-select2  bg0">
+                    <div className="rs1-select2 bg0">
                       <button
                         className="flex-c-m stext-101 cl0 size-101 bg1 bor1 -ml-[20px] hov-btn1 trans-04 "
                         onClick={addToCart}
                       >
                         Add to cart
                       </button>
-                      <div className="dropDownSelect2" />
                     </div>
                   </div>
                 </div>

@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button, message, Modal, Spin } from "antd";
-import useCart from "../Hook/useCart.jsx";
+import {useCart} from "../Hook/useCart.jsx";
 import { FormatPrice } from "../Format.jsx";
 import logomomo from "../images/logomomo.png";
 import logovnpay from "../images/logonvnpay.png";
