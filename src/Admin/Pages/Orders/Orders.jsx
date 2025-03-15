@@ -1,6 +1,20 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { useOrder } from "../../../Hook/useOrder";
+import { Spin } from "antd";
+import { FormatDate, FormatDateTime, FormatPrice } from "../../../Format";
 
 const Orders = () => {
+  const { data, isLoading } = useOrder();
+  console.log(data);
+  if (isLoading) {
+    return (
+      <Spin
+        size="large"
+        className="h-[50vh] mt-[100px] flex items-center justify-center w-full "
+      />
+    );
+  }
   return (
     <div className="row mx-2">
       <div className="col-lg-12">
@@ -199,9 +213,6 @@ const Orders = () => {
                       <th className="sort" data-sort="customer_name">
                         Customer
                       </th>
-                      <th className="sort" data-sort="product_name">
-                        Product
-                      </th>
                       <th className="sort" data-sort="date">
                         Order Date
                       </th>
@@ -220,7 +231,8 @@ const Orders = () => {
                     </tr>
                   </thead>
                   <tbody className="list form-check-all">
-                    <tr>
+                  {data.map((order) => (
+                      <tr>
                       <th scope="row">
                         <div className="form-check">
                           <input
@@ -235,20 +247,20 @@ const Orders = () => {
                           href="apps-ecommerce-order-details.html"
                           className="fw-medium link-primary"
                         >
-                          #VZ2101
+                         {order.order_code}
                         </a>
                       </td>
-                      <td className="customer_name">Frank Hook</td>
-                      <td className="product_name">Puma Tshirt</td>
+                      <td className="customer_name">{order.user_name}</td>
+
                       <td className="date">
-                        20 Dec, 2021,{" "}
-                        <small className="text-muted">02:21 AM</small>
+                       {<FormatDate date={order.created_at} />}
+                        <small className="text-muted">{<FormatDateTime dateString={order.created_at}/>}</small>
                       </td>
-                      <td className="amount">$654</td>
-                      <td className="payment">Mastercard</td>
+                      <td className="amount">{<FormatPrice price={order.total_amount} />}</td>
+                      <td className="payment text-center">{order.payment_method}</td>
                       <td className="status">
                         <span className="badge bg-warning-subtle text-warning text-uppercase">
-                          Pending
+                          {order.status}
                         </span>
                       </td>
                       <td>
@@ -260,12 +272,12 @@ const Orders = () => {
                             data-bs-placement="top"
                             title="View"
                           >
-                            <a
-                              href="apps-ecommerce-order-details.html"
+                            <Link
+                              to={`/admin/order_detail/6730c5042009824f08db8eab`}
                               className="text-primary d-inline-block"
                             >
                               <i className="ri-eye-fill fs-16" />
-                            </a>
+                            </Link>
                           </li>
                           <li
                             className="list-inline-item edit"
@@ -282,24 +294,11 @@ const Orders = () => {
                               <i className="ri-pencil-fill fs-16" />
                             </a>
                           </li>
-                          <li
-                            className="list-inline-item"
-                            data-bs-toggle="tooltip"
-                            data-bs-trigger="hover"
-                            data-bs-placement="top"
-                            title="Remove"
-                          >
-                            <a
-                              className="text-danger d-inline-block remove-item-btn"
-                              data-bs-toggle="modal"
-                              href="#deleteOrder"
-                            >
-                              <i className="ri-delete-bin-5-fill fs-16" />
-                            </a>
-                          </li>
                         </ul>
                       </td>
                     </tr>
+                  ))}
+                  
                   </tbody>
                 </table>
                 <div className="noresult" style={{ display: "none" }}>

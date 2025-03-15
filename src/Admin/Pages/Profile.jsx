@@ -5,7 +5,7 @@ import UseDetailUser from "../../Hook/useDetailUser";
 import { Spin } from "antd";
 const Profile = () => {
   const { data, isLoading } = UseDetailUser();
-
+  console.log(data);
   if (isLoading) {
     return (
       <Spin
@@ -35,8 +35,8 @@ const Profile = () => {
           {/*end col*/}
           <div className="col">
             <div className="p-2">
-              <h3 className="text-white mb-1">{data.username}</h3>
-              <p className="text-white text-opacity-75">{data.role}</p>
+              <h3 className="text-white mb-1">{data.name}</h3>
+              <p className="text-white text-opacity-75">Admin</p>
             </div>
           </div>
           {/*end col*/}
@@ -169,7 +169,7 @@ const Profile = () => {
                                 <th className="ps-0" scope="row">
                                   Full Name :
                                 </th>
-                                <td className="text-muted">{data.username}</td>
+                                <td className="text-muted">{data.name}</td>
                               </tr>
                               <tr className="text-[14px]">
                                 <th className="ps-0" scope="row">
@@ -188,7 +188,9 @@ const Profile = () => {
                                 <th className="ps-0" scope="row">
                                   Joining Date
                                 </th>
-                                <td className="text-muted">24 Nov 2021</td>
+                                <td className="text-muted">
+                                  {data.date_of_birth}
+                                </td>
                               </tr>
                             </tbody>
                           </table>

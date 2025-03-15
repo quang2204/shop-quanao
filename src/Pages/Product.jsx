@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import useCategory from "../Hook/useCategory.jsx";
+import {useCategory} from "../Hook/useCategory.jsx";
 import { Empty, Spin } from "antd";
 import { useCategoryProducts, useProduct } from "../Hook/useProduct.jsx";
 import { FormatPrice } from "../Format.jsx";
@@ -23,7 +23,8 @@ const Product = () => {
       />
     );
   }
-
+  
+  console.log(category.data);
   const clickfilter = () => {
     setFilter(!filter);
   };
@@ -42,11 +43,11 @@ const Product = () => {
               All Products
             </button>
             {category &&
-              category.map((item, index) => (
-                <Link to={`/product/category/${item._id}`} key={index}>
+              category.data.map((item, index) => (
+                <Link to={`/product/category/${item.id}`} key={index}>
                   <button
                     className={`stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 ${
-                      caterory == item._id && "how-active1"
+                      caterory == item.id && "how-active1"
                     }`}
                   >
                     {item.name}
@@ -287,7 +288,7 @@ const Product = () => {
               >
                 <div className="block2">
                   <div className="block2-pic hov-img0">
-                    <img alt="IMG-PRODUCT" src={item.imageUrl} />
+                    <img alt="IMG-PRODUCT" src={item.img_thumb} />
                     <a
                       className="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 "
                       href="#"
@@ -299,7 +300,7 @@ const Product = () => {
                     <div className="block2-txt-child1 flex-col-l">
                       <Link
                         className="stext-107 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
-                        to={`/product/${item._id}`}
+                        to={`/product/${item.id}`}
                       >
                         {item.name}
                       </Link>

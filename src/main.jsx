@@ -1,6 +1,6 @@
 // import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./vendor/bootstrap/css/bootstrap.min.css";
+// import "./vendor/bootstrap/css/bootstrap.min.css";
 import "./fonts/font-awesome-4.7.0/css/font-awesome.min.css";
 import "./fonts/iconic/css/material-design-iconic-font.min.css";
 import "./fonts/linearicons-v1.0.0/icon-font.min.css";
@@ -21,5 +21,5 @@ createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <AppRoutes />
     </BrowserRouter>
-  </QueryClientProvider>,
+  </QueryClientProvider>
 );

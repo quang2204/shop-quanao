@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
-import { DetailProduct } from "../Apis/Api";
+import { DetailProduct,productVariants } from "../Apis/Api";
 const useDetailProduct = () => {
   const { id } = useParams();
 
@@ -12,5 +12,14 @@ const useDetailProduct = () => {
 
   return { detailProduct, isDetailProduct };
 };
+const useProductVariants = () => {
+  const { id } = useParams();
 
-export default useDetailProduct;
+  const { data: productVariant, isLoading: isProductVariants } = useQuery({
+    queryKey: ["productVariants", id],
+    queryFn: () => productVariants(id),
+    enabled: !!id,
+  });
+  return { productVariant, isProductVariants };
+};
+export  {useDetailProduct,useProductVariants};

@@ -9,7 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import { useParams } from "react-router-dom";
-import useDetailProduct from "../../../Hook/useDetailProduct";
+import {useDetailProduct} from "../../../Hook/useDetailProduct";
 import { Spin } from "antd";
 import { FormatDate, FormatPrice } from "../../../Format";
 const Detail_Product = () => {

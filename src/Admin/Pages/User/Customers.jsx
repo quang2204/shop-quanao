@@ -1,42 +1,53 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { user } from "../../../Apis/Api";
-import { Link } from "react-router-dom";
-import { Button, Modal, Spin } from "antd";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { Modal, Spin } from "antd";
 import { FormatDate } from "../../../Format";
 import { useDeleteUser } from "../../../Hook/useUser";
+import { useForm } from "react-hook-form";
 const Customers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idDelete, setIdDelete] = useState("");
+  const { pathname } = useLocation();
+
+  const page =
+    pathname.split("/")[3] === undefined ? 1 : pathname.split("/")[3];
+  const convertPage = parseInt(page);
   const showModal = (id) => {
     setIdDelete(id);
     setIsModalOpen(true);
   };
-
   const handleCancel = () => {
     setIsModalOpen(false);
   };
   const [block, useBlock] = useState(false);
-const { data,isLoading } = useQuery({
-  queryKey: ["customers"],
-  queryFn: () => user(),
-});
-
-const { mutate } = useDeleteUser();
-const handleOk = () => {
-  mutate(idDelete);
-  setIsModalOpen(false);
-  setIdDelete("");
-};
-if (isLoading) {
-  return (
-    <Spin
-      size="large"
-      className="h-[50vh] mt-[100px] flex items-center justify-center w-full "
-    />
-  );
-}
-
+  const { data, isLoading } = useQuery({
+    queryKey: ["customers", page],
+    queryFn: () => user(page),
+  });
+  const { mutate } = useDeleteUser();
+  const handleOk = () => {
+    mutate(idDelete);
+    setIsModalOpen(false);
+    setIdDelete("");
+  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data) => {
+    console.log(data);
+  };
+  if (isLoading) {
+    return (
+      <Spin
+        size="large"
+        className="h-[50vh] mt-[100px] flex items-center justify-center w-full "
+      />
+    );
+  }
 
   return (
     <div className="row px-4">
@@ -165,7 +176,7 @@ if (isLoading) {
                     </tr>
                   </thead>
                   <tbody className="list form-check-all">
-                    {data?.map((item) => (
+                    {data?.data?.map((item) => (
                       <tr key={item._id}>
                         <th scope="row">
                           <div className="form-check">
@@ -180,33 +191,29 @@ if (isLoading) {
                             #VZ2101
                           </Link>
                         </td>
-                        <td className="customer_name"> {item.username}</td>
+                        <td className="customer_name"> {item.name}</td>
                         <td className="email">{item.email}</td>
                         <td className="phone">{item.phone}</td>
                         <td className="date">
-                          {FormatDate({ date: item.createdAt })}
+                          {FormatDate({ date: item.created_at })}
                         </td>
                         <td className="status">
-                          <span className="badge bg-success-subtle text-success text-uppercase">
-                            Active
+                          <span
+                            className={`badge ${item.is_active === true ? "bg-success-subtle text-success" : "bg-red-500 "}   text-uppercase`}
+                          >
+                            {item.is_active === true ? "Active" : "Block"}
                           </span>
                         </td>
                         <td className="role">
                           <span
-                            className={`badge ${item.role === "user" ? "text-success" : "text-red-600"}  text-uppercase`}
+                            className={`badge ${item.role === "0" ? "text-success" : "text-red-600"}  text-uppercase`}
                           >
                             {item.role}
                           </span>
                         </td>
                         <td>
                           <ul className="list-inline hstack gap-2 mb-0">
-                            <li
-                              className="list-inline-item edit"
-                              data-bs-toggle="tooltip"
-                              data-bs-trigger="hover"
-                              data-bs-placement="top"
-                              title="Edit"
-                            >
+                            <li className="list-inline-item edit">
                               <a
                                 href="#showModal"
                                 data-bs-toggle="modal"
@@ -224,7 +231,7 @@ if (isLoading) {
                             >
                               <button
                                 className="text-danger d-inline-block remove-item-btn"
-                                onClick={() => showModal(item._id)}
+                                onClick={() => showModal(item.id)}
                               >
                                 <i className="ri-delete-bin-5-fill fs-16" />
                               </button>
@@ -253,13 +260,19 @@ if (isLoading) {
               </div>
               <div className="d-flex justify-content-end">
                 <div className="pagination-wrap hstack gap-2">
-                  <a className="page-item pagination-prev disabled" href="#">
+                  <Link
+                    className={`page-item pagination-prev ${convertPage <= 1 ? "disabled" : ""}`}
+                    to={`/admin/customers/${convertPage < 2 ? 1 : page - 1}`}
+                  >
                     Previous
-                  </a>
+                  </Link>
                   <ul className="pagination listjs-pagination mb-0" />
-                  <a className="page-item pagination-next" href="#">
-                    Next
-                  </a>
+                  <Link
+                    className={`page-item pagination-prev ${page >= 1 ? "disabled" : ""}`}
+                    to={`/admin/customers/${page <= 1 ? convertPage + 1 : ""}`}
+                  >
+                    Previous
+                  </Link>
                 </div>
               </div>
             </div>
@@ -274,32 +287,20 @@ if (isLoading) {
               >
                 <div className="modal-content">
                   <div className="modal-header bg-light p-3">
-                    <h5 className="modal-title" id="exampleModalLabel" />
+                    <h5 className="modal-title" id="exampleModalLabel">
+                      Add Customer
+                    </h5>
                     <button
                       type="button"
                       className="btn-close"
                       onClick={() => useBlock(false)}
                     />
                   </div>
-                  <form className="tablelist-form" autoComplete="off">
+                  <form
+                    className="tablelist-form"
+                    onSubmit={handleSubmit(onSubmit)}
+                  >
                     <div className="modal-body">
-                      <input type="hidden" id="id-field" />
-                      <div
-                        className="mb-3"
-                        id="modal-id"
-                        style={{ display: "none" }}
-                      >
-                        <label htmlFor="id-field1" className="form-label">
-                          ID
-                        </label>
-                        <input
-                          type="text"
-                          id="id-field1"
-                          className="form-control"
-                          placeholder="ID"
-                          readOnly=""
-                        />
-                      </div>
                       <div className="mb-3">
                         <label
                           htmlFor="customername-field"
@@ -312,10 +313,10 @@ if (isLoading) {
                           id="customername-field"
                           className="form-control"
                           placeholder="Enter name"
-                          required=""
+                          {...register("name", { required: true })}
                         />
-                        <div className="invalid-feedback">
-                          Please enter a customer name.
+                        <div className="text-red-500 mt-1">
+                          {errors.name && "Please enter a customer name."}
                         </div>
                       </div>
                       <div className="mb-3">
@@ -323,14 +324,21 @@ if (isLoading) {
                           Email
                         </label>
                         <input
-                          type="email"
+                          type="text"
                           id="email-field"
                           className="form-control"
                           placeholder="Enter email"
-                          required=""
+                          {...register("email", {
+                            required: "Please enter a email.",
+                            pattern: {
+                              value:
+                                /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i,
+                              message: "Please enter a valid email.",
+                            },
+                          })}
                         />
-                        <div className="invalid-feedback">
-                          Please enter an email.
+                        <div className="text-red-500 mt-1">
+                          {errors.email && errors.email.message}
                         </div>
                       </div>
                       <div className="mb-3">
@@ -342,10 +350,16 @@ if (isLoading) {
                           id="phone-field"
                           className="form-control"
                           placeholder="Enter phone no."
-                          required=""
+                          {...register("phone", {
+                            required: "Please enter a phone.",
+                            pattern: {
+                              value: /^[0-9]{10}$/i,
+                              message: "Please enter a valid phone.",
+                            },
+                          })}
                         />
-                        <div className="invalid-feedback">
-                          Please enter a phone.
+                        <div className="text-red-500 mt-1">
+                          {errors.phone && errors.phone.message}
                         </div>
                       </div>
                       <div className="mb-3">
@@ -356,13 +370,11 @@ if (isLoading) {
                           type="date"
                           id="date-field"
                           className="form-control"
-                          data-provider="flatpickr"
-                          data-date-format="d M, Y"
-                          required=""
                           placeholder="Select date"
+                          {...register("date", { required: true })}
                         />
-                        <div className="invalid-feedback">
-                          Please select a date.
+                        <div className="text-red-500 mt-1">
+                          {errors.date && "Please select a date."}
                         </div>
                       </div>
                       <div>

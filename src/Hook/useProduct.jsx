@@ -13,7 +13,7 @@ import { use } from "react";
 export const useProduct = (pages) => {
   const { data: products, isLoading: isProducts } = useQuery({
     queryKey: ["products", pages],
-    queryFn: () => productsPagination(pages || 1),
+    queryFn: () => getProducts(pages || 1),
   });
   return { products, isProducts };
 };
