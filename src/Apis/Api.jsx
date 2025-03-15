@@ -88,3 +88,32 @@ export const addProduct = async (data) => {
   const res = await Axios.post(`/products`, data);
   return res.data;
 };
+export const getColors = async (page = 1) => {
+  const res = await Axios.get(`/api/admin/colors?page=${page}`);
+  return res.data;
+};
+
+export const getColorDetail = async (id) => {
+  const res = await Axios.get(`/api/admin/colors/${id}`);
+  return res.data;
+};
+
+export const createColor = async (name) => {
+  const res = await Axios.post(`/api/admin/colors`, { name });
+  return res.data;
+};
+
+export const updateColor = async (id, name) => {
+  const res = await Axios.put(`/api/admin/colors/${id}`, { name });
+  return res.data;
+};
+
+export const deleteColor = async (id) => {
+  const res = await Axios.delete(`/api/admin/colors/${id}`);
+  return res.data;
+};
+
+export const forceDeleteColor = async (id) => {
+  const res = await Axios.delete(`/api/admin/colors/force-delete/${id}`);
+  return res.data;
+};

@@ -31,6 +31,7 @@ import Login from "../Admin/Pages/Login.jsx";
 import ResetPassword from "../Admin/Pages/Reset.jsx";
 import SignIn from "../Admin/Pages/SignIn.jsx";
 import Detail_Product from "../Admin/Pages/Products/Detail_Product.jsx";
+import ColorList from "../Admin/Pages/Colors/ColorList.jsx";
 
 
 const Router = () => {
@@ -71,6 +72,7 @@ const Router = () => {
           <Route path="login" element={<Login />}></Route>
           <Route path="reset" element={<ResetPassword />}></Route>
           <Route path="test" element={<FullScreenButton />}></Route>
+          <Route path="colors" element={<ColorList/>}></Route>
         </Route>
         <Route path="logout" element={<Logout />} />
         <Route path="*" element={<Error />} />
