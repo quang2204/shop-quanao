@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import UseDetailOrder from "../Hook/useDetailOrder.jsx";
+import {UseDetailOrder} from "../Hook/useOrder.jsx";
 import { Spin } from "antd";
-import FormatPrice from "../FormatPrice.jsx";
+import { FormatPrice } from "../Format.jsx";
 
 const Bill = () => {
   const { data, isLoading } = UseDetailOrder();

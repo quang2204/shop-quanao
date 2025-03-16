@@ -20,6 +20,7 @@ import UpdatePassWord from "../Pages/UpdatePassWord.jsx";
 import LayoutAdmin from "../Admin/Ui/Layout.jsx";
 import Products from "../Admin/Pages/Products/Products.jsx";
 import AddProduct from "../Admin/Pages/Products/AddProduct.jsx";
+import Detail_Product from "../Admin/Pages/Products/Detail.jsx";
 import Customers from "../Admin/Pages/User/Customers.jsx";
 import TwoStep from "../Admin/Pages/User/TwoStep.jsx";
 import Order_Detail from "../Admin/Pages/Orders/Order_Detail.jsx";
@@ -30,9 +31,12 @@ import FullScreenButton from "../Admin/Ui/FullScreen.jsx";
 import Login from "../Admin/Pages/Login.jsx";
 import ResetPassword from "../Admin/Pages/Reset.jsx";
 import SignIn from "../Admin/Pages/SignIn.jsx";
-import Detail_Product from "../Admin/Pages/Products/Detail_Product.jsx";
+import Orders from "../Admin/Pages/Orders/Orders.jsx";
+import Dashboards from "../Admin/Dashboards.jsx";
+import PrivateRouter from "./PrivateRouter.jsx";
+import Categories from "../Admin/Pages/Categories/Categories.jsx";
+import Categories_Detail from "../Admin/Pages/Categories/Categories_Detail.jsx";
 import ColorList from "../Admin/Pages/Colors/ColorList.jsx";
-
 
 const Router = () => {
   ScrollToTop();
@@ -60,20 +64,29 @@ const Router = () => {
           <Route path="portfolio" element={<Portfolio />} />
           <Route path="verify/password" element={<UpdatePassWord />} />
         </Route>
-        <Route path="/admin" element={<LayoutAdmin />}>
-          <Route index element={<Products />}></Route>
-          <Route path="addproduct" element={<AddProduct />}></Route>
-          <Route path="detailproduct/:id" element={<Detail_Product />}></Route>
-          <Route path="signin" element={<SignIn />}></Route>
-          <Route path="customers" element={<Customers />}></Route>
-          <Route path="twostep" element={<TwoStep />}></Route>
-          <Route path="order_detail" element={<Order_Detail />}></Route>
-          <Route path="profile" element={<Profile />}></Route>
-          <Route path="login" element={<Login />}></Route>
-          <Route path="reset" element={<ResetPassword />}></Route>
-          <Route path="test" element={<FullScreenButton />}></Route>
-          <Route path="colors" element={<ColorList/>}></Route>
+        //Admin
+        <Route path="/admin" element={<PrivateRouter>
+          <LayoutAdmin />
+        </PrivateRouter> }>
+          <Route index element={<Dashboards />}/>
+          <Route path="products" element={<Products />}/>
+          <Route path="addproduct" element={<AddProduct />}/>
+          <Route path="categories" element={<Categories />}/>
+          <Route path="detailproduct" element={<Detail_Product />}/>
+          <Route path="detailproduct/:id" element={<Detail_Product />}/>
+          <Route path="signin" element={<SignIn />}/>
+          <Route path="customers" element={<Customers />}/>
+          <Route path="customers/:id" element={<Customers />}/>
+          <Route path="order" element={<Orders />}/>
+          <Route path="order_detail/:id" element={<Order_Detail />}/>
+          <Route path="profile" element={<Profile />}/>
+          <Route path="login" element={<Login />}/>
+          <Route path="reset" element={<ResetPassword />}/>
+          <Route path="categories/:id" element={<Categories_Detail />}/>
+          <Route path="colors" element={<ColorList />}/>
+          <Route path="test" element={<FullScreenButton />}/>
         </Route>
+        <Route path="twostep" element={<TwoStep />}/>
         <Route path="logout" element={<Logout />} />
         <Route path="*" element={<Error />} />
       </Routes>

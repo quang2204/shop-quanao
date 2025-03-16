@@ -3,16 +3,29 @@ import img1 from "../../velzon/assets/images/products/img-8.png";
 import img2 from "../../velzon/assets/images/products/img-7.png";
 import img3 from "../../velzon/assets/images/products/img-3.png";
 import { Link } from "react-router-dom";
+import { Spin } from "antd";
+import {UseDetailOrder} from "../../../Hook/useOrder";
+import { FormatDate, FormatPrice } from "../../../Format";
 const Order_Detail = () => {
+  const { data, isLoading } = UseDetailOrder();
+  console.log(data);
+  if (isLoading) {
+    return (
+      <Spin
+        size="large"
+        className="h-[50vh] mt-[100px] flex items-center justify-center w-full "
+      />
+    );
+  }
   return (
     <div>
-      <div className="row">
+      <div className="row mx-2">
         <div className="col-xl-9">
           <div className="card">
             <div className="card-header">
               <div className="d-flex align-items-center">
                 <h5 className="card-title flex-grow-1 items-center mb-0">
-                  Order #VL2667
+                  Order #{data.madh}
                 </h5>
                 <div className="flex-shrink-0">
                   <a
@@ -40,129 +53,50 @@ const Order_Detail = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>
-                        <div className="d-flex">
-                          <div className="flex-shrink-0 avatar-md bg-light rounded p-1">
-                            <img
-                              src={img1}
-                              alt=""
-                              className="img-fluid d-block"
-                            />
+                    {data.products.map((item) => (
+                      <tr>
+                        <td>
+                          <div className="d-flex">
+                            <div className="flex-shrink-0 avatar-md bg-light rounded p-1">
+                              <img
+                                src={img1}
+                                alt=""
+                                className="img-fluid d-block"
+                              />
+                            </div>
+                            <div className="flex-grow-1 ms-3">
+                              <h5 className="fs-15">
+                                <a
+                                  href="apps-ecommerce-product-details.html"
+                                  className="link-primary"
+                                >
+                                  Sweatshirt for Men (Pink)
+                                </a>
+                              </h5>
+                              <p className="text-muted mb-0">
+                                Color: <span className="fw-medium">Pink</span>
+                              </p>
+                              <p className="text-muted mb-0">
+                                Size: <span className="fw-medium">M</span>
+                              </p>
+                            </div>
                           </div>
-                          <div className="flex-grow-1 ms-3">
-                            <h5 className="fs-15">
-                              <a
-                                href="apps-ecommerce-product-details.html"
-                                className="link-primary"
-                              >
-                                Sweatshirt for Men (Pink)
-                              </a>
-                            </h5>
-                            <p className="text-muted mb-0">
-                              Color: <span className="fw-medium">Pink</span>
-                            </p>
-                            <p className="text-muted mb-0">
-                              Size: <span className="fw-medium">M</span>
-                            </p>
+                        </td>
+                        <td>$119.99</td>
+                        <td>02</td>
+                        <td>
+                          <div className="text-warning fs-15">
+                            <i className="ri-star-fill" />
+                            <i className="ri-star-fill" />
+                            <i className="ri-star-fill" />
+                            <i className="ri-star-fill" />
+                            <i className="ri-star-half-fill" />
                           </div>
-                        </div>
-                      </td>
-                      <td>$119.99</td>
-                      <td>02</td>
-                      <td>
-                        <div className="text-warning fs-15">
-                          <i className="ri-star-fill" />
-                          <i className="ri-star-fill" />
-                          <i className="ri-star-fill" />
-                          <i className="ri-star-fill" />
-                          <i className="ri-star-half-fill" />
-                        </div>
-                      </td>
-                      <td className="fw-medium text-end">$239.98</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div className="d-flex">
-                          <div className="flex-shrink-0 avatar-md bg-light rounded p-1">
-                            <img
-                              src={img2}
-                              alt=""
-                              className="img-fluid d-block"
-                            />
-                          </div>
-                          <div className="flex-grow-1 ms-3">
-                            <h5 className="fs-15">
-                              <a
-                                href="apps-ecommerce-product-details.html"
-                                className="link-primary"
-                              >
-                                Noise NoiseFit Endure Smart Watch
-                              </a>
-                            </h5>
-                            <p className="text-muted mb-0">
-                              Color: <span className="fw-medium">Black</span>
-                            </p>
-                            <p className="text-muted mb-0">
-                              Size: <span className="fw-medium">32.5mm</span>
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td>$94.99</td>
-                      <td>01</td>
-                      <td>
-                        <div className="text-warning fs-15">
-                          <i className="ri-star-fill" />
-                          <i className="ri-star-fill" />
-                          <i className="ri-star-fill" />
-                          <i className="ri-star-fill" />
-                          <i className="ri-star-half-fill" />
-                        </div>
-                      </td>
-                      <td className="fw-medium text-end">$94.99</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div className="d-flex">
-                          <div className="flex-shrink-0 avatar-md bg-light rounded p-1">
-                            <img
-                              src={img3}
-                              alt=""
-                              className="img-fluid d-block"
-                            />
-                          </div>
-                          <div className="flex-grow-1 ms-3">
-                            <h5 className="fs-15">
-                              <a
-                                href="apps-ecommerce-product-details.html"
-                                className="link-primary"
-                              >
-                                350 ml Glass Grocery Container
-                              </a>
-                            </h5>
-                            <p className="text-muted mb-0">
-                              Color: <span className="fw-medium">White</span>
-                            </p>
-                            <p className="text-muted mb-0">
-                              Size: <span className="fw-medium">350 ml</span>
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td>$24.99</td>
-                      <td>01</td>
-                      <td>
-                        <div className="text-warning fs-15">
-                          <i className="ri-star-fill" />
-                          <i className="ri-star-fill" />
-                          <i className="ri-star-half-fill" />
-                          <i className="ri-star-line" />
-                          <i className="ri-star-line" />
-                        </div>
-                      </td>
-                      <td className="fw-medium text-end">$24.99</td>
-                    </tr>
+                        </td>
+                        <td className="fw-medium text-end">$239.98</td>
+                      </tr>
+                    ))}
+
                     <tr className="border-top border-top-dashed">
                       <td colSpan={3} />
                       <td colSpan={2} className="fw-medium p-0">
@@ -170,7 +104,9 @@ const Order_Detail = () => {
                           <tbody>
                             <tr>
                               <td>Sub Total :</td>
-                              <td className="text-end">$359.96</td>
+                              <td className="text-end">
+                                {<FormatPrice price={data.totalPrice} />}
+                              </td>
                             </tr>
                             <tr>
                               <td>
@@ -178,7 +114,13 @@ const Order_Detail = () => {
                                 <span className="text-muted">(VELZON15)</span>:
                                 :
                               </td>
-                              <td className="text-end">-$53.99</td>
+                              <td className="text-end">
+                                {data.voucher === null ? (
+                                  0
+                                ) : (
+                                  <FormatPrice price={data.voucher?.discount} />
+                                )}
+                              </td>
                             </tr>
                             <tr>
                               <td>Shipping Charge :</td>
@@ -189,8 +131,11 @@ const Order_Detail = () => {
                               <td className="text-end">$44.99</td>
                             </tr>
                             <tr className="border-top border-top-dashed">
-                              <th scope="row">Total (USD) :</th>
-                              <th className="text-end">$415.96</th>
+                              <th scope="row">Total :</th>
+                              <th className="text-end">
+                                {" "}
+                                {<FormatPrice price={data.totalPrice} />}
+                              </th>
                             </tr>
                           </tbody>
                         </table>
@@ -458,9 +403,9 @@ const Order_Detail = () => {
                   Customer Details
                 </h5>
                 <div className="flex-shrink-0">
-                  <a href="javascript:void(0);" className="link-secondary">
+                  <Link to="" className="link-secondary">
                     View Profile
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

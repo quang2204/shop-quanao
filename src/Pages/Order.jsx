@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { getOrders } from "../Apis/Api.jsx";
 import { Spin, Empty } from "antd";
-import FormatPrice from "../FormatPrice.jsx";
+import { FormatPrice } from "../Format.jsx";
 import UseOrderByStatus from "../Hook/useOrderByStatus.jsx";
 
 const Order = () => {

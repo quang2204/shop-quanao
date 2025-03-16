@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Form, Input, Select, Spin, TreeSelect, Upload } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import useCategory from "../../../Hook/useCategory.jsx";
+import {useCategory} from "../../../Hook/useCategory.jsx";
 import TextArea from "antd/es/input/TextArea";
 import { useAddProduct } from "../../../Hook/useProduct.jsx";
 // import { Link } from "react-router-dom";

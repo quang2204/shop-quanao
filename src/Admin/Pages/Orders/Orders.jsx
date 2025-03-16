@@ -1,37 +1,13 @@
-import { useDeleteProduct, useProduct } from "../../../Hook/useProduct.jsx";
-import { Button, Image, Modal, Spin, Table } from "antd";
-import { FormatDate, FormatDateTime, FormatPrice } from "../../../Format.jsx";
+import React from "react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-const Products = () => {
-  const { isProducts, products } = useProduct();
-  const [id, setId] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [idDelete, setIdDelete] = useState("");
-  const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
-  const { mutate, isLoading } = useDeleteProduct(() => {
-    // setOpen(false);
-    setId("");
-  });
+import { useOrder } from "../../../Hook/useOrder";
+import { Spin } from "antd";
+import { FormatDate, FormatDateTime, FormatPrice } from "../../../Format";
 
-  const deleteProduct = () => {
-    mutate(id);
-  };
-  const showModal = (id) => {
-    setIdDelete(id);
-    setIsModalOpen(true);
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-  const handleCancelAdd = () => {
-    setIsModalOpenAdd(false);
-  };
-  const handleOk = () => {
-    mutate(idDelete);
-    setIsModalOpen(false);
-  };
-  if (isProducts) {
+const Orders = () => {
+  const { data, isLoading } = useOrder();
+  console.log(data);
+  if (isLoading) {
     return (
       <Spin
         size="large"
@@ -145,7 +121,77 @@ const Products = () => {
           </div>
           <div className="card-body pt-0">
             <div>
-              <div className="table-responsive table-card mb-1 mt-3">
+              <ul
+                className="nav nav-tabs nav-tabs-custom nav-success mb-3"
+                role="tablist"
+              >
+                <li className="nav-item">
+                  <a
+                    className="nav-link active All py-3"
+                    data-bs-toggle="tab"
+                    id="All"
+                    href="#home1"
+                    role="tab"
+                    aria-selected="true"
+                  >
+                    <i className="ri-store-2-fill me-1 align-bottom" /> All
+                    Orders
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className="nav-link py-3 Delivered"
+                    data-bs-toggle="tab"
+                    id="Delivered"
+                    href="#delivered"
+                    role="tab"
+                    aria-selected="false"
+                  >
+                    <i className="ri-checkbox-circle-line me-1 align-bottom" />{" "}
+                    Delivered
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className="nav-link py-3 Pickups"
+                    data-bs-toggle="tab"
+                    id="Pickups"
+                    href="#pickups"
+                    role="tab"
+                    aria-selected="false"
+                  >
+                    <i className="ri-truck-line me-1 align-bottom" /> Pickups{" "}
+                    <span className="badge bg-danger align-middle ms-1">2</span>
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className="nav-link py-3 Returns"
+                    data-bs-toggle="tab"
+                    id="Returns"
+                    href="#returns"
+                    role="tab"
+                    aria-selected="false"
+                  >
+                    <i className="ri-arrow-left-right-fill me-1 align-bottom" />{" "}
+                    Returns
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className="nav-link py-3 Cancelled"
+                    data-bs-toggle="tab"
+                    id="Cancelled"
+                    href="#cancelled"
+                    role="tab"
+                    aria-selected="false"
+                  >
+                    <i className="ri-close-circle-line me-1 align-bottom" />{" "}
+                    Cancelled
+                  </a>
+                </li>
+              </ul>
+              <div className="table-responsive table-card mb-1">
                 <table
                   className="table table-nowrap align-middle"
                   id="orderTable"
@@ -162,22 +208,22 @@ const Products = () => {
                         </div>
                       </th>
                       <th className="sort" data-sort="id">
-                        #
+                        Order ID
                       </th>
                       <th className="sort" data-sort="customer_name">
-                        Name
+                        Customer
                       </th>
                       <th className="sort" data-sort="date">
-                        Product Date
+                        Order Date
                       </th>
                       <th className="sort" data-sort="amount">
                         Amount
                       </th>
                       <th className="sort" data-sort="payment">
-                        Image
+                        Payment Method
                       </th>
                       <th className="sort" data-sort="status">
-                        Status
+                        Delivery Status
                       </th>
                       <th className="sort" data-sort="city">
                         Action
@@ -185,96 +231,74 @@ const Products = () => {
                     </tr>
                   </thead>
                   <tbody className="list form-check-all">
-                    {products?.data.map((item, index) => (
-                      <tr key={index}>
-                        <th scope="row">
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              name="checkAll"
-                            />
-                          </div>
-                        </th>
-                        <td className="id">
-                          <div
-                            to={`/admin/order_detail/${item.id}`}
-                            className="fw-medium"
-                          >
-                            {index + 1}
-                          </div>
-                        </td>
-                        <td className="customer_name">
-                          <div
-                            to={`/admin/order_detail/${item.id}`}
-                            className="fw-medium link-primary"
-                          >
-                            {item.name}
-                          </div>
-                        </td>
+                  {data?.data.map((order) => (
+                      <tr>
+                      <th scope="row">
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="checkAll"
+                          />
+                        </div>
+                      </th>
+                      <td className="id">
+                        <a
+                          href="apps-ecommerce-order-details.html"
+                          className="fw-medium link-primary"
+                        >
+                         {order.order_code}
+                        </a>
+                      </td>
+                      <td className="customer_name">{order.user_name}</td>
 
-                        <td className="date">
-                          {<FormatDate date={item.created_at} />}
-                          <small className="text-muted">
-                            {<FormatDateTime dateString={item.created_at} />}
-                          </small>
-                        </td>
-                        <td className="amount">
-                          {/* {<FormatPrice price={order.total_amount} />} */}
-                        </td>
-                        <td>
-                          <Image width={60} src={item.imageUrl} alt="product" />
-                        </td>
-                        <td className="status">
-                          <span
-                            className={`badge ${item.is_active === true ? "text-green-500" : "text-red-500"} text-uppercase`}
+                      <td className="date">
+                       {<FormatDate date={order.created_at} />}
+                        <small className="text-muted">{<FormatDateTime dateString={order.created_at}/>}</small>
+                      </td>
+                      <td className="amount">{<FormatPrice price={order.total_amount} />}</td>
+                      <td className="payment text-center">{order.payment_method}</td>
+                      <td className="status">
+                        <span className="badge bg-warning-subtle text-warning text-uppercase">
+                          {order.status}
+                        </span>
+                      </td>
+                      <td>
+                        <ul className="list-inline hstack gap-2 mb-0">
+                          <li
+                            className="list-inline-item"
+                            data-bs-toggle="tooltip"
+                            data-bs-trigger="hover"
+                            data-bs-placement="top"
+                            title="View"
                           >
-                            {item.is_active === true ? "Active" : "Block"}
-                          </span>
-                        </td>
-                        <td>
-                          <ul className="list-inline hstack gap-2 mb-0">
-                            <li
-                              className="list-inline-item"
-                              data-bs-toggle="tooltip"
-                              data-bs-trigger="hover"
-                              data-bs-placement="top"
-                              title="View"
+                            <Link
+                              to={`/admin/order_detail/6730c5042009824f08db8eab`}
+                              className="text-primary d-inline-block"
                             >
-                              <Link
-                                to={`/admin/order_detail/6730c5042009824f08db8eab`}
-                                className="text-primary d-inline-block"
-                              >
-                                <i className="ri-eye-fill fs-16" />
-                              </Link>
-                            </li>
-                            <li
-                              className="list-inline-item edit"
-                              data-bs-toggle="tooltip"
-                              data-bs-trigger="hover"
-                              data-bs-placement="top"
-                              title="Edit"
+                              <i className="ri-eye-fill fs-16" />
+                            </Link>
+                          </li>
+                          <li
+                            className="list-inline-item edit"
+                            data-bs-toggle="tooltip"
+                            data-bs-trigger="hover"
+                            data-bs-placement="top"
+                            title="Edit"
+                          >
+                            <a
+                              href="#showModal"
+                              data-bs-toggle="modal"
+                              className="text-primary d-inline-block edit-item-btn"
                             >
-                              <a
-                                href="#showModal"
-                                data-bs-toggle="modal"
-                                className="text-primary d-inline-block edit-item-btn"
-                              >
-                                <i className="ri-pencil-fill fs-16" />
-                              </a>
-                            </li>
-                            <li className="list-inline-item">
-                              <div
-                                class="text-danger d-inline-block remove-item-btn"
-                                onClick={() => showModal(item.id)}
-                              >
-                                <i class="ri-delete-bin-5-fill fs-16"></i>
-                              </div>
-                            </li>
-                          </ul>
-                        </td>
-                      </tr>
-                    ))}
+                              <i className="ri-pencil-fill fs-16" />
+                            </a>
+                          </li>
+                        </ul>
+                      </td>
+                    </tr>
+                  ))}
+                  
                   </tbody>
                 </table>
                 <div className="noresult" style={{ display: "none" }}>
@@ -440,6 +464,12 @@ const Products = () => {
                         </div>
                         <div className="col-md-6">
                           <div>
+                            <label
+                              htmlFor="payment-field"
+                              className="form-label"
+                            >
+                              Payment Method
+                            </label>
                             <select
                               className="form-control"
                               data-trigger=""
@@ -447,8 +477,11 @@ const Products = () => {
                               required=""
                               id="payment-field"
                             >
-                              <option value="">Active</option>
-                              <option value="Mastercard">Block</option>
+                              <option value="">Payment Method</option>
+                              <option value="Mastercard">Mastercard</option>
+                              <option value="Visa">Visa</option>
+                              <option value="COD">COD</option>
+                              <option value="Paypal">Paypal</option>
                             </select>
                           </div>
                         </div>
@@ -490,7 +523,6 @@ const Products = () => {
                           type="submit"
                           className="btn btn-success"
                           id="add-btn"
-                          onClick={()=>showModal(item.id)}
                         >
                           Add Order
                         </button>
@@ -501,41 +533,53 @@ const Products = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <Modal
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-
-        // className="modal fade zoomIn"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content border-none">
-            <div className="modal-body">
-              <div className="mt-2 text-center ">
-                <div className="flex justify-center">
-                  <img
-                    src="https://media-public.canva.com/de2y0/MAFqwzde2y0/1/tl.png"
-                    alt=""
-                    width={100}
-                  />
-                </div>
-                <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
-                  <h4>Are you sure ?</h4>
-                  <p className="text-muted mx-4 mb-0">
-                    Are you sure you want to remove this record ?
-                  </p>
+            {/* Modal */}
+            <div
+              className="modal fade flip"
+              id="deleteOrder"
+              tabIndex={-1}
+              aria-hidden="true"
+            >
+              <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content">
+                  <div className="modal-body p-5 text-center">
+                    <lord-icon
+                      src="https://cdn.lordicon.com/gsqxdxog.json"
+                      trigger="loop"
+                      colors="primary:#405189,secondary:#f06548"
+                      style={{ width: 90, height: 90 }}
+                    />
+                    <div className="mt-4 text-center">
+                      <h4>You are about to delete a order ?</h4>
+                      <p className="text-muted fs-15 mb-4">
+                        Deleting your order will remove all of your information
+                        from our database.
+                      </p>
+                      <div className="hstack gap-2 justify-content-center remove">
+                        <button
+                          className="btn btn-link link-success fw-medium text-decoration-none"
+                          id="deleteRecord-close"
+                          data-bs-dismiss="modal"
+                        >
+                          <i className="ri-close-line me-1 align-middle" />{" "}
+                          Close
+                        </button>
+                        <button className="btn btn-danger" id="delete-record">
+                          Yes, Delete It
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+            {/*end modal */}
           </div>
         </div>
-      </Modal>
       </div>
       {/*end col*/}
     </div>
   );
 };
 
-export default Products;
+export default Orders;

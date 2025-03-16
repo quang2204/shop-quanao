@@ -20,17 +20,20 @@ const Signin = () => {
         .string()
         .min(1, "Password is required")
         .min(8, "Password must be more than 8 characters")
-        .max(32, "Password must be less than 32 characters"),
-      username: z.string().min(1, "Name is required"),
-      confirmPassword: z
+        .max(32, "Password must be less than 32 characters")
+        .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+        .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+        .regex(/[0-9]/, "Password must contain at least one number"),
+      name: z.string().min(1, "Name is required"),
+      password_confirmation: z
         .string()
         .min(1, "ConfimPassword is required")
         .min(8, "ConfimPassword must be more than 8 characters")
         .max(32, "ConfimPassword must be less than 32 characters"),
     })
-    .refine((data) => data.password === data.confirmPassword, {
+    .refine((data) => data.password === data.password_confirmation, {
       message: "Passwords do not match",
-      path: ["confirmPassword"],
+      path: ["password_confirmation"],
     });
 
   const queryCline = useQueryClient();
@@ -45,7 +48,7 @@ const Signin = () => {
     mutationFn: (data) => signup(data),
     onSuccess: (user) => {
       queryCline.invalidateQueries(["user"], user.user);
-      message.success("Thành công");
+      message.success(user.message);
       navigate("/signin");
     },
     onError: (error) => {
@@ -76,17 +79,17 @@ const Signin = () => {
           <i className="fa fa-user"></i>
           <input
             type="text"
-            className={`input-user ${errors.username ? "input-error" : ""}`} // Optional: add error class
+            className={`input-user ${errors.name ? "input-error" : ""}`} // Optional: add error class
             placeholder="Enter your Name"
-            {...register("username")}
+            {...register("name")}
             disabled={isLoading}
-            aria-invalid={errors.username ? "true" : "false"} // Accessibility enhancement
+            aria-invalid={errors.name ? "true" : "false"} // Accessibility enhancement
             aria-describedby="email-error" // Links to error message if present
           />
         </div>
-        {errors.username?.message && (
-          <p id="username-error" className="text-red-400">
-            {errors.username.message }
+        {errors.name?.message && (
+          <p id="name-error" className="text-red-400">
+            {errors.name.message}
           </p>
         )}
         <div className="flex-column">
@@ -106,7 +109,7 @@ const Signin = () => {
         </div>
         {errors.email?.message && (
           <p id="email-error" className="text-red-400">
-            {errors.email.message }
+            {errors.email.message}
           </p>
         )}
         <div className="flex-column">
@@ -128,7 +131,7 @@ const Signin = () => {
         </div>
         {errors.password?.message && (
           <p id="password-error" className="text-red-400">
-            {errors.password.message }
+            {errors.password.message}
           </p>
         )}
         <div className="flex-column">
@@ -141,8 +144,8 @@ const Signin = () => {
             disabled={isLoading}
             className={`input-user }`} // Optional: add error class
             placeholder="Enter your Confirm Password"
-            {...register("confirmPassword")}
-            aria-invalid={errors.confirmPassword ? "true" : "false"} // Accessibility enhancement
+            {...register("password_confirmation")}
+            aria-invalid={errors.password_confirmation ? "true" : "false"} // Accessibility enhancement
             aria-describedby="-error" // Links to error message if present
           />
           <div
@@ -154,9 +157,9 @@ const Signin = () => {
             />
           </div>
         </div>
-        {errors.confirmPassword?.message && (
+        {errors.password_confirmation?.message && (
           <p id="-error" className="text-red-400">
-            {errors.confirmPassword.message }
+            {errors.password_confirmation.message}
           </p>
         )}
         <button className="button-submit" type="submit" disabled={isLoading}>

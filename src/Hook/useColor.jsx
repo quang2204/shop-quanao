@@ -3,17 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { getColors, deleteColor, forceDeleteColor, getColorDetail, updateColor, createColor } from "../Apis/Api";
 
-// 📌 Lấy danh sách màu sắc (có phân trang)
 export const useColors = () => {
   const { data: colors, isLoading } = useQuery({
     queryKey: ["colors"],
     queryFn: getColors,
   });
-
   return { colors, isLoading };
 };
 
-// 📌 Lấy chi tiết một màu
 export const useColorDetail = (id) => {
   const { data: color, isLoading } = useQuery({
     queryKey: ["color", id],
@@ -24,7 +21,6 @@ export const useColorDetail = (id) => {
   return { color, isLoading };
 };
 
-// 📌 Thêm màu mới
 export const useAddColor = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -44,17 +40,17 @@ export const useAddColor = () => {
   return { mutate, isLoading };
 };
 
-// 📌 Cập nhật màu sắc
 export const useUpdateColor = () => {
   const queryClient = useQueryClient();
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: (data) => updateColor(data),
+    mutationFn: ({ id, ...data }) => updateColor(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["colors"] });
       message.success("Cập nhật màu sắc thành công");
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Error updating color:', error); // Thêm dòng này để kiểm tra lỗi
       message.error("Cập nhật màu sắc thất bại");
     },
   });
@@ -62,7 +58,6 @@ export const useUpdateColor = () => {
   return { mutate, isLoading };
 };
 
-// 📌 Xóa màu sắc (xóa mềm)
 export const useDeleteColor = () => {
   const queryClient = useQueryClient();
 
@@ -80,7 +75,6 @@ export const useDeleteColor = () => {
   return { mutate, isLoading };
 };
 
-// 📌 Xóa vĩnh viễn màu sắc
 export const useForceDeleteColor = () => {
   const queryClient = useQueryClient();
 

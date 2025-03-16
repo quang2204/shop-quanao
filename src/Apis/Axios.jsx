@@ -13,7 +13,7 @@ nProgress.configure({
   trickleSpeed: 100,
 });
 const instance = axios.create({
-  baseURL: "https://be-nodejs-three.vercel.app/api",
+  baseURL: "http://127.0.0.1:8000/",
 });
 
 instance.interceptors.request.use(
@@ -23,7 +23,7 @@ instance.interceptors.request.use(
   },
   function (error) {
     return Promise.reject(error);
-  },
+  }
 );
 
 instance.interceptors.response.use(
@@ -33,6 +33,6 @@ instance.interceptors.response.use(
   },
   function (error) {
     return Promise.reject(error);
-  },
+  }
 );
 export default instance;
