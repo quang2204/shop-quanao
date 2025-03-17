@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Spin } from "antd";
+import { Modal, Spin, message } from "antd";
 import { useForm } from "react-hook-form";
 import { useDeleteVoucher, useVouchers, useAddVoucher, useUpdateVoucher } from "../../../Hook/useVoucher";
 import { Link } from "react-router-dom";
@@ -9,42 +9,67 @@ const VoucherList = () => {
   const { mutate: addVoucher } = useAddVoucher();
   const { mutate: deleteVoucher } = useDeleteVoucher();
   const { mutate: updateVoucher } = useUpdateVoucher();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
   const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+  const [voucherToDelete, setVoucherToDelete] = useState(null);
   const [voucherToUpdate, setVoucherToUpdate] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const showModal = (id) => {
-    setVoucherToUpdate(id);
-    setIsModalOpen(true);
+  const showConfirmDelete = (id) => {
+    setVoucherToDelete(id);
+    setIsConfirmDeleteOpen(true);
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
+  const handleCancelDelete = () => {
+    setIsConfirmDeleteOpen(false);
+    setVoucherToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (voucherToDelete && !isDeleting) {
+      setIsDeleting(true);
+      deleteVoucher(voucherToDelete, {
+        onSuccess: () => {
+          if (isConfirmDeleteOpen) {
+            handleCancelDelete();
+          }
+          setIsDeleting(false);
+        },
+        onError: () => {
+          handleCancelDelete();
+          setIsDeleting(false);
+        },
+      });
+    }
   };
 
   const handleCancelAdd = () => {
     setIsModalOpenAdd(false);
+    reset(); 
   };
+  
 
   const handleCancelUpdate = () => {
     setIsModalOpenUpdate(false);
-  };
-
-  const { mutate } = useDeleteVoucher();
-  const handleOk = () => {
-    mutate(voucherToUpdate);
-    setIsModalOpen(false);
     setVoucherToUpdate(null);
+    reset(); 
   };
 
-  const handleOkAdd = () => {
-    handleSubmit(onSubmit)();
+  const handleEdit = (voucher) => {
+    setVoucherToUpdate(voucher);
+    reset(voucher); 
+    setIsModalOpenUpdate(true);
   };
-
-  const handleOkUpdate = () => {
-    setIsModalOpenUpdate(false);
+  
+  const handleAdd = () => {
+    setVoucherToUpdate(null);
+    reset();
+    setIsModalOpenAdd(true);
   };
+  
 
   const {
     register,
@@ -54,28 +79,45 @@ const VoucherList = () => {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log('Data to be sent:', data); 
+    setIsSubmitting(true);
     addVoucher(data, {
       onSuccess: () => {
         reset();
-        handleOkAdd();
+        handleCancelAdd();
+        setIsSubmitting(false);
       },
       onError: (error) => {
-        console.error('Error adding voucher:', error.response.data); 
+        console.error('Error adding voucher:', error.response.data);
+        setIsSubmitting(false);
       },
     });
   };
 
   const onUpdate = (data) => {
+    setIsSubmitting(true);
     updateVoucher({ id: voucherToUpdate.id, ...data }, {
       onSuccess: () => {
         reset();
-        handleOkUpdate();
+        handleCancelUpdate();
+        setIsSubmitting(false);
       },
       onError: (error) => {
-        console.error('Error updating voucher:', error.response.data); 
+        console.error('Error updating voucher:', error.response.data);
+        setIsSubmitting(false);
       },
     });
+  };
+
+  const handleOkAdd = () => {
+    if (!isSubmitting) {
+      handleSubmit(onSubmit)();
+    }
+  };
+
+  const handleOkUpdate = () => {
+    if (!isSubmitting) {
+      handleSubmit(onUpdate)();
+    }
   };
 
   if (isLoading) {
@@ -112,8 +154,8 @@ const VoucherList = () => {
                     <th>Discount</th>
                     <th>Start Date</th>
                     <th>End Date</th>
-                    <th>Min Monney</th>
-                    <th>Max Monney</th>
+                    <th>Min Money</th>
+                    <th>Max Money</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -137,16 +179,13 @@ const VoucherList = () => {
                               <i className="ri-eye-fill fs-16" />
                             </Link>
                           </li>
-                          <li className="list-inline-item edit">
+                          <li className="list-inline-item">
                             <div className="text-primary d-inline-block edit-item-btn" onClick={() => handleEdit(item)}>
                               <i className="ri-pencil-fill fs-16" />
                             </div>
                           </li>
                           <li className="list-inline-item">
-                            <div
-                              className="text-danger d-inline-block remove-item-btn"
-                              onClick={() => showModal(item.id)}
-                            >
+                            <div className="text-danger d-inline-block remove-item-btn" onClick={() => showConfirmDelete(item.id)}>
                               <i className="ri-delete-bin-5-fill fs-16"></i>
                             </div>
                           </li>
@@ -161,47 +200,99 @@ const VoucherList = () => {
         </div>
       </div>
 
+      {/* Modal Delete */}
+      <Modal
+        title="Xác nhận xóa voucher"
+        open={isConfirmDeleteOpen}
+        onOk={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        okText="Xóa"
+        cancelText="Hủy"
+      >
+        <p>Bạn có chắc chắn muốn xóa voucher này không?</p>
+      </Modal>
 
       {/* Modal Add */}
       <Modal open={isModalOpenAdd} onOk={handleOkAdd} onCancel={handleCancelAdd} title="Add Voucher">
-  <form id="voucherForm">
-    <div className="mb-3">
-      <label className="form-label">Voucher Code</label>
-      <input type="text" className="form-control" {...register("code", { required: true })} />
-      {errors.code && <span className="text-red-500">Code is required.</span>}
-    </div>
-    <div className="mb-3">
-      <label className="form-label">Discount</label>
-      <input type="number" className="form-control" {...register("discount", { required: true })} />
-      {errors.discount && <span className="text-red-500">Discount is required.</span>}
-    </div>
-    <div className="mb-3">
-      <label className="form-label">Start Date</label>
-      <input type="date" className="form-control" {...register("start_date", { required: true })} />
-      {errors.start_date && <span className="text-red-500">Start date is required.</span>}
-    </div>
-    <div className="mb-3">
-      <label className="form-label">End Date</label>
-      <input type="date" className="form-control" {...register("end_date", { required: true })} />
-      {errors.end_date && <span className="text-red-500">End date is required.</span>}
-    </div>
-    <div className="mb-3">
-      <label className="form-label">Min Money</label>
-      <input type="number" className="form-control" {...register("min_money", { required: true })} />
-      {errors.min_money && <span className="text-red-500">Min Money is required.</span>}
-    </div>
-    <div className="mb-3">
-      <label className="form-label">Max Money</label>
-      <input type="number" className="form-control" {...register("max_money", { required: true })} />
-      {errors.max_money && <span className="text-red-500">Max Money is required.</span>}
-    </div>
-    <div className="mb-3">
-      <label className="form-label">Quantity</label>
-      <input type="number" className="form-control" {...register("quantity", { required: true })} />
-      {errors.quantity && <span className="text-red-500">Quantity is required.</span>}
-    </div>
-  </form>
-</Modal>
+        <form id="voucherForm">
+          <div className="mb-3">
+            <label className="form-label">Voucher Code</label>
+            <input type="text" className="form-control" {...register("code", { required: true })} />
+            {errors.code && <span className="text-red-500">Code is required.</span>}
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Discount</label>
+            <input type="number" className="form-control" {...register("discount", { required: true })} />
+            {errors.discount && <span className="text-red-500">Discount is required.</span>}
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Start Date</label>
+            <input type="date" className="form-control" {...register("start_date", { required: true })} />
+            {errors.start_date && <span className="text-red-500">Start date is required.</span>}
+          </div>
+          <div className="mb-3">
+            <label className="form-label">End Date</label>
+            <input type="date" className="form-control" {...register("end_date", { required: true })} />
+            {errors.end_date && <span className="text-red-500">End date is required.</span>}
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Min Money</label>
+            <input type="number" className="form-control" {...register("min_money", { required: true })} />
+            {errors.min_money && <span className="text-red-500">Min Money is required.</span>}
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Max Money</label>
+            <input type="number" className="form-control" {...register("max_money", { required: true })} />
+            {errors.max_money && <span className="text-red-500">Max Money is required.</span>}
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Quantity</label>
+            <input type="number" className="form-control" {...register("quantity", { required: true })} />
+            {errors.quantity && <span className="text-red-500">Quantity is required.</span>}
+          </div>
+        </form>
+      </Modal>
+
+      {/* Modal Update */}
+      <Modal open={isModalOpenUpdate} onOk={handleOkUpdate} onCancel={handleCancelUpdate} title="Update Voucher">
+        <form id="voucherFormUpdate">
+          <div className="mb-3">
+            <label className="form-label">Voucher Code</label>
+            <input type="text" className="form-control" defaultValue={voucherToUpdate?.code} {...register("code", { required: true })} />
+            {errors.code && <span className="text-red-500">Code is required.</span>}
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Discount</label>
+            <input type="number" className="form-control" defaultValue={voucherToUpdate?.discount} {...register("discount", { required: true })} />
+            {errors.discount && <span className="text-red-500">Discount is required.</span>}
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Start Date</label>
+            <input type="date" className="form-control" defaultValue={voucherToUpdate?.start_date} {...register("start_date", { required: true })} />
+            {errors.start_date && <span className="text-red-500">Start date is required.</span>}
+          </div>
+          <div className="mb-3">
+            <label className="form-label">End Date</label>
+            <input type="date" className="form-control" defaultValue={voucherToUpdate?.end_date} {...register("end_date", { required: true })} />
+            {errors.end_date && <span className="text-red-500">End date is required.</span>}
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Min Money</label>
+            <input type="number" className="form-control" defaultValue={voucherToUpdate?.min_money} {...register("min_money", { required: true })} />
+            {errors.min_money && <span className="text-red-500">Min Money is required.</span>}
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Max Money</label>
+            <input type="number" className="form-control" defaultValue={voucherToUpdate?.max_money} {...register("max_money", { required: true })} />
+            {errors.max_money && <span className="text-red-500">Max Money is required.</span>}
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Quantity</label>
+            <input type="number" className="form-control" defaultValue={voucherToUpdate?.quantity} {...register("quantity", { required: true })} />
+            {errors.quantity && <span className="text-red-500">Quantity is required.</span>}
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 };
