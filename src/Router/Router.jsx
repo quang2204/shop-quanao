@@ -37,6 +37,7 @@ import PrivateRouter from "./PrivateRouter.jsx";
 import Categories from "../Admin/Pages/Categories/Categories.jsx";
 import Categories_Detail from "../Admin/Pages/Categories/Categories_Detail.jsx";
 import ColorList from "../Admin/Pages/Colors/ColorList.jsx";
+import VoucherList from "../Admin/Pages/Vouchers/VoucherList.jsx";
 
 const Router = () => {
   ScrollToTop();
@@ -84,6 +85,7 @@ const Router = () => {
           <Route path="reset" element={<ResetPassword />}/>
           <Route path="categories/:id" element={<Categories_Detail />}/>
           <Route path="colors" element={<ColorList />}/>
+          <Route path="vouchers" element={<VoucherList />}/>
           <Route path="test" element={<FullScreenButton />}/>
         </Route>
         <Route path="twostep" element={<TwoStep />}/>
