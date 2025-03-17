@@ -4705,3 +4705,9 @@ li {
 button {
   font-family: 'Poppins', sans-serif;
 }
+/* Thêm CSS vào file styles/globals.css hoặc styles/tailwind.css */
+@media (max-width: 640px) {
+  .custom-modal .ant-modal {
+    padding: 10px !important;
+  }
+}

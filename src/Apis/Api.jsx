@@ -1,3 +1,4 @@
+import { useMutation } from "react-query";
 import Axios from "./Axios";
 export const getProducts = async (page) => {
   const res = await Axios.get(`api/admin/products?page=${page}`);
@@ -36,13 +37,21 @@ export const deleteProduct = async (id) => {
   return res.data;
 };
 export const signin = async (data) => {
-  const res = await Axios.post(`/login`, data);
+  const res = await Axios.post(`api/login`, data);
   return res.data;
 };
 export const signup = async (data) => {
   const res = await Axios.post(`/register`, data);
   return res.data;
 };
+export const getUserToken = async () => {
+  const res = await Axios.get(`api/user`,{
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+    },
+  });
+  return res.data;
+}
 export const getCart = async (userid) => {
   const res = await Axios.get(`api/admin/carts/${userid}`);
   return res.data;
@@ -54,11 +63,11 @@ export const addCart = async (data, userid) => {
 export const addCartItem = async (data) => {
   const res = await Axios.post(`api/admin/cart-items`, data);
   return res.data;
-}
-export const CartItem = async (data) => {
-  const res = await Axios.get(`api/admin/cart-items`, data);
+};
+export const CartItem = async (id) => {
+  const res = await Axios.get(`api/admin/cart-items/${id}`);
   return res.data;
-}
+};
 export const deleteCart = async (id) => {
   const res = await Axios.delete(`api/admin/cart-items/${id}`);
   return res.data.data;
@@ -76,7 +85,7 @@ export const updateCart = async (data, id) => {
   return res.data.data;
 };
 export const getVouchers = async () => {
-  const res = await Axios.get(`/vouchers`);
+  const res = await Axios.get(`api/admin/vouchers`);
   return res.data;
 };
 export const user = async (page) => {
@@ -84,7 +93,7 @@ export const user = async (page) => {
   return res.data;
 };
 export const detailUser = async (id) => {
-  const res = await Axios.get(`api/admin/users/${id}`);
+  const res = await Axios.get(`api/admin/users/24`);
   return res.data;
 };
 export const deleteUser = async (id) => {
@@ -130,4 +139,12 @@ export const updatePassword = async (data, id) => {
 export const addProduct = async (data) => {
   const res = await Axios.post(`/products`, data);
   return res.data;
+};
+export const useLoginGoogle = () => {
+  const loginWithGoogle = () => {
+    // Chuyển hướng người dùng đến URL xác thực của Google
+    window.location.href = `http://127.0.0.1:8000/auth/google`;
+  };
+
+  return { loginWithGoogle };
 };

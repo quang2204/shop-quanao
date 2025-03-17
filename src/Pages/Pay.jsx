@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button, message, Modal, Spin } from "antd";
-import {useCart} from "../Hook/useCart.jsx";
+import { useCartItem} from "../Hook/useCart.jsx";
 import { FormatPrice } from "../Format.jsx";
 import logomomo from "../images/logomomo.png";
 import logovnpay from "../images/logonvnpay.png";
@@ -17,12 +17,13 @@ const Pay = () => {
   const queryCline = useQueryClient();
   const location = useLocation();
   const [pay, setPay] = useState("COD");
-  const { data, isLoading } = useCart();
+  const {cartItem: data,isCartItem: isLoading } = useCartItem();
   const { data: user, isLoading: isLoading1 } = UseDetailUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
   };
+  console.log(location);
   const users = JSON.parse(localStorage.getItem("user") || "null");
 
   const { mutate: mutateDelete, isLoading: isLoading3 } = useMutation({
@@ -51,6 +52,10 @@ const Pay = () => {
     userId: z.string(),
     voucher: z.string().optional().nullable(),
   });
+  const total = data?.reduce(
+    (total, item) => total + item.product_variant.price * item.quantity,
+    0
+  );
   const {
     register,
     handleSubmit,
@@ -68,9 +73,9 @@ const Pay = () => {
   };
   useEffect(() => {
     if (data) {
-      const product = data?.data.map((item) => {
+      const product = data?.map((item) => {
         return {
-          productId: item.product._id,
+          productId: item.id,
           quantity: item.quantity,
         };
       });
@@ -186,16 +191,24 @@ const Pay = () => {
                 </tr>
               </thead>
               <tbody className="cart1">
-                {data?.data.map((item) => (
-                  <tr className="cart bor12 m-b-10" key={item._id}>
+                {data?.map((item) => (
+                  <tr className="cart bor12 m-b-10" key={item.id}>
                     <td id="tt-name">
-                      {item.product.name.slice(0, 30) + "..."}
+                      {item.product_variant.product.name.slice(0, 30) + "..."}
                       <strong className="tt-quantity">x {item.quantity}</strong>
+                      <br />
+                      <span className="text-gray-500">
+                        Size : {item.product_variant.size.name} 
+                      </span>
+                      <span className="text-gray-500 pl-2">
+                        Color : {item.product_variant.color.name}
+                      </span>
                     </td>
+                    
                     <td>
                       {
                         <FormatPrice
-                          price={item.product.price * item.quantity}
+                          price={item.product_variant.price * item.quantity}
                         />
                       }
                     </td>
@@ -210,7 +223,7 @@ const Pay = () => {
                 <tr className="tvc m-b-10">
                   <th className="left">Tổng tiền hàng</th>
                   <td className="right">
-                    {<FormatPrice price={data?.totalPrice} />}
+                    {<FormatPrice price={total} />}
                   </td>
                 </tr>
                 {location.state?.voucherToal > 0 && (

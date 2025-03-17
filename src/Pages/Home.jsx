@@ -20,7 +20,6 @@ const Home = () => {
     },
   ];
   const { products, isProducts } = useProduct();
-  console.log(products);
   const [slick, setSlick] = useState(slide);
   const [count, setCount] = useState(0);
   const next = () => {

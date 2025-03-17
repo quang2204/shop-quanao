@@ -5,11 +5,12 @@ import logo from "../images/icons/logo-02.png";
 import logo1 from "../images/icons/logo-01.png";
 import useQuantity from "../Hook/useQuantity";
 const Header = () => {
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+  // const user = JSON.parse(localStorage.getItem("auth_token") || "null");
+  const user = localStorage.getItem("auth_token") ;
   const [show, setShow] = useState(false);
   // const { data } = useCart();
   const {cartItem} =useCartItem();
-  const quantity = cartItem?.data?.map((a) => a.quantity);
+  const quantity = cartItem?.map((a) => a.quantity);
   const sum = quantity?.reduce((acc, curr) => acc + curr, 0);
   return (
     <>

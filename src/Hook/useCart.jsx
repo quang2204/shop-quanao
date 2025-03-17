@@ -1,5 +1,6 @@
 import { useQuery } from "react-query";
 import { CartItem, addCartItem, getCart } from "../Apis/Api";
+import useAuth from "./useAuth";
 const useCart = () => {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -15,7 +16,7 @@ const useCart = () => {
 const useCartItem = () => {
   const { data: cartItem, isLoading: isCartItem } = useQuery({
     queryKey: ["cartItem"],
-    queryFn: () => CartItem(),
+    queryFn: () => CartItem(1),
   });
   return { cartItem, isCartItem };
 };
