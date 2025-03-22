@@ -132,7 +132,7 @@ const ShopingCart = () => {
         </div>
       </div>
       <div className="container" style={{ marginTop: 20 }}>
-        {cartItem?.length > 0 ? (
+        {cartItem &&cartItem?.length > 0 ? (
           <div className="row">
             <div className="col-lg-10 col-xl-7 m-lr-auto m-b-50">
               <div className="m-l-25 m-r--38 m-lr-0-xl">
@@ -281,7 +281,7 @@ const ShopingCart = () => {
                     </div>
                     <div className="size-209 text-right">
                       <span className="mtext-110 cl2 ">
-                       - <FormatPrice price={voucher} />
+                        - <FormatPrice price={voucher} />
                       </span>
                     </div>
                   </div>
@@ -292,11 +292,7 @@ const ShopingCart = () => {
                   </div>
                   <div className="size-209 p-t-1 text-right">
                     <span className="mtext-110 cl2 xoa">
-                      <FormatPrice
-                        price={
-                          voucher ? total- voucher : total
-                        }
-                      />
+                      <FormatPrice price={voucher ? total - voucher : total} />
                     </span>
                   </div>
                 </div>
@@ -304,9 +300,7 @@ const ShopingCart = () => {
                   onClick={() =>
                     navigate("/pay", {
                       state: {
-                        totalPrice: voucher
-                          ? total - voucher
-                          : total,
+                        totalPrice: voucher ? total - voucher : total,
                         voucher: voucherid,
                         voucherToal: voucher,
                       },
@@ -421,7 +415,7 @@ const Voucher = ({
               onClick={
                 isDisabled
                   ? () => {
-                    handleClick()
+                      handleClick();
                     }
                   : ""
               }

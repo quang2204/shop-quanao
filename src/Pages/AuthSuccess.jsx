@@ -9,7 +9,7 @@ const AuthSuccess = () => {
     const token = urlParams.get("token");
 
     if (token) {
-      localStorage.setItem("auth_token", token); // Lưu token vào localStorage
+      localStorage.setItem("auth_token",JSON.stringify(token) ); // Lưu token vào localStorage
       navigate("/"); // Chuyển hướng đến trang chính
     } else {
       navigate("/login?error=missing_token"); // Nếu không có token, quay về trang login

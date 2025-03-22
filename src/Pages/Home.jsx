@@ -3,6 +3,7 @@ import { useProduct, useProducts } from "../Hook/useProduct";
 import { Empty, Spin } from "antd";
 import { Link } from "react-router-dom";
 import { FormatPrice } from "../Format";
+import { useProductVariant } from "../Hook/useDetailProduct";
 
 const Home = () => {
   const slide = [
@@ -20,6 +21,7 @@ const Home = () => {
     },
   ];
   const { products, isProducts } = useProduct();
+  console.log(products);
   const [slick, setSlick] = useState(slide);
   const [count, setCount] = useState(0);
   const next = () => {
@@ -38,7 +40,7 @@ const Home = () => {
       setCount(2);
     }
   };
-  if (isProducts) {
+  if (isProducts ) {
     return (
       <Spin
         size="large"
@@ -205,9 +207,9 @@ const Home = () => {
 
           <div className="row isotope-grid mt-4">
             {products ? (
-              products?.data
+              products?.data?.data
                 .filter((item) => item.is_active === true)
-                .map((item) => (
+                .map((item, index) => (
                   <div
                     className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women"
                     key={item.id}
@@ -230,8 +232,8 @@ const Home = () => {
                           >
                             {item.name}
                           </Link>
-                          <span className="stext-105 cl3">
-                            {<FormatPrice price={item.price} />}{" "}
+                          <span className="stext-107 cl3">
+                            {<FormatPrice price={item.variants_min_price} />}
                           </span>
                         </div>
                       </div>

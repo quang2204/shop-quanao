@@ -3985,7 +3985,7 @@ table {
 
 #t {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: start;
   margin-top: 20px;
   padding: 0 15px;

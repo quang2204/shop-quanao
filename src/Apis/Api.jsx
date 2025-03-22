@@ -1,5 +1,6 @@
 import { useMutation } from "react-query";
 import Axios from "./Axios";
+import useAuth from "../Hook/useAuth";
 export const getProducts = async (page) => {
   const res = await Axios.get(`api/admin/products?page=${page}`);
   return res.data;
@@ -12,22 +13,33 @@ export const deleteCategory = async (id) => {
   const res = await Axios.delete(`api/admin/categories/${id}`);
   return res.data;
 };
+
 export const DetailProduct = async (id) => {
   const res = await Axios.get(`api/admin/products/${id}`);
+  return res.data;
+};
+export const productGalleries = async (id) => {
+  const res = await Axios.get(`api/admin/admin/product-galleries/${id}`);
   return res.data;
 };
 export const categoryProduct = async (id) => {
   const res = await Axios.get(`/products/category/${id}`);
   return res.data;
 };
+export const productVariant = async () => {
+  try {
+    const res = await Axios.get("/api/admin/product-variants");
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching product variants:", error);
+    throw new Error("Failed to fetch product variants");
+  }
+};
 export const productVariants = async (id) => {
   const res = await Axios.get(`api/admin/product-variants/${id}`);
   return res.data;
 };
-export const productGalleries = async (id) => {
-  const res = await Axios.get(`/products/gallery/${id}`);
-  return res.data;
-};
+
 export const productsPagination = async (page) => {
   const res = await Axios.get(`/products/${page}`);
   return res.data;
@@ -41,17 +53,41 @@ export const signin = async (data) => {
   return res.data;
 };
 export const signup = async (data) => {
-  const res = await Axios.post(`/register`, data);
+  const res = await Axios.post(`api/register`, data);
   return res.data;
 };
-export const getUserToken = async () => {
-  const res = await Axios.get(`api/user`,{
+// export const logout=async ()=>{
+//   const res = await Axios.post(`api/logout`, {
+//     headers: {
+//       Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth_token")).split("|")[1]}`,
+//     },
+//   });
+//   return res.data.user;
+// }
+export const logout = async () => {
+  const authToken = localStorage.getItem("auth_token");
+  if (!authToken) {
+    throw new Error("No auth token found");
+  }
+
+  const token = JSON.parse(authToken).split("|")[1];
+  const res = await Axios.post('/api/logout', null, {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      Authorization: `Bearer ${token}`,
     },
   });
-  return res.data;
-}
+  return res.data.user;
+};
+
+
+export const getUserToken = async () => {
+  const res = await Axios.get(`api/user_token`, {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth_token")).split("|")[1]}`,
+    },
+  });
+  return res.data.user;
+};
 export const getCart = async (userid) => {
   const res = await Axios.get(`api/admin/carts/${userid}`);
   return res.data;
@@ -92,8 +128,9 @@ export const user = async (page) => {
   const res = await Axios.get(`api/admin/users/?page=${page}`);
   return res.data;
 };
-export const detailUser = async (id) => {
-  const res = await Axios.get(`api/admin/users/24`);
+export const detailUser = async () => {
+  const { data } = useAuth();
+  const res = await Axios.get(`api/admin/users/${data.id}`);
   return res.data;
 };
 export const deleteUser = async (id) => {
@@ -109,17 +146,21 @@ export const getOrdersAdmin = async () => {
   return res.data;
 };
 export const addOrder = async (data) => {
-  const res = await Axios.post(`/order`, data);
+  const res = await Axios.post(`api/admin/orders`, data);
   return res.data;
 };
 export const detailOrder = async (id) => {
-  const res = await Axios.get(`/order/${id}`);
+  const res = await Axios.get(`api/admin/order-details/${id}`);
   return res.data;
 };
 export const getOrders = async (id) => {
   const res = await Axios.get(`/order/user/${id}`);
   return res.data;
 };
+export const addOrderDetail=async (data)=>{
+  const res=await Axios.post("api/admin/order-details",data);
+  return res.data
+}
 export const getOrderbystatus = async (status, userId) => {
   const res = await Axios.get(`/order/status/${status}/${userId}`);
   return res.data;

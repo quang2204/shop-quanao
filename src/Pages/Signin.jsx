@@ -33,10 +33,10 @@ const Signin = () => {
     mutationFn: (data) => signin(data),
     onSuccess: (user) => {
       const expiresIn = 30 * 1000 + new Date().getTime();
-      const newUser = { ...user.user, expiresIn };
+      const newUser = { ...user, expiresIn };
       queryCline.invalidateQueries(["user"], user.user);
       message.success("Thành công");
-      localStorage.setItem("user", JSON.stringify(newUser));
+      localStorage.setItem("auth_token", JSON.stringify(user.token));
       navigate("/");
     },
     onError: (error) => {

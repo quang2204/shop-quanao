@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   useDetailProduct,
+  useProductGalleries,
   useProductVariants,
 } from "../Hook/useDetailProduct.jsx";
 import { Image, message, Select, Spin, Tabs } from "antd";
@@ -9,13 +10,17 @@ import { FormatPrice } from "../Format.jsx";
 import useQuantity from "../Hook/useQuantity.jsx";
 import { useMutation, useQueryClient } from "react-query";
 import { addCart, addCartItem } from "../Apis/Api.jsx";
+import useAuth from "../Hook/useAuth.jsx";
+import { useCart } from "../Hook/useCart.jsx";
 const ProductDetail = () => {
   const queryCline = useQueryClient();
   const { detailProduct, isDetailProduct } = useDetailProduct();
   const { isProductVariants, productVariant } = useProductVariants();
+  const {productGallerie,isproductGalleries}=useProductGalleries()
   const [color, setColor] = useState();
   const [size, setSize] = useState();
   const [idVariants, setidVariants] = useState();
+  const checkuser = localStorage.getItem("auth_token") || null;
   const {
     decreaseNumber,
     increaseNumber,
@@ -23,8 +28,9 @@ const ProductDetail = () => {
     inputValue,
     handleBlur,
   } = useQuantity();
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [indexImg, setindexImg] = useState(0);
+  const { data: cart } = useCart();
+
   const { mutate } = useMutation({
     mutationFn: (data) => addCartItem(data),
     onSuccess: () => {
@@ -36,12 +42,22 @@ const ProductDetail = () => {
     },
   });
   const addToCart = () => {
-    const data = {
-      quantity: Number(inputValue),
-      product_variant_id: idVariants.id,
-      cart_id: 1,
-    };
-    mutate(data);
+    if (checkuser === null) {
+      message.error("Đăng nhập để thêm vào giỏ hàng");
+    } else if (color == undefined) {
+      message.error("Thêm màu sản phẩm");
+    } else if (size == undefined) {
+      message.error("Thêm size sản phẩm");
+    } else if (inputValue > idVariants.quantity) {
+      message.error(`Số lượng chỉ còn ${idVariants.quantity}`);
+    } else {
+      const data = {
+        quantity: Number(inputValue),
+        product_variant_id: idVariants.id,
+        cart_id: cart.id,
+      };
+      mutate(data);
+    }
   };
   useEffect(() => {
     const checkid = productVariant?.filter(
@@ -62,7 +78,7 @@ const ProductDetail = () => {
   const handleColor = (color) => {
     setColor(color);
   };
-  if (isDetailProduct || isProductVariants) {
+  if (isDetailProduct || isProductVariants||isproductGalleries) {
     return (
       <Spin
         size="large"
@@ -70,16 +86,16 @@ const ProductDetail = () => {
       />
     );
   }
-
+console.log(indexImg);
   const pre = () => {
     if (indexImg == 0) {
-      setindexImg(detailProduct.variant.length - 1);
+      setindexImg(productGallerie.length - 1);
     } else {
       setindexImg(indexImg - 1);
     }
   };
   const next = () => {
-    if (detailProduct && indexImg == detailProduct?.variant.length - 1) {
+    if (productGallerie && indexImg == productGallerie?.length - 1) {
       setindexImg(0);
     } else {
       setindexImg(indexImg + 1);
@@ -108,15 +124,15 @@ const ProductDetail = () => {
                 <div className="wrap-slick3 flex-sb flex-w">
                   <div className="wrap-slick3-dots">
                     <ul className="slick3-dots" role="tablist">
-                      {/* {productVariant.map((item, index) => (
+                      {productGallerie.map((item, index) => (
                         <li
                           className=""
                           key={item.id}
                           onMouseOver={() => setindexImg(index)}
                         >
-                          <Image src={item.imageUrl} />
+                          <Image src={item.image} />
                         </li>
-                      ))} */}
+                      ))}
                     </ul>
                   </div>
 
@@ -140,12 +156,12 @@ const ProductDetail = () => {
                         <div
                           className="item-slick3 slick-slide slick-current slick-active"
                           style={{
-                            width: 513,
+                            // width: 513,
                           }}
                         >
                           <div className="wrap-pic-w pos-relative">
                             <Image
-                              src={detailProduct.img_thumb}
+                              src={productGallerie[indexImg].image}
                               alt="IMG-PRODUCT"
                             />
                           </div>
@@ -161,10 +177,22 @@ const ProductDetail = () => {
                 <h4 className="mtext-105 cl2 js-name-detail p-b-14">
                   {detailProduct?.name}
                 </h4>
-                <span className="text-3xl text-red-500">
-                {<FormatPrice price={idVariants?.price ?? productVariant?.[0]?.price} />}
-
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl text-red-500">
+                    {
+                      <FormatPrice
+                        price={idVariants?.price ?? productVariant?.[0]?.price}
+                      />
+                    }
+                  </span>
+                  <span className="text-2xl cl4 text-decoration-line-through">
+                    {
+                      <FormatPrice
+                        price={idVariants?.price_sale ?? productVariant?.[0]?.price_sale}
+                      />
+                    }
+                  </span>
+                </div>
                 <div className="p-t-33">
                   <div className="flex-w flex-r-m p-b-10">
                     <div className="size-203 flex-c-m respon6">Size</div>
@@ -183,8 +211,8 @@ const ProductDetail = () => {
                               productVariant
                                 ?.flatMap((variant) => variant.size) // Lấy tất cả size từ các biến thể
                                 ?.map((item) => [
-                                  item.id,
-                                  { value: item.id, label: item.name },
+                                  item?.id,
+                                  { value: item?.id, label: item.name },
                                 ]) // Tạo key-value cho Map
                             ).values() // Lấy các giá trị duy nhất
                           )}
@@ -249,7 +277,15 @@ const ProductDetail = () => {
                           <i className="fs-16 zmdi zmdi-plus" />
                         </div>
                       </div>
-                      <div>{idVariants?.quantity??productVariant.reduce((acc, item) => acc + item.quantity, 0)} sản phẩm có sẵn</div>
+                      <div>
+                        {idVariants?.quantity ??
+                          productVariant.reduce(
+                            (acc, item) => acc + item.quantity,
+                            0
+                          )}
+                          <span> sản phẩm có sẵn</span>
+                       
+                      </div>
                     </div>
                   </div>
                 </div>
