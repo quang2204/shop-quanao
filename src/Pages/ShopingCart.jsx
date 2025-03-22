@@ -3,6 +3,7 @@ import { Button, message, Modal, Spin } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { FormatPrice } from "../Format.jsx";
 import { useCartItem } from "../Hook/useCart.jsx";
+import logo from "../images/icons/logo-02.png";
 import {
   deleteCart,
   getVouchers,
@@ -39,7 +40,7 @@ const ShopingCart = () => {
   useEffect(() => {
     if (cartItem) {
       setCounts(
-        cartItem?.data.map((item) => {
+        cartItem?.map((item) => {
           return {
             id: item.id,
             quantity: item.quantity,
@@ -47,7 +48,7 @@ const ShopingCart = () => {
         })
       );
       setInputValues(
-        cartItem?.data.map((item) => {
+        cartItem?.map((item) => {
           return {
             id: item.id,
             quantity: item.quantity,
@@ -58,7 +59,6 @@ const ShopingCart = () => {
   }, [cartItem]);
   //tăng
   const increaseNumber = (id) => {
-    console.log(id);
     const check = counts.find((item) => item.id === id);
     // console.log(counts);
     if (check) {
@@ -102,7 +102,7 @@ const ShopingCart = () => {
       mutate({ cartItem: cart, id: check.id });
     }
   };
-  const total = cartItem?.data.reduce(
+  const total = cartItem?.reduce(
     (total, item) => total + item.product_variant.price * item.quantity,
     0
   );
@@ -120,7 +120,6 @@ const ShopingCart = () => {
       />
     );
   }
-
   return (
     <div>
       <div className="container mt-24">
@@ -133,176 +132,175 @@ const ShopingCart = () => {
         </div>
       </div>
       <div className="container" style={{ marginTop: 20 }}>
-        {/* {cartItem?.cartItem.data.length > 0 ? ( */}
-        <div className="row">
-          <div className="col-lg-10 col-xl-7 m-lr-auto m-b-50">
-            <div className="m-l-25 m-r--38 m-lr-0-xl">
-              <div className="wrap-table-shopping-cart">
-                <table className="table-shopping-cart">
-                  <tbody>
-                    <tr className="table_head">
-                      <th className="column-1 " style={{ paddingLeft: 30 }}>
-                        Sản phẩm
-                      </th>
-                      <th className="column-2" />
-                      <th className="column-3">Giá</th>
-                      <th className="column-4">Số lượng</th>
-                      <th className="column-5">Tổng cộng</th>
-                    </tr>
-                    {cartItem?.data &&
-                      cartItem?.data.map((item, index) => (
-                        <tr className="table_row" key={index + 1}>
-                          <td className="column-1">
-                            <div
-                              className=" d-flex align-items-center "
-                              style={{ gap: 15 }}
-                            >
+        {cartItem &&cartItem?.length > 0 ? (
+          <div className="row">
+            <div className="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+              <div className="m-l-25 m-r--38 m-lr-0-xl">
+                <div className="wrap-table-shopping-cart">
+                  <table className="table-shopping-cart">
+                    <tbody>
+                      <tr className="table_head">
+                        <th className="column-1 " style={{ paddingLeft: 30 }}>
+                          Sản phẩm
+                        </th>
+                        <th className="column-2" />
+                        <th className="column-3">Giá</th>
+                        <th className="column-4">Số lượng</th>
+                        <th className="column-5">Tổng cộng</th>
+                      </tr>
+                      {cartItem &&
+                        cartItem?.map((item, index) => (
+                          <tr className="table_row" key={index + 1}>
+                            <td className="column-1">
                               <div
-                                className="cursor m-l--30 "
-                                onClick={() => mutateDelete(item.id)}
+                                className=" d-flex align-items-center "
+                                style={{ gap: 15 }}
                               >
-                                <p
-                                  className=" bor0 bor10 d-flex justify-content-center align-items-center p-b-3 hov-btn3
-                                 "
-                                  style={{ width: 25, height: 25 }}
+                                <div
+                                  className="cursor m-l--30 "
+                                  onClick={() => mutateDelete(item.id)}
                                 >
-                                  x
+                                  <p
+                                    className=" bor0 bor10 d-flex justify-content-center align-items-center p-b-3 hov-btn3
+                                 "
+                                    style={{ width: 25, height: 25 }}
+                                  >
+                                    x
+                                  </p>
+                                </div>
+
+                                <img
+                                  src={item.product_variant.product.img_thumb}
+                                  alt="IMG"
+                                  style={{ width: 100, marginRight: 50 }}
+                                />
+                              </div>
+                            </td>
+                            <td className="pl-8 ">
+                              <Link
+                                to={`/product/${item.product_variant.product.id}`}
+                                style={{ color: "black" }}
+                              >
+                                <p className="m-b-4 text-[15px] font-normal">
+                                  {item.product_variant.product.name.length > 20
+                                    ? item.product_variant.product.name.slice(
+                                        0,
+                                        20
+                                      ) + "..."
+                                    : item.product_variant.product.name}
                                 </p>
-                              </div>
-
-                              <img
-                                src={item.product_variant.product.img_thumb}
-                                alt="IMG"
-                                style={{ width: 100, marginRight: 50 }}
-                              />
-                            </div>
-                          </td>
-                          <td className="pl-8 ">
-                            <Link
-                              to={`/product/${item.product_variant.product.id}`}
-                              style={{ color: "black" }}
-                            >
-                              <p className="m-b-4 text-[15px] font-normal">
-                                {item.product_variant.product.name.length > 20
-                                  ? item.product_variant.product.name.slice(
-                                      0,
-                                      20
-                                    ) + "..."
-                                  : item.product_variant.product.name}
+                              </Link>
+                              <p className="text-gray-500 text-[14px]">
+                                Size :{item.product_variant.color.name}{" "}
                               </p>
-                            </Link>
-                            <p className="text-gray-400 text-[14px]">
-                              Size :{item.product_variant.color.name}{" "}
-                            </p>
-                            <p className="text-gray-400 text-[14px]">
-                              Color :{item.product_variant.size.name}{" "}
-                            </p>
-                          </td>
+                              <p className="text-gray-500 text-[14px]">
+                                Color :{item.product_variant.size.name}{" "}
+                              </p>
+                            </td>
 
-                          <td className="column-3 text-center subtotal-for-product-116 font-bold">
-                            {<FormatPrice price={item.product_variant.price} />}
-                          </td>
-                          <td className="column-4">
-                            <div className="wrap-num-product flex-w m-r-20 m-tb-10">
-                              <div
-                                className="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m"
-                                onClick={() => decreaseNumber(item.id)}
-                              >
-                                <i className="fs-16 zmdi zmdi-minus" />
+                            <td className="column-3 text-center subtotal-for-product-116 font-bold">
+                              {
+                                <FormatPrice
+                                  price={item.product_variant.price}
+                                />
+                              }
+                            </td>
+                            <td className="column-4">
+                              <div className="wrap-num-product flex-w m-r-20 m-tb-10">
+                                <div
+                                  className="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m"
+                                  onClick={() => decreaseNumber(item.id)}
+                                >
+                                  <i className="fs-16 zmdi zmdi-minus" />
+                                </div>
+                                <input
+                                  className="mtext-104 cl3 txt-center num-product"
+                                  type="number"
+                                  disabled={isLoadingCart}
+                                  onChange={(e) =>
+                                    numberDirectly(
+                                      e.target.value,
+                                      item.product_variant.id
+                                    )
+                                  }
+                                  value={inputValues?.[index]?.quantity}
+                                  onBlur={() =>
+                                    handleBlur(
+                                      item.product_variant.id,
+                                      inputValues?.[index]?.quantity
+                                    )
+                                  }
+                                />
+                                <div
+                                  className="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"
+                                  onClick={() => increaseNumber(item.id)}
+                                >
+                                  <i className="fs-16 zmdi zmdi-plus" />
+                                </div>
                               </div>
-                              <input
-                                className="mtext-104 cl3 txt-center num-product"
-                                type="number"
-                                disabled={isLoadingCart}
-                                onChange={(e) =>
-                                  numberDirectly(
-                                    e.target.value,
-                                    item.product_variant.id
-                                  )
-                                }
-                                value={inputValues?.[index]?.quantity}
-                                onBlur={() =>
-                                  handleBlur(
-                                    item.product_variant.id,
-                                    inputValues?.[index]?.quantity
-                                  )
+                            </td>
+                            <td className="column-5 font-bold">
+                              <FormatPrice
+                                price={
+                                  item.product_variant.price * item.quantity
                                 }
                               />
-                              <div
-                                className="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"
-                                onClick={() => increaseNumber(item.id)}
-                              >
-                                <i className="fs-16 zmdi zmdi-plus" />
-                              </div>
-                            </div>
-                          </td>
-                          <td className="column-5 font-bold">
-                            <FormatPrice
-                              price={item.product_variant.price * item.quantity}
-                            />
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
-                <div className="flex-w flex-m m-r-20 m-tb-5">
-                  <Link to="/">
-                    <div className="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5">
-                      <i className="fa fa-arrow-left p-r-10" />
-                      Quay lại trang chủ
-                    </div>
-                  </Link>
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+                  <div className="flex-w flex-m m-r-20 m-tb-5">
+                    <Link to="/">
+                      <div className="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5">
+                        <i className="fa fa-arrow-left p-r-10" />
+                        Quay lại trang chủ
+                      </div>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
-            <div className="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
-              <h4 className="mtext-109 cl2 p-b-30">Tổng số</h4>
-              <div className="flex-w flex-t bor12 p-b-13 items-center">
-                <div className="size-208">
-                  <span className="mtext-101 cl2">Vận chuyển</span>
+            <div className="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
+              <div className="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
+                <h4 className="mtext-109 cl2 p-b-30">Tổng số</h4>
+                <div className="flex-w flex-t bor12 p-b-13 items-center">
+                  <div className="size-208">
+                    <span className="mtext-101 cl2">Vận chuyển</span>
+                  </div>
+                  <div className="size-209 text-right">
+                    <span className="mtext-110 cl2 ">30.000đ</span>
+                  </div>
                 </div>
-                <div className="size-209 text-right">
-                  <span className="mtext-110 cl2 ">30.000đ</span>
-                </div>
-              </div>
-              {/* {voucher > 0 && (
+                {voucher > 0 && (
                   <div className="flex-w flex-t bor12 p-b-13 p-t-13 items-center">
                     <div className="size-208">
                       <span className="mtext-101 cl2">Mã giảm giá</span>
                     </div>
                     <div className="size-209 text-right">
                       <span className="mtext-110 cl2 ">
-                        <FormatPrice price={voucher} />
+                        - <FormatPrice price={voucher} />
                       </span>
                     </div>
                   </div>
-                )} */}
-              <div className="flex-w flex-t p-t-27 pb-3 bor12">
-                <div className="size-208">
-                  <span className="mtext-101 cl2">Tổng cộng</span>
+                )}
+                <div className="flex-w flex-t p-t-27 pb-3 bor12">
+                  <div className="size-208">
+                    <span className="mtext-101 cl2">Tổng cộng</span>
+                  </div>
+                  <div className="size-209 p-t-1 text-right">
+                    <span className="mtext-110 cl2 xoa">
+                      <FormatPrice price={voucher ? total - voucher : total} />
+                    </span>
+                  </div>
                 </div>
-                <div className="size-209 p-t-1 text-right">
-                  <span className="mtext-110 cl2 xoa">
-                    {/* <FormatPrice
-                        price={
-                          voucher ? data.totalPrice - voucher : data.totalPrice
-                        }
-                      /> */}
-                    <FormatPrice price={total} />
-                  </span>
-                </div>
-              </div>
-              {/* <div
+                <div
                   onClick={() =>
                     navigate("/pay", {
                       state: {
-                        totalPrice: voucher
-                          ? data.totalPrice - voucher
-                          : data.totalPrice,
+                        totalPrice: voucher ? total - voucher : total,
                         voucher: voucherid,
                         voucherToal: voucher,
                       },
@@ -311,19 +309,19 @@ const ShopingCart = () => {
                   className="flex-c-m stext-101 cl0 size-107 bg3 bor1 hov-btn3 p-lr-15 trans-04 m-b-10 m-t-20 cursor"
                 >
                   Tiến hành thanh toán
-                </div> */}
-              <div className="flex-w flex-t p-b-20 sale mt-3">
-                <button
-                  className="flex-c-m stext-101 mb-3 size-111  bor14 hov-btn3 p-lr-15 trans-04 pointer"
-                  onClick={showModal}
-                >
-                  Mã Giảm Giá
-                </button>
+                </div>
+                <div className="flex-w flex-t p-b-20 sale mt-3">
+                  <button
+                    className="flex-c-m stext-101 mb-3 size-111  bor14 hov-btn3 p-lr-15 trans-04 pointer"
+                    onClick={showModal}
+                  >
+                    Mã Giảm Giá
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        {/* ) : (
+        ) : (
           <div className="text-center m-t-140 m-b-100 ">
             <h3>Chưa có sản phẩm nào trong giỏ hàng </h3>
             <br />
@@ -333,15 +331,16 @@ const ShopingCart = () => {
               </button>
             </Link>
           </div>
-        )} */}
+        )}
       </div>
-      {/* <Voucher
+      <Voucher
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         setVoucher={setVoucher}
         setVoucherId={setVoucherId}
         voucherid={voucherid}
-      /> */}
+        total={total}
+      />
     </div>
   );
 };
@@ -351,6 +350,7 @@ const Voucher = ({
   setVoucher,
   setVoucherId,
   voucherid,
+  total,
 }) => {
   const [check, setCheck] = useState(false);
   const [beforeVoucher, setBeforeVoucher] = useState(0);
@@ -360,9 +360,7 @@ const Voucher = ({
     queryFn: getVouchers,
   });
   const date = new Date();
-  const handleMessage = () => {
-    message.error("Voucher đã hết hạn");
-  };
+
   const handleVoucherId = (discount, id) => {
     setBeforeVoucher(discount);
     setVoucherId(id);
@@ -378,12 +376,16 @@ const Voucher = ({
     if (!check) setVoucherId(0);
     else setVoucherId(afterId);
   };
+
   return (
     <Modal
       open={isModalOpen}
       onCancel={handleCancel}
       title={<h2>Chọn Voucher</h2>}
       loading={isLoading}
+      width={570}
+      // style={{padding:"0 10px"}}
+      className="custom-modal"
       footer={
         <>
           <Button onClick={handleCancel}>Close</Button>
@@ -391,58 +393,71 @@ const Voucher = ({
         </>
       }
     >
-      <div className="my-10">
-        {data?.map((item) => (
-          <div
-            onClick={new Date(item.expire) < date ? handleMessage : ""}
-            key={item._id}
-          >
+      <div className="my-10 max-h-[500px] overflow-y-scroll">
+        {data?.data?.map((item) => {
+          const isExpired = new Date(item.end_date) < date;
+          const isInvalidAmount = !(
+            total >= item.min_money && total <= item.max_money
+          );
+          const isDisabled = isExpired || isInvalidAmount;
+          const handleClick = () => {
+            if (isExpired) {
+              message.error("Voucher này đã hết hạn!");
+            } else if (isInvalidAmount) {
+              message.error("Không đủ điều kiện để sử dụng voucher này!");
+            } else {
+              handleVoucherId(item.discount, item.id);
+            }
+          };
+          return (
             <div
-              className={`xl:w-[480px] md:w-full 
-                    ${new Date(item.expire) < date && "opacity-50"}`}
+              key={item.id}
+              onClick={
+                isDisabled
+                  ? () => {
+                      handleClick();
+                    }
+                  : ""
+              }
+              className={`xl:w-[480px] md:w-full ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              <div className="d-flex justify-content-between align-items-center bor10  m-b-20">
+              <div className="d-flex justify-content-between align-items-center bor10 m-b-20">
                 <div className="d-flex align-items-center">
                   <div
-                    className="icon "
+                    className="icon"
                     style={{ padding: "40px 20px", backgroundColor: "red" }}
                   >
-                    <img
-                      src="http://quang2204.000.pe/view/images/icons/logo-02.png"
-                      alt=""
-                      style={{ width: 100 }}
-                    />
+                    <img src={logo} alt="logo" style={{ width: 100 }} />
                   </div>
                   <div className="conten p-l-20 fs-20">
-                    <p className={"mb-1"}>
+                    <p className="mb-1">
                       Giảm tối đa <FormatPrice price={item.discount} />
                     </p>
                     <p className="text-muted text-lg">
-                      {/* Hạn sử dụng :{new Date(item?.expire).toLocaleDa("vi-VN")} */}
+                      Giảm cho đơn từ <FormatPrice price={item.min_money} /> -{" "}
+                      <FormatPrice price={item.max_money} />
+                    </p>
+                    <p className="text-muted text-lg">
+                      Hạn sử dụng:{" "}
+                      {new Date(item.end_date).toLocaleDateString("vi-VN")}
                     </p>
                   </div>
                 </div>
-                <>
-                  <div className="radio-inputs">
-                    <input
-                      className="input-voucher"
-                      style={
-                        new Date(item.expire) < date
-                          ? { cursor: "no-drop" }
-                          : {}
-                      }
-                      type="radio"
-                      checked={voucherid === item._id}
-                      onChange={() => handleVoucherId(item.discount, item._id)}
-                      name="radio"
-                      disabled={new Date(item.expire) < date}
-                    />
-                  </div>
-                </>
+                <div className="radio-inputs">
+                  <input
+                    className="input-voucher"
+                    style={isDisabled ? { cursor: "no-drop" } : {}}
+                    type="radio"
+                    checked={voucherid === item.id}
+                    onChange={() => handleVoucherId(item.discount, item.id)}
+                    name="radio"
+                    disabled={isDisabled}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </Modal>
   );

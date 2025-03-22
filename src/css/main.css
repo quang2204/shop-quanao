@@ -3985,7 +3985,7 @@ table {
 
 #t {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: start;
   margin-top: 20px;
   padding: 0 15px;
@@ -4700,4 +4700,18 @@ li {
 
 .canva {
   filter: invert(0) hue-rotate(180deg);
+<<<<<<< HEAD
 }
+=======
+}
+
+button {
+  font-family: 'Poppins', sans-serif;
+}
+/* Thêm CSS vào file styles/globals.css hoặc styles/tailwind.css */
+@media (max-width: 640px) {
+  .custom-modal .ant-modal {
+    padding: 10px !important;
+  }
+}
+>>>>>>> quang

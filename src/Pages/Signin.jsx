@@ -2,11 +2,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "react-query";
-import { signin } from "../Apis/Api.jsx";
+import { signin, useLoginGoogle } from "../Apis/Api.jsx";
 import { message, Spin } from "antd";
 import * as z from "zod";
 import { useState } from "react";
 const Signin = () => {
+  const { loginWithGoogle } = useLoginGoogle();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const schema = z.object({
@@ -32,10 +33,10 @@ const Signin = () => {
     mutationFn: (data) => signin(data),
     onSuccess: (user) => {
       const expiresIn = 30 * 1000 + new Date().getTime();
-      const newUser = { ...user.user, expiresIn };
+      const newUser = { ...user, expiresIn };
       queryCline.invalidateQueries(["user"], user.user);
       message.success("Thành công");
-      localStorage.setItem("user", JSON.stringify(newUser));
+      localStorage.setItem("auth_token", JSON.stringify(user.token));
       navigate("/");
     },
     onError: (error) => {
@@ -122,7 +123,7 @@ const Signin = () => {
         </p>
         <p className="p line text-center">Or With</p>
         <div className="flex-row">
-          <button className="btn google">
+          <div className="btn google" onClick={() => loginWithGoogle()}>
             <svg
               version="1.1"
               width={20}
@@ -161,8 +162,8 @@ const Signin = () => {
               />
             </svg>
             Google
-          </button>
-          <button className="btn apple">
+          </div>
+          {/* <button className="btn apple">
             <svg
               version="1.1"
               height={20}
@@ -195,7 +196,7 @@ const Signin = () => {
               </g>
             </svg>
             Apple
-          </button>
+          </button> */}
         </div>
       </form>
     </div>

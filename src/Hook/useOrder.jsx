@@ -9,6 +9,7 @@ const UseDetailOrder = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["order", id],
     queryFn: () => detailOrder(id),
+    enabled:!!id
   });
   return { data, isLoading };
 };

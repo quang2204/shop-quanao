@@ -1,32 +1,54 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { Spin, Upload } from "antd";
+import { Image, Spin, Upload } from "antd";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import UseDetailUser from "../Hook/useDetailUser";
 import useUpdateUser from "../Hook/useUpdateUser";
+import { list } from "postcss";
 const Portfolio = () => {
   const [fileList, setFileList] = useState([]);
-  const onhandluploadimg = (e) => {
-    let newFileList = [...e.fileList];
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+
+  const handleUpload = (info) => {
+    let newFileList = [...info.fileList];
 
     // Nếu upload thành công, cập nhật URL
     newFileList = newFileList.map((file) => {
       if (file.response) {
-        file.url = file.response.url; 
+        file.url = file.response.url;
       }
       return file;
     });
 
     setFileList(newFileList);
-    // setImg(!img);
   };
+
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+  };
+
+  const getBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleCancel = () => setPreviewOpen(false);
   const { data, isLoading } = UseDetailUser();
   const { mutate, isLoadingUser } = useUpdateUser();
   const schema = z.object({
-    username: z.string().min(1, "Name is required"),
+    name: z.string().min(1, "Name is required"),
     email: z
       .string()
       .email("Must be a valid email address")
@@ -47,7 +69,7 @@ const Portfolio = () => {
   useEffect(() => {
     if (data) {
       reset({
-        username: data.username,
+        name: data.name,
         email: data.email,
         address: data.address,
         phone: data.phone,
@@ -64,9 +86,10 @@ const Portfolio = () => {
       // setImg(data.avatar ? data.avatar : img)
     }
   }, [data, reset]);
+  console.log(fileList);
   const onsubmit = (data) => {
     mutate({
-      username: data.username,
+      name: data.name,
       email: data.email,
       avatar: fileList[0]?.url,
       address: data.address,
@@ -92,7 +115,7 @@ const Portfolio = () => {
           />
           <div className="name">
             <span>
-              <strong>{data?.username} </strong>
+              <strong>{data?.name} </strong>
               <Link to="">
                 <p style={{ color: "black" }}>
                   <svg
@@ -163,12 +186,12 @@ const Portfolio = () => {
                       disabled={isLoadingUser}
                       type="text"
                       className="bor4 p-t-7 p-b-7 p-l-10 w-[300px]"
-                      {...register("username")}
+                      {...register("name")}
                     />
                   </td>
                 </tr>
-                {errors.username && (
-                  <div className="text-red-700">{errors.username.message}</div>
+                {errors.name && (
+                  <div className="text-red-700">{errors.name.message}</div>
                 )}
                 <tr className="d-flex mt-3 items-center ">
                   <td className="name ">
@@ -221,18 +244,14 @@ const Portfolio = () => {
         </div>
         <div className="d-flex flex-column">
           <Upload
-            action={"https://api.cloudinary.com/v1_1/dkrcsuwbc/image/upload"}
+            action="https://api.cloudinary.com/v1_1/dkrcsuwbc/image/upload"
             listType="picture-card"
-            data={{
-              upload_preset: "image1",
-            }}
+            data={{ upload_preset: "image1" }}
+            onPreview={handlePreview}
+            onChange={handleUpload}
             fileList={fileList}
-            preview={{
-              width: 500,
-              height: 500,
-            }}
           >
-            {fileList.length == 1 ? null : (
+            {fileList.length >= 1 ? null : (
               <button
                 style={{
                   border: 0,
@@ -241,16 +260,24 @@ const Portfolio = () => {
                 type="button"
               >
                 <PlusOutlined />
-                <div
-                  style={{
-                    marginTop: 8,
-                  }}
-                >
-                  Image
-                </div>
+                <div style={{ marginTop: 8 }}>Upload Image</div>
               </button>
             )}
           </Upload>
+          {previewImage && (
+            <Image
+              wrapperStyle={{
+                display: "none",
+              }}
+              preview={{
+                visible: previewOpen,
+                onVisibleChange: (visible) => setPreviewOpen(visible),
+                afterOpenChange: (visible) => !visible && setPreviewImage(""),
+              }}
+              src={previewImage}
+            />
+          )}
+          {/* <Image src={fileList[0].url} /> */}
         </div>
       </form>
     </div>

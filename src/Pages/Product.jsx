@@ -24,7 +24,7 @@ const Product = () => {
     );
   }
   
-  console.log(category.data);
+  console.log(products);
   const clickfilter = () => {
     setFilter(!filter);
   };
@@ -281,7 +281,7 @@ const Product = () => {
         </div>
         <div className="row isotope-grid">
           {data ? (
-            data.map((item, index) => (
+            data.data.map((item, index) => (
               <div
                 className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women"
                 key={index}
@@ -304,8 +304,8 @@ const Product = () => {
                       >
                         {item.name}
                       </Link>
-                      <span className="stext-105 cl3">
-                        {<FormatPrice price={item.price} />}
+                      <span className="stext-107 cl3">
+                        {<FormatPrice price={item.variants_min_price} />}
                       </span>
                     </div>
                   </div>

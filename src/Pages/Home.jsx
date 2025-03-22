@@ -3,8 +3,12 @@ import { useProduct, useProducts } from "../Hook/useProduct";
 import { Empty, Spin } from "antd";
 import { Link } from "react-router-dom";
 import { FormatPrice } from "../Format";
+<<<<<<< HEAD
 import { motion } from "framer-motion";
 import { useBanners } from "../Hook/useBanner";
+=======
+import { useProductVariant } from "../Hook/useDetailProduct";
+>>>>>>> quang
 
 const Home = () => {
   const { products, isProducts } = useProduct();
@@ -18,6 +22,7 @@ const Home = () => {
   const pre = () => {
     setCount((prev) => (prev - 1 + banners.length) % banners.length);
   };
+<<<<<<< HEAD
 
   useEffect(() => {
     const interval = setInterval(next, 5000); 
@@ -33,6 +38,9 @@ const Home = () => {
     );
   }
   if (isProducts) {
+=======
+  if (isProducts ) {
+>>>>>>> quang
     return (
       <Spin
         size="large"
@@ -173,9 +181,9 @@ const Home = () => {
 
           <div className="row isotope-grid mt-4">
             {products ? (
-              products?.data
+              products?.data?.data
                 .filter((item) => item.is_active === true)
-                .map((item) => (
+                .map((item, index) => (
                   <div
                     className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women"
                     key={item.id}
@@ -198,8 +206,8 @@ const Home = () => {
                           >
                             {item.name}
                           </Link>
-                          <span className="stext-105 cl3">
-                            {<FormatPrice price={item.price} />}{" "}
+                          <span className="stext-107 cl3">
+                            {<FormatPrice price={item.variants_min_price} />}
                           </span>
                         </div>
                       </div>

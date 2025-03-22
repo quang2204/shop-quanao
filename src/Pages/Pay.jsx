@@ -1,56 +1,83 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button, message, Modal, Spin } from "antd";
-import {useCart} from "../Hook/useCart.jsx";
+import { useCartItem } from "../Hook/useCart.jsx";
 import { FormatPrice } from "../Format.jsx";
 import logomomo from "../images/logomomo.png";
 import logovnpay from "../images/logonvnpay.png";
 import cod from "../images/logoshipcod.png";
-import UseDetailUser from "../Hook/useDetailUser.jsx";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "react-query";
-import { addOrder, deleteAllCart } from "../Apis/Api.jsx";
+import { addOrder, addOrderDetail, deleteAllCart } from "../Apis/Api.jsx";
+import useAuth from "../Hook/useAuth.jsx";
 const Pay = () => {
   const navigate = useNavigate();
   const queryCline = useQueryClient();
   const location = useLocation();
   const [pay, setPay] = useState("COD");
-  const { data, isLoading } = useCart();
-  const { data: user, isLoading: isLoading1 } = UseDetailUser();
+  const { cartItem: data, isCartItem: isLoading } = useCartItem();
+  const { data: user, isLoading: isLoading1 } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [id, setId] = useState();
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const users = JSON.parse(localStorage.getItem("user") || "null");
-
   const { mutate: mutateDelete, isLoading: isLoading3 } = useMutation({
-    mutationFn: () => deleteAllCart(users._id),
+    mutationFn: () => deleteAllCart(user.id),
     onSuccess: () => {
       queryCline.invalidateQueries({ queryKey: ["cart"] });
       // message.success("Xoa tat ca san pham");
     },
   });
-  const { mutate } = useMutation({
+  const variant = data?.map((data) => data.product_variant);
+  const quantity = data?.map((data) => data.quantity);
+  const { mutate, isLoading: isLoadingOrder } = useMutation({
     mutationFn: (data) => addOrder(data),
     onSuccess: (data) => {
-      mutateDelete();
-      if (isLoading3) return;
-      navigate("/bill/" + data._id);
-      message.success("Thành công");
-      // queryCline.invalidateQueries(["order"]);
+      setId(data.order.id);
+      message.success(data.message);
+      // Gọi orderdetail sau khi đơn hàng đã được tạo thành công
+      orderdetail({
+        order_id: data.order.id,
+        products: variant?.map((data, index) => {
+          return {
+            product_variant_id: data.id,
+            quantity: quantity[index],
+            price: data.price,
+          };
+        }),
+      });
+      navigate("/bill/" + data.order.id);
+    },
+    onError: (error) => {
+      message.error(error.response?.data?.error || "Có lỗi xảy ra");
+    },
+  });
+  const { mutate: orderdetail } = useMutation({
+    mutationFn: (data) => addOrderDetail(data),
+    onSuccess: (data) => {
+      message.success(data.message);
+    },
+    onError: (errors) => {
+      message.error(errors.response?.data?.error || "Có lỗi xảy ra");
     },
   });
   const schema = z.object({
-    customerName: z.string().min(1, "Name is required"),
-    totalPrice: z.number().min(1, "Total price is required"),
-    phone: z.string().min(1, "Phone is required"),
-    address: z.string().min(1, "Address is required"),
-    products: z.array(z.object({})),
-    userId: z.string(),
-    voucher: z.string().optional().nullable(),
+    user_name: z.string().min(1, "Name is required"),
+    total_amount: z.number().min(1, "Total price is required"),
+    user_phone: z.string().min(1, "Phone is required"),
+    user_address: z.string().min(1, "Address is required"),
+    user_id: z.string(),
+    voucher_id: z.string().optional().nullable(),
+    note: z.string().optional().nullable(),
   });
+  const total = data?.reduce(
+    (total, item) => total + item.product_variant.price * item.quantity,
+    0
+  );
+
   const {
     register,
     handleSubmit,
@@ -60,36 +87,32 @@ const Pay = () => {
   } = useForm({
     resolver: zodResolver(schema),
   });
-  const orderid = Math.floor(Math.random() * 10000);
-
+  const orderid = "ord" + Math.floor(Math.random() * 10000);
   const onsubmit = () => {
     mutate(getValues());
-    // console.log(getValues());
   };
+
   useEffect(() => {
     if (data) {
-      const product = data?.data.map((item) => {
-        return {
-          productId: item.product._id,
-          quantity: item.quantity,
-        };
-      });
       // if (user) {
       reset({
-        userId: user?._id,
-        customerName: user?.username,
-        totalPrice: data?.totalPrice - location.state?.voucherToal,
-        phone: user?.phone,
-        address: user?.address,
-        products: product,
-        voucher: location.state?.voucher == 0 ? null : location.state?.voucher,
-        payment: pay,
-        madh: orderid,
+        user_id: user?.id,
+        user_name: user?.name,
+        total_amount: location.state.totalPrice,
+        user_phone: user?.phone,
+        user_email: user?.email,
+        user_address: user?.address,
+        voucher_id:
+          location.state?.voucher == 0 ? null : location.state?.voucher,
+        payment_method: pay,
+        order_code: orderid,
+        payment_status: "unpaid",
+        discount: location.state.voucherToal,
       });
       // }
     }
   }, [data, user, pay]);
-  if (isLoading1 || isLoading) {
+  if (isLoading1 && isLoading) {
     return (
       <Spin
         size="large"
@@ -109,11 +132,10 @@ const Pay = () => {
         </div>
       </div>
       <form
-        className="thongtin m-b-60"
+        className="thongtin container m-b-60 "
         id="myForm"
         onSubmit={handleSubmit(onsubmit)}
       >
-        <input type="hidden" />
         <div id="t">
           <div className="form ">
             <input type="hidden" name="user" />
@@ -131,13 +153,14 @@ const Pay = () => {
             <input
               type="text"
               id="product-name"
-              {...register("customerName")}
+              {...register("user_name")}
               placeholder="Họ và tên"
               className="input "
             />
-            {errors.customerName && (
-              <p className="text-red-500">{errors.customerName.message}</p>
+            {errors.user_name && (
+              <p className="text-red-500">{errors.user_name.message}</p>
             )}
+
             <label htmlFor="dc" className="mt-3">
               Địa chỉ *
             </label>
@@ -145,11 +168,11 @@ const Pay = () => {
               type="text"
               placeholder="Địa chỉ"
               id="product-dc"
-              {...register("address")}
+              {...register("user_address")}
               className="input "
             />
-            {errors.address && (
-              <p className="text-red-500">{errors.address.message}</p>
+            {errors.user_address && (
+              <p className="text-red-500">{errors.user_address.message}</p>
             )}
             <label htmlFor="name" className="mt-3">
               Số điện thoại *
@@ -157,12 +180,12 @@ const Pay = () => {
             <input
               type="text"
               id="product-sdt"
-              {...register("phone")}
+              {...register("user_phone")}
               placeholder="Số điện thoại "
               className="input"
             />
-            {errors.phone && (
-              <p className="text-red-500">{errors.phone.message}</p>
+            {errors.user_phone && (
+              <p className="text-red-500">{errors.user_phone.message}</p>
             )}
             <h3 className="text-[27px] font-medium mt-4 mb-3">
               Thông tin bổ sung
@@ -174,6 +197,7 @@ const Pay = () => {
               rows={5}
               placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."
               className="input"
+              {...register("note")}
             />
           </div>
           <div className="donhang">
@@ -186,16 +210,24 @@ const Pay = () => {
                 </tr>
               </thead>
               <tbody className="cart1">
-                {data?.data.map((item) => (
-                  <tr className="cart bor12 m-b-10" key={item._id}>
+                {data?.map((item) => (
+                  <tr className="cart bor12 m-b-10" key={item.id}>
                     <td id="tt-name">
-                      {item.product.name.slice(0, 30) + "..."}
+                      {item.product_variant.product.name.slice(0, 30) + "..."}
                       <strong className="tt-quantity">x {item.quantity}</strong>
+                      <br />
+                      <span className="text-gray-500">
+                        Size : {item.product_variant.size.name}
+                      </span>
+                      <span className="text-gray-500 pl-2">
+                        Color : {item.product_variant.color.name}
+                      </span>
                     </td>
+
                     <td>
                       {
                         <FormatPrice
-                          price={item.product.price * item.quantity}
+                          price={item.product_variant.price * item.quantity}
                         />
                       }
                     </td>
@@ -209,9 +241,7 @@ const Pay = () => {
                 </tr>
                 <tr className="tvc m-b-10">
                   <th className="left">Tổng tiền hàng</th>
-                  <td className="right">
-                    {<FormatPrice price={data?.totalPrice} />}
-                  </td>
+                  <td className="right">{<FormatPrice price={total} />}</td>
                 </tr>
                 {location.state?.voucherToal > 0 && (
                   <tr className="tvc m-b-10">
@@ -259,6 +289,7 @@ const Pay = () => {
             <button
               className="flex-c-m text-[21px] cl0 w-full h-12 bg3 bor2 hov-btn4 p-lr-15 trans-04 m-b-10 m-t-20 cursor"
               type="submit"
+              onClick={() => onsubmit()}
             >
               Thanh toán
             </button>
