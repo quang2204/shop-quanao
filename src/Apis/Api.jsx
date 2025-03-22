@@ -188,3 +188,9 @@ export const forceDeleteVoucher = async (id) => {
   const res = await Axios.delete(`/api/admin/vouchers/force-delete/${id}`);
   return res.data;
 };
+//slideslide
+export const getBanners = async (page = 1) => {
+  const res = await Axios.get(`/api/admin/banners?page=${page}`);
+  return res.data;
+};
+

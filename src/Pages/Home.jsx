@@ -1,44 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useProduct, useProducts } from "../Hook/useProduct";
 import { Empty, Spin } from "antd";
 import { Link } from "react-router-dom";
 import { FormatPrice } from "../Format";
+import { motion } from "framer-motion";
+import { useBanners } from "../Hook/useBanner";
 
 const Home = () => {
-  const slide = [
-    {
-      id: 1,
-      image: "src/images/slide-04.jpg",
-    },
-    {
-      id: 2,
-      image: "src/images/slide-05.jpg",
-    },
-    {
-      id: 3,
-      image: "src/images/slide-06.jpg",
-    },
-  ];
   const { products, isProducts } = useProduct();
-  console.log(products);
-  const [slick, setSlick] = useState(slide);
+  const { banners, loading, error } = useBanners();
   const [count, setCount] = useState(0);
+
   const next = () => {
-    if (count < 2) {
-      setCount(count + 1);
-    }
-    if (count === 2) {
-      setCount(0);
-    }
+    setCount((prev) => (prev + 1) % banners.length);
   };
+
   const pre = () => {
-    if (count > 0) {
-      setCount(count - 1);
-    }
-    if (count === 0) {
-      setCount(2);
-    }
+    setCount((prev) => (prev - 1 + banners.length) % banners.length);
   };
+
+  useEffect(() => {
+    const interval = setInterval(next, 5000); 
+    return () => clearInterval(interval);
+  }, [banners.length]);
+
+  if (loading) {
+    return (
+      <Spin
+        size="large"
+        className="h-[50vh] mt-[100px] flex items-center justify-center w-full "
+      />
+    );
+  }
   if (isProducts) {
     return (
       <Spin
@@ -49,67 +42,50 @@ const Home = () => {
   }
   return (
     <>
-      <section className="section-slide">
-        <div className="wrap-slick1 rs2-slick1">
-          <div className="slick1">
-            <div
+<section className="section-slide">
+      <div className="wrap-slick1 rs2-slick1">
+        <div className="slick1">
+          {banners.length > 0 && (
+            <motion.div
+              key={banners[count].id}
               className="item-slick1 bg-overlay1"
-              key={slick[count].id}
-              data-caption="Women’s Wear"
+              initial={{ opacity: 0, filter: "blur(10px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, filter: "blur(10px)" }}
+              transition={{ duration: 1 }}
               style={{
-                backgroundImage: `url(${slick[count].image})`,
+                backgroundImage: `url(${banners[count].image})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                height: "70vh",
+                borderRadius: "10px",
+                overflow: "hidden",
               }}
-            >
-              <div className="container h-full">
-                <div className="flex-col-c-m h-full p-t-100 p-b-60 respon5">
-                  <div
-                    className="layer-slick1 animated visible-false"
-                    data-appear="fadeInDown"
-                    data-delay="0"
-                  >
-                    <span className="ltext-202 txt-center cl0 respon2">
-                      Women Collection 2023
-                    </span>
-                  </div>
-                  <div
-                    className="layer-slick1 animated visible-false"
-                    data-appear="fadeInUp"
-                    data-delay="800"
-                  >
-                    <h2 className="ltext-104 txt-center cl0 p-t-22 p-b-40 respon1">
-                      New arrivals
-                    </h2>
-                  </div>
-                  <div
-                    className="layer-slick1 animated visible-false"
-                    data-appear="zoomIn"
-                    data-delay="1600"
-                  >
-                    <a
-                      className="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn2 p-lr-15 trans-04"
-                      href="?act=product"
-                    >
-                      Shop Now
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <button
-            className="arrow-slick1 prev-slick1 slick-arrow"
-            onClick={pre}
-          >
-            <i className="zmdi zmdi-caret-left"></i>
-          </button>
-          <button
-            className="arrow-slick1 next-slick1 slick-arrow"
-            onClick={next}
-          >
-            <i className="zmdi zmdi-caret-right"></i>
-          </button>
+            />
+          )}
         </div>
-      </section>
+        <button
+          className="arrow-slick1 prev-slick1 slick-arrow"
+          onClick={pre}
+          style={{
+            borderRadius: "50%",
+            padding: "10px",
+          }}
+        >
+          <i className="zmdi zmdi-caret-left" style={{ color: "#fff", fontSize: "50px" }}></i>
+        </button>
+        <button
+          className="arrow-slick1 next-slick1 slick-arrow"
+          onClick={next}
+          style={{
+            borderRadius: "50%",
+            padding: "10px",
+          }}
+        >
+          <i className="zmdi zmdi-caret-right" style={{ color: "#fff", fontSize: "50px" }}></i>
+        </button>
+      </div>
+    </section>
 
       <div className="sec-banner bg0 p-t-80 p-b-50">
         <div className="container">
@@ -117,7 +93,6 @@ const Home = () => {
             <div className="col-md-6 col-xl-4 p-b-30 m-lr-auto">
               <div className="block1 wrap-pic-w">
                 <img src="src/images/banner-01.jpg" alt="IMG-BANNER" />
-
                 <a
                   href="product.html"
                   className="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3"
@@ -126,12 +101,10 @@ const Home = () => {
                     <span className="block1-name ltext-102 trans-04 p-b-8">
                       Women
                     </span>
-
                     <span className="block1-info stext-102 trans-04">
                       Spring 2018
                     </span>
                   </div>
-
                   <div className="block1-txt-child2 p-b-4 trans-05">
                     <div className="block1-link stext-101 cl0 trans-09">
                       Shop Now
@@ -144,7 +117,6 @@ const Home = () => {
             <div className="col-md-6 col-xl-4 p-b-30 m-lr-auto">
               <div className="block1 wrap-pic-w">
                 <img src="src/images/banner-02.jpg" alt="IMG-BANNER" />
-
                 <a
                   href="product.html"
                   className="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3"
@@ -153,12 +125,10 @@ const Home = () => {
                     <span className="block1-name ltext-102 trans-04 p-b-8">
                       Men
                     </span>
-
                     <span className="block1-info stext-102 trans-04">
                       Spring 2018
                     </span>
                   </div>
-
                   <div className="block1-txt-child2 p-b-4 trans-05">
                     <div className="block1-link stext-101 cl0 trans-09">
                       Shop Now
@@ -171,7 +141,6 @@ const Home = () => {
             <div className="col-md-6 col-xl-4 p-b-30 m-lr-auto">
               <div className="block1 wrap-pic-w">
                 <img src="src/images/banner-03.jpg" alt="IMG-BANNER" />
-
                 <a
                   href="product.html"
                   className="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3"
@@ -180,12 +149,10 @@ const Home = () => {
                     <span className="block1-name ltext-102 trans-04 p-b-8">
                       Accessories
                     </span>
-
                     <span className="block1-info stext-102 trans-04">
                       New Trend
                     </span>
                   </div>
-
                   <div className="block1-txt-child2 p-b-4 trans-05">
                     <div className="block1-link stext-101 cl0 trans-09">
                       Shop Now
