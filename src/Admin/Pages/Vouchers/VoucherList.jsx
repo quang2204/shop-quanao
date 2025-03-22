@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { Modal, Spin, message } from "antd";
 import { useForm } from "react-hook-form";
-import { useDeleteVoucher, useVouchers, useAddVoucher, useUpdateVoucher } from "../../../Hook/useVoucher";
+import {
+  useDeleteVoucher,
+  useVouchers,
+  useAddVoucher,
+  useUpdateVoucher,
+} from "../../../Hook/useVoucher";
 import { Link } from "react-router-dom";
 
 const VoucherList = () => {
@@ -48,28 +53,26 @@ const VoucherList = () => {
 
   const handleCancelAdd = () => {
     setIsModalOpenAdd(false);
-    reset(); 
+    reset();
   };
-  
 
   const handleCancelUpdate = () => {
     setIsModalOpenUpdate(false);
     setVoucherToUpdate(null);
-    reset(); 
+    reset();
   };
 
   const handleEdit = (voucher) => {
     setVoucherToUpdate(voucher);
-    reset(voucher); 
+    reset(voucher);
     setIsModalOpenUpdate(true);
   };
-  
+
   const handleAdd = () => {
     setVoucherToUpdate(null);
     reset();
     setIsModalOpenAdd(true);
   };
-  
 
   const {
     register,
@@ -87,7 +90,7 @@ const VoucherList = () => {
         setIsSubmitting(false);
       },
       onError: (error) => {
-        console.error('Error adding voucher:', error.response.data);
+        console.error("Error adding voucher:", error.response.data);
         setIsSubmitting(false);
       },
     });
@@ -95,17 +98,20 @@ const VoucherList = () => {
 
   const onUpdate = (data) => {
     setIsSubmitting(true);
-    updateVoucher({ id: voucherToUpdate.id, ...data }, {
-      onSuccess: () => {
-        reset();
-        handleCancelUpdate();
-        setIsSubmitting(false);
-      },
-      onError: (error) => {
-        console.error('Error updating voucher:', error.response.data);
-        setIsSubmitting(false);
-      },
-    });
+    updateVoucher(
+      { id: voucherToUpdate.id, ...data },
+      {
+        onSuccess: () => {
+          reset();
+          handleCancelUpdate();
+          setIsSubmitting(false);
+        },
+        onError: (error) => {
+          console.error("Error updating voucher:", error.response.data);
+          setIsSubmitting(false);
+        },
+      }
+    );
   };
 
   const handleOkAdd = () => {
@@ -121,7 +127,12 @@ const VoucherList = () => {
   };
 
   if (isLoading) {
-    return <Spin size="large" className="h-[50vh] mt-[100px] flex items-center justify-center w-full" />;
+    return (
+      <Spin
+        size="large"
+        className="h-[50vh] mt-[100px] flex items-center justify-center w-full"
+      />
+    );
   }
 
   return (
@@ -180,12 +191,18 @@ const VoucherList = () => {
                             </Link>
                           </li>
                           <li className="list-inline-item">
-                            <div className="text-primary d-inline-block edit-item-btn" onClick={() => handleEdit(item)}>
+                            <div
+                              className="text-primary d-inline-block edit-item-btn"
+                              onClick={() => handleEdit(item)}
+                            >
                               <i className="ri-pencil-fill fs-16" />
                             </div>
                           </li>
                           <li className="list-inline-item">
-                            <div className="text-danger d-inline-block remove-item-btn" onClick={() => showConfirmDelete(item.id)}>
+                            <div
+                              className="text-danger d-inline-block remove-item-btn"
+                              onClick={() => showConfirmDelete(item.id)}
+                            >
                               <i className="ri-delete-bin-5-fill fs-16"></i>
                             </div>
                           </li>
@@ -209,87 +226,208 @@ const VoucherList = () => {
         okText="Xóa"
         cancelText="Hủy"
       >
-        <p>Bạn có chắc chắn muốn xóa voucher này không?</p>
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content border-none">
+            <div className="modal-body">
+              <div className="mt-2 text-center ">
+                <div className="flex justify-center">
+                  <img
+                    src="https://media-public.canva.com/de2y0/MAFqwzde2y0/1/tl.png"
+                    alt=""
+                    width={100}
+                  />
+                </div>
+                <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                  <h4>Are you sure ?</h4>
+                  <p className="text-muted mx-4 mb-0">
+                    Are you sure you want to remove this record ?
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </Modal>
 
       {/* Modal Add */}
-      <Modal open={isModalOpenAdd} onOk={handleOkAdd} onCancel={handleCancelAdd} title="Add Voucher">
+      <Modal
+        open={isModalOpenAdd}
+        onOk={handleOkAdd}
+        onCancel={handleCancelAdd}
+        title="Add Voucher"
+      >
         <form id="voucherForm">
           <div className="mb-3">
             <label className="form-label">Voucher Code</label>
-            <input type="text" className="form-control" {...register("code", { required: true })} />
-            {errors.code && <span className="text-red-500">Code is required.</span>}
+            <input
+              type="text"
+              className="form-control"
+              {...register("code", { required: true })}
+            />
+            {errors.code && (
+              <span className="text-red-500">Code is required.</span>
+            )}
           </div>
           <div className="mb-3">
             <label className="form-label">Discount</label>
-            <input type="number" className="form-control" {...register("discount", { required: true })} />
-            {errors.discount && <span className="text-red-500">Discount is required.</span>}
+            <input
+              type="number"
+              className="form-control"
+              {...register("discount", { required: true })}
+            />
+            {errors.discount && (
+              <span className="text-red-500">Discount is required.</span>
+            )}
           </div>
           <div className="mb-3">
             <label className="form-label">Start Date</label>
-            <input type="date" className="form-control" {...register("start_date", { required: true })} />
-            {errors.start_date && <span className="text-red-500">Start date is required.</span>}
+            <input
+              type="date"
+              className="form-control"
+              {...register("start_date", { required: true })}
+            />
+            {errors.start_date && (
+              <span className="text-red-500">Start date is required.</span>
+            )}
           </div>
           <div className="mb-3">
             <label className="form-label">End Date</label>
-            <input type="date" className="form-control" {...register("end_date", { required: true })} />
-            {errors.end_date && <span className="text-red-500">End date is required.</span>}
+            <input
+              type="date"
+              className="form-control"
+              {...register("end_date", { required: true })}
+            />
+            {errors.end_date && (
+              <span className="text-red-500">End date is required.</span>
+            )}
           </div>
           <div className="mb-3">
             <label className="form-label">Min Money</label>
-            <input type="number" className="form-control" {...register("min_money", { required: true })} />
-            {errors.min_money && <span className="text-red-500">Min Money is required.</span>}
+            <input
+              type="number"
+              className="form-control"
+              {...register("min_money", { required: true })}
+            />
+            {errors.min_money && (
+              <span className="text-red-500">Min Money is required.</span>
+            )}
           </div>
           <div className="mb-3">
             <label className="form-label">Max Money</label>
-            <input type="number" className="form-control" {...register("max_money", { required: true })} />
-            {errors.max_money && <span className="text-red-500">Max Money is required.</span>}
+            <input
+              type="number"
+              className="form-control"
+              {...register("max_money", { required: true })}
+            />
+            {errors.max_money && (
+              <span className="text-red-500">Max Money is required.</span>
+            )}
           </div>
           <div className="mb-3">
             <label className="form-label">Quantity</label>
-            <input type="number" className="form-control" {...register("quantity", { required: true })} />
-            {errors.quantity && <span className="text-red-500">Quantity is required.</span>}
+            <input
+              type="number"
+              className="form-control"
+              {...register("quantity", { required: true })}
+            />
+            {errors.quantity && (
+              <span className="text-red-500">Quantity is required.</span>
+            )}
           </div>
         </form>
       </Modal>
 
       {/* Modal Update */}
-      <Modal open={isModalOpenUpdate} onOk={handleOkUpdate} onCancel={handleCancelUpdate} title="Update Voucher">
+      <Modal
+        open={isModalOpenUpdate}
+        onOk={handleOkUpdate}
+        onCancel={handleCancelUpdate}
+        title="Update Voucher"
+      >
         <form id="voucherFormUpdate">
           <div className="mb-3">
             <label className="form-label">Voucher Code</label>
-            <input type="text" className="form-control" defaultValue={voucherToUpdate?.code} {...register("code", { required: true })} />
-            {errors.code && <span className="text-red-500">Code is required.</span>}
+            <input
+              type="text"
+              className="form-control"
+              defaultValue={voucherToUpdate?.code}
+              {...register("code", { required: true })}
+            />
+            {errors.code && (
+              <span className="text-red-500">Code is required.</span>
+            )}
           </div>
           <div className="mb-3">
             <label className="form-label">Discount</label>
-            <input type="number" className="form-control" defaultValue={voucherToUpdate?.discount} {...register("discount", { required: true })} />
-            {errors.discount && <span className="text-red-500">Discount is required.</span>}
+            <input
+              type="number"
+              className="form-control"
+              defaultValue={voucherToUpdate?.discount}
+              {...register("discount", { required: true })}
+            />
+            {errors.discount && (
+              <span className="text-red-500">Discount is required.</span>
+            )}
           </div>
           <div className="mb-3">
             <label className="form-label">Start Date</label>
-            <input type="date" className="form-control" defaultValue={voucherToUpdate?.start_date} {...register("start_date", { required: true })} />
-            {errors.start_date && <span className="text-red-500">Start date is required.</span>}
+            <input
+              type="date"
+              className="form-control"
+              defaultValue={voucherToUpdate?.start_date}
+              {...register("start_date", { required: true })}
+            />
+            {errors.start_date && (
+              <span className="text-red-500">Start date is required.</span>
+            )}
           </div>
           <div className="mb-3">
             <label className="form-label">End Date</label>
-            <input type="date" className="form-control" defaultValue={voucherToUpdate?.end_date} {...register("end_date", { required: true })} />
-            {errors.end_date && <span className="text-red-500">End date is required.</span>}
+            <input
+              type="date"
+              className="form-control"
+              defaultValue={voucherToUpdate?.end_date}
+              {...register("end_date", { required: true })}
+            />
+            {errors.end_date && (
+              <span className="text-red-500">End date is required.</span>
+            )}
           </div>
           <div className="mb-3">
             <label className="form-label">Min Money</label>
-            <input type="number" className="form-control" defaultValue={voucherToUpdate?.min_money} {...register("min_money", { required: true })} />
-            {errors.min_money && <span className="text-red-500">Min Money is required.</span>}
+            <input
+              type="number"
+              className="form-control"
+              defaultValue={voucherToUpdate?.min_money}
+              {...register("min_money", { required: true })}
+            />
+            {errors.min_money && (
+              <span className="text-red-500">Min Money is required.</span>
+            )}
           </div>
           <div className="mb-3">
             <label className="form-label">Max Money</label>
-            <input type="number" className="form-control" defaultValue={voucherToUpdate?.max_money} {...register("max_money", { required: true })} />
-            {errors.max_money && <span className="text-red-500">Max Money is required.</span>}
+            <input
+              type="number"
+              className="form-control"
+              defaultValue={voucherToUpdate?.max_money}
+              {...register("max_money", { required: true })}
+            />
+            {errors.max_money && (
+              <span className="text-red-500">Max Money is required.</span>
+            )}
           </div>
           <div className="mb-3">
             <label className="form-label">Quantity</label>
-            <input type="number" className="form-control" defaultValue={voucherToUpdate?.quantity} {...register("quantity", { required: true })} />
-            {errors.quantity && <span className="text-red-500">Quantity is required.</span>}
+            <input
+              type="number"
+              className="form-control"
+              defaultValue={voucherToUpdate?.quantity}
+              {...register("quantity", { required: true })}
+            />
+            {errors.quantity && (
+              <span className="text-red-500">Quantity is required.</span>
+            )}
           </div>
         </form>
       </Modal>

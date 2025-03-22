@@ -49,11 +49,7 @@ export const deleteProduct = async (id) => {
   return res.data;
 };
 export const signin = async (data) => {
-<<<<<<< HEAD
   const res = await Axios.post(`/api/login`, data);
-=======
-  const res = await Axios.post(`api/login`, data);
->>>>>>> quang
   return res.data;
 };
 export const signup = async (data) => {
@@ -75,14 +71,13 @@ export const logout = async () => {
   }
 
   const token = JSON.parse(authToken).split("|")[1];
-  const res = await Axios.post('/api/logout', null, {
+  const res = await Axios.post("/api/logout", null, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
   return res.data.user;
 };
-
 
 export const getUserToken = async () => {
   const res = await Axios.get(`api/user_token`, {
@@ -124,13 +119,12 @@ export const updateCart = async (data, id) => {
   const res = await Axios.patch(`/cart/${id}`, data);
   return res.data.data;
 };
-<<<<<<< HEAD
-=======
+
 export const getVouchers = async () => {
   const res = await Axios.get(`api/admin/vouchers`);
   return res.data;
 };
->>>>>>> quang
+
 export const user = async (page) => {
   const res = await Axios.get(`api/admin/users/?page=${page}`);
   return res.data;
@@ -164,10 +158,10 @@ export const getOrders = async (id) => {
   const res = await Axios.get(`/order/user/${id}`);
   return res.data;
 };
-export const addOrderDetail=async (data)=>{
-  const res=await Axios.post("api/admin/order-details",data);
-  return res.data
-}
+export const addOrderDetail = async (data) => {
+  const res = await Axios.post("api/admin/order-details", data);
+  return res.data;
+};
 export const getOrderbystatus = async (status, userId) => {
   const res = await Axios.get(`/order/status/${status}/${userId}`);
   return res.data;
@@ -188,11 +182,11 @@ export const addProduct = async (data) => {
   const res = await Axios.post(`/products`, data);
   return res.data;
 };
-<<<<<<< HEAD
+
 // color
 export const getColors = async (page = 1) => {
   const res = await Axios.get(`/api/admin/colors?page=${page}`);
-  console.log('đã call được api của color'); 
+  console.log("đã call được api của color");
   return res.data;
 };
 
@@ -221,7 +215,7 @@ export const forceDeleteColor = async (id) => {
 };
 //voucher
 
-export const getVouchers = async (page = 1) => {
+export const getVouchersAdmin = async (page = 1) => {
   const res = await Axios.get(`/api/admin/vouchers?page=${page}`);
   return res.data;
 };
@@ -256,7 +250,6 @@ export const getBanners = async (page = 1) => {
   return res.data;
 };
 
-=======
 export const useLoginGoogle = () => {
   const loginWithGoogle = () => {
     // Chuyển hướng người dùng đến URL xác thực của Google
@@ -265,4 +258,3 @@ export const useLoginGoogle = () => {
 
   return { loginWithGoogle };
 };
->>>>>>> quang
