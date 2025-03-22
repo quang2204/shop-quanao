@@ -111,7 +111,7 @@ const Categories = () => {
                     </tr>
                   </thead>
                   <tbody className="list form-check-all">
-                    {category.map((item, index) => (
+                    {category?.data.map((item, index) => (
                       <tr key={item.id}>
                         <td>{index + 1}</td>
                         <td className="id">

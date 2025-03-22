@@ -36,7 +36,7 @@ export const deleteProduct = async (id) => {
   return res.data;
 };
 export const signin = async (data) => {
-  const res = await Axios.post(`/login`, data);
+  const res = await Axios.post(`/api/login`, data);
   return res.data;
 };
 export const signup = async (data) => {
@@ -74,10 +74,6 @@ export const updateCartItem = async (data, id) => {
 export const updateCart = async (data, id) => {
   const res = await Axios.patch(`/cart/${id}`, data);
   return res.data.data;
-};
-export const getVouchers = async () => {
-  const res = await Axios.get(`/vouchers`);
-  return res.data;
 };
 export const user = async (page) => {
   const res = await Axios.get(`api/admin/users/?page=${page}`);
@@ -131,3 +127,70 @@ export const addProduct = async (data) => {
   const res = await Axios.post(`/products`, data);
   return res.data;
 };
+// color
+export const getColors = async (page = 1) => {
+  const res = await Axios.get(`/api/admin/colors?page=${page}`);
+  console.log('đã call được api của color'); 
+  return res.data;
+};
+
+export const getColorDetail = async (id) => {
+  const res = await Axios.get(`/api/admin/colors/${id}`);
+  return res.data;
+};
+
+export const createColor = async (data) => {
+  const res = await Axios.post(`/api/admin/colors`, data);
+  return res.data;
+};
+
+export const updateColor = async (id, data) => {
+  const res = await Axios.put(`/api/admin/colors/${id}`, data);
+  return res.data;
+};
+export const deleteColor = async (id) => {
+  const res = await Axios.delete(`/api/admin/colors/${id}`);
+  return res.data;
+};
+
+export const forceDeleteColor = async (id) => {
+  const res = await Axios.delete(`/api/admin/colors/force-delete/${id}`);
+  return res.data;
+};
+//voucher
+
+export const getVouchers = async (page = 1) => {
+  const res = await Axios.get(`/api/admin/vouchers?page=${page}`);
+  return res.data;
+};
+
+export const getVoucherDetail = async (id) => {
+  const res = await Axios.get(`/api/admin/vouchers/${id}`);
+  return res.data;
+};
+
+export const createVoucher = async (data) => {
+  const res = await Axios.post(`/api/admin/vouchers`, data);
+  return res.data;
+};
+
+export const updateVoucher = async (id, data) => {
+  const res = await Axios.put(`/api/admin/vouchers/${id}`, data);
+  return res.data;
+};
+
+export const deleteVoucher = async (id) => {
+  const res = await Axios.delete(`/api/admin/vouchers/${id}`);
+  return res.data;
+};
+
+export const forceDeleteVoucher = async (id) => {
+  const res = await Axios.delete(`/api/admin/vouchers/force-delete/${id}`);
+  return res.data;
+};
+//slideslide
+export const getBanners = async (page = 1) => {
+  const res = await Axios.get(`/api/admin/banners?page=${page}`);
+  return res.data;
+};
+

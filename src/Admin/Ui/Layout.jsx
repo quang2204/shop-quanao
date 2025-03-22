@@ -934,6 +934,18 @@ const Layout = () => {
                     </Link>
                   </li>
                   <li className="nav-item">
+                    <Link to="colors" className="nav-link menu-link">
+                      <i className="ri-layout-3-line" />
+                      <span data-key="t-layouts">Color</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="vouchers" className="nav-link menu-link">
+                      <i className="ri-layout-3-line" />
+                      <span data-key="t-layouts">Voucher</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
                     <Link to="order_detail" className="nav-link menu-link">
                       <i class="fa fa-comment"></i>
                       <span data-key="t-layouts">Comments</span>

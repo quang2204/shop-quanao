@@ -231,7 +231,7 @@ const Orders = () => {
                     </tr>
                   </thead>
                   <tbody className="list form-check-all">
-                  {data.map((order) => (
+                  {data?.data.map((order) => (
                       <tr>
                       <th scope="row">
                         <div className="form-check">
