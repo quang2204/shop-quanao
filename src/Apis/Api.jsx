@@ -71,14 +71,13 @@ export const logout = async () => {
   }
 
   const token = JSON.parse(authToken).split("|")[1];
-  const res = await Axios.post('/api/logout', null, {
+  const res = await Axios.post("/api/logout", null, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
   return res.data.user;
 };
-
 
 export const getUserToken = async () => {
   const res = await Axios.get(`api/user_token`, {
@@ -141,6 +140,7 @@ export const addUsers = async (data) => {
   const res = await Axios.post(`api/admin/users`, data);
   return res.data;
 };
+
 export const getOrdersAdmin = async () => {
   const res = await Axios.get(`api/admin/orders`);
   return res.data;
@@ -154,23 +154,28 @@ export const detailOrder = async (id) => {
   return res.data;
 };
 export const getOrders = async (id) => {
-  const res = await Axios.get(`/order/user/${id}`);
+  const res = await Axios.get(`api/admin/orders/${id}`);
   return res.data;
 };
-export const addOrderDetail=async (data)=>{
-  const res=await Axios.post("api/admin/order-details",data);
-  return res.data
-}
+export const addOrderDetail = async (data) => {
+  const res = await Axios.post("api/admin/order-details", data);
+  return res.data;
+};
 export const getOrderbystatus = async (status, userId) => {
   const res = await Axios.get(`/order/status/${status}/${userId}`);
   return res.data;
 };
+export const getOrderByUserid = async ( userId) => {
+  const res = await Axios.get(`api/admin/orders/byuser/${userId}`);
+  return res.data;
+};
 export const updateUser = async (data, id) => {
-  const res = await Axios.patch(`/user/${id}`, data);
+  console.log(id);
+  const res = await Axios.put(`api/admin/users/${id}`, data);
   return res.data;
 };
 export const deleteOrder = async (id) => {
-  const res = await Axios.delete(`api/admin/order/${id}`);
+  const res = await Axios.delete(`api/admin/users/${id}`);
   return res.data;
 };
 export const updatePassword = async (data, id) => {

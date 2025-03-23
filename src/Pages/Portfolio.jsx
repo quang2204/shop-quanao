@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import UseDetailUser from "../Hook/useDetailUser";
 import useUpdateUser from "../Hook/useUpdateUser";
-import { list } from "postcss";
 const Portfolio = () => {
   const [fileList, setFileList] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -86,7 +85,6 @@ const Portfolio = () => {
       // setImg(data.avatar ? data.avatar : img)
     }
   }, [data, reset]);
-  console.log(fileList);
   const onsubmit = (data) => {
     mutate({
       name: data.name,

@@ -36,7 +36,6 @@ const Pay = () => {
   const { mutate, isLoading: isLoadingOrder } = useMutation({
     mutationFn: (data) => addOrder(data),
     onSuccess: (data) => {
-      setId(data.order.id);
       message.success(data.message);
       // Gọi orderdetail sau khi đơn hàng đã được tạo thành công
       orderdetail({
@@ -57,9 +56,6 @@ const Pay = () => {
   });
   const { mutate: orderdetail } = useMutation({
     mutationFn: (data) => addOrderDetail(data),
-    onSuccess: (data) => {
-      message.success(data.message);
-    },
     onError: (errors) => {
       message.error(errors.response?.data?.error || "Có lỗi xảy ra");
     },

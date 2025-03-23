@@ -5,6 +5,7 @@ import avatar from "../velzon/assets/images/users/avatar-1.jpg";
 import UseDetailUser from "../../Hook/useDetailUser";
 import { Spin } from "antd";
 import FullScreenButton from "./FullScreen";
+import useAuth from "../../Hook/useAuth";
 const Layout = () => {
   const [open, setOpen] = useState(false);
   const [profile, setProfile] = useState(false);
@@ -20,11 +21,13 @@ const Layout = () => {
       document.removeEventListener("mousedown", handleClick);
     };
   }, []);
-  const {pathname}=useLocation();
-  const capitalizeFirstLetter = (str) =>str? str.charAt(0).toUpperCase() + str.slice(1):"Dashboards";
+  const { pathname } = useLocation();
+  const capitalizeFirstLetter = (str) =>
+    str ? str.charAt(0).toUpperCase() + str.slice(1) : "Dashboards";
 
   const thirdPathSegment = capitalizeFirstLetter(pathname.split("/")[2]);
-  const { data, isLoading } = UseDetailUser();
+  const { data, isLoading } = useAuth();
+  console.log(data);
   if (isLoading) {
     return (
       <Spin
@@ -721,7 +724,7 @@ const Layout = () => {
                       <span className="d-flex align-items-center">
                         <img
                           className="rounded-circle header-profile-user"
-                          src={data.avatar}
+                          src={data?.avatar}
                           alt="Header Avatar"
                         />
                         <span className="text-start ms-xl-2">
@@ -860,7 +863,7 @@ const Layout = () => {
             {/* /.modal-dialog */}
           </div>
           {/* /.modal */}
-          {/* ========== App Menu ========== */}
+          {/*=== App Menu=== */}
           <div className="app-menu navbar-menu bg-[#405189]">
             {/* LOGO */}
             <div className="navbar-brand-box w-64 py-4 ml-9">
@@ -931,6 +934,18 @@ const Layout = () => {
                     <Link to="categories" className="nav-link menu-link">
                       <i className="ri-layout-3-line" />
                       <span data-key="t-layouts">Categories</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="colors" className="nav-link menu-link">
+                      <i className="ri-layout-3-line" />
+                      <span data-key="t-layouts">Color</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="vouchers" className="nav-link menu-link">
+                      <i className="ri-layout-3-line" />
+                      <span data-key="t-layouts">Voucher</span>
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -1019,9 +1034,9 @@ const Layout = () => {
           {/* Left Sidebar End */}
           {/* Vertical Overlay*/}
           <div className="vertical-overlay" />
-          {/* ============================================================== */}
+          {/*====== */}
           {/* Start right Content here */}
-          {/* ============================================================== */}
+          {/*====== */}
           <div className="main-content overflow-hidden">
             <div className="page-content">
               <div className="container-fluid">
@@ -1035,7 +1050,9 @@ const Layout = () => {
                           <li className="breadcrumb-item">
                             <Link>Admin</Link>
                           </li>
-                          <li className="breadcrumb-item active">{thirdPathSegment}</li>
+                          <li className="breadcrumb-item active">
+                            {thirdPathSegment}
+                          </li>
                         </ol>
                       </div>
                     </div>

@@ -1,12 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { UseDetailOrder } from "../Hook/useOrder.jsx";
 import { Spin } from "antd";
 import { FormatDate, FormatDateTime, FormatPrice } from "../Format.jsx";
 
 const Bill = () => {
-  const { data, isLoading } = UseDetailOrder();
-  console.log(data);
+  const { id } = useParams();
+
+  const { data, isLoading } = UseDetailOrder(id);
   // console.log(data[0].order.voucher.discount);
+  console.log(data);
   if (isLoading) {
     return (
       <Spin
@@ -85,7 +87,7 @@ const Bill = () => {
             </tr>
             <tr>
               <th scope="row">Tổng cộng : </th>
-              {data[0]?.order.total_amount && (
+              {data[0]?.order?.total_amount && (
                 <td className="text-right">
                   <FormatPrice price={data[0].order.total_amount} />
                 </td>
@@ -124,7 +126,7 @@ const Bill = () => {
           <li>
             Tổng cộng :
             <strong className="ml-1">
-              {data[0].order.total_amount && (
+              {data[0]?.order.total_amount && (
                 <FormatPrice price={data[0].order.total_amount} />
               )}
             </strong>
