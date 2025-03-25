@@ -1,15 +1,16 @@
 import React from "react";
-import img1 from "../../velzon/assets/images/products/img-8.png";
-import img2 from "../../velzon/assets/images/products/img-7.png";
-import img3 from "../../velzon/assets/images/products/img-3.png";
 import { Link } from "react-router-dom";
 import { Spin } from "antd";
-import {UseDetailOrder} from "../../../Hook/useOrder";
+import { UseDetailOrder } from "../../../Hook/useOrder";
 import { FormatDate, FormatPrice } from "../../../Format";
+import { useDetailUserId } from "../../../Hook/useDetailUser";
 const Order_Detail = () => {
   const { data, isLoading } = UseDetailOrder();
-  console.log(data);
-  if (isLoading) {
+  const { data: user, isLoading: isLoadingUser } = useDetailUserId(
+    data?.[0]?.order?.user_id
+  );
+
+  if (isLoading || isLoadingUser) {
     return (
       <Spin
         size="large"
@@ -17,6 +18,9 @@ const Order_Detail = () => {
       />
     );
   }
+  const total =
+    Number(data[0].order.total_amount) + Number(data[0].order.voucher.discount);
+  console.log(data);
   return (
     <div>
       <div className="row mx-2">
@@ -24,8 +28,8 @@ const Order_Detail = () => {
           <div className="card">
             <div className="card-header">
               <div className="d-flex align-items-center">
-                <h5 className="card-title flex-grow-1 items-center mb-0">
-                  Order #{data.madh}
+                <h5 className="card-title flex-grow-1 items-center mb-0 text-uppercase">
+                  Order #{data[0].order.order_code}
                 </h5>
                 <div className="flex-shrink-0">
                   <a
@@ -44,22 +48,28 @@ const Order_Detail = () => {
                   <thead className="table-light text-muted">
                     <tr>
                       <th scope="col">Product Details</th>
-                      <th scope="col">Item Price</th>
-                      <th scope="col">Quantity</th>
-                      <th scope="col">Rating</th>
+                      <th scope="col" style={{ textAlign: "center" }}>
+                        Item Price
+                      </th>
+                      <th scope="col" style={{ textAlign: "center" }}>
+                        Quantity
+                      </th>
+                      <th scope="col" style={{ textAlign: "center" }}>
+                        Rating
+                      </th>
                       <th scope="col" className="text-end">
                         Total Amount
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {data.products.map((item) => (
+                    {data.map((item) => (
                       <tr>
                         <td>
                           <div className="d-flex">
                             <div className="flex-shrink-0 avatar-md bg-light rounded p-1">
                               <img
-                                src={img1}
+                                src={item.product_variant.product.img_thumb}
                                 alt=""
                                 className="img-fluid d-block"
                               />
@@ -70,21 +80,34 @@ const Order_Detail = () => {
                                   href="apps-ecommerce-product-details.html"
                                   className="link-primary"
                                 >
-                                  Sweatshirt for Men (Pink)
+                                  {item.product_variant.product.name.length > 20
+                                    ? item.product_variant.product.name.slice(
+                                        0,
+                                        20
+                                      ) + "..."
+                                    : item.product_variant.product.name}
                                 </a>
                               </h5>
                               <p className="text-muted mb-0">
-                                Color: <span className="fw-medium">Pink</span>
+                                Color:{" "}
+                                <span className="fw-medium">
+                                  {item.product_variant.color.name}
+                                </span>
                               </p>
                               <p className="text-muted mb-0">
-                                Size: <span className="fw-medium">M</span>
+                                Size:{" "}
+                                <span className="fw-medium">
+                                  {item.product_variant.size.name}
+                                </span>
                               </p>
                             </div>
                           </div>
                         </td>
-                        <td>$119.99</td>
-                        <td>02</td>
-                        <td>
+                        <td className="text-center">
+                          {<FormatPrice price={item.product_variant.price} />}
+                        </td>
+                        <td className="text-center">{item.quantity}</td>
+                        <td className="text-center">
                           <div className="text-warning fs-15">
                             <i className="ri-star-fill" />
                             <i className="ri-star-fill" />
@@ -93,7 +116,13 @@ const Order_Detail = () => {
                             <i className="ri-star-half-fill" />
                           </div>
                         </td>
-                        <td className="fw-medium text-end">$239.98</td>
+                        <td className="fw-medium text-end">
+                          {
+                            <FormatPrice
+                              price={item.product_variant.price * item.quantity}
+                            />
+                          }
+                        </td>
                       </tr>
                     ))}
 
@@ -105,20 +134,24 @@ const Order_Detail = () => {
                             <tr>
                               <td>Sub Total :</td>
                               <td className="text-end">
-                                {<FormatPrice price={data.totalPrice} />}
+                                {<FormatPrice price={total} />}
                               </td>
                             </tr>
                             <tr>
                               <td>
                                 Discount
-                                <span className="text-muted">(VELZON15)</span>:
+                                <span className="text-muted mx-1">
+                                  ({data[0].order.voucher.code})
+                                </span>
                                 :
                               </td>
                               <td className="text-end">
                                 {data.voucher === null ? (
                                   0
                                 ) : (
-                                  <FormatPrice price={data.voucher?.discount} />
+                                  <FormatPrice
+                                    price={data[0].order.voucher.discount}
+                                  />
                                 )}
                               </td>
                             </tr>
@@ -126,15 +159,15 @@ const Order_Detail = () => {
                               <td>Shipping Charge :</td>
                               <td className="text-end">$65.00</td>
                             </tr>
-                            <tr>
-                              <td>Estimated Tax :</td>
-                              <td className="text-end">$44.99</td>
-                            </tr>
                             <tr className="border-top border-top-dashed">
                               <th scope="row">Total :</th>
                               <th className="text-end">
                                 {" "}
-                                {<FormatPrice price={data.totalPrice} />}
+                                {
+                                  <FormatPrice
+                                    price={data[0].order.total_amount}
+                                  />
+                                }
                               </th>
                             </tr>
                           </tbody>
@@ -391,71 +424,12 @@ const Order_Detail = () => {
                 />
                 <h5 className="fs-16 mt-2">RQK Logistics</h5>
                 <p className="text-muted mb-0">ID: MFDS1400457854</p>
-                <p className="text-muted mb-0">Payment Mode : Debit Card</p>
+                <p className="text-muted mb-0">
+                  Payment Mode : {data[0].order.payment_method}
+                </p>
               </div>
             </div>
           </div>
-          {/*end card*/}
-          <div className="card">
-            <div className="card-header">
-              <div className="d-flex">
-                <h5 className="card-title flex-grow-1 mb-0">
-                  Customer Details
-                </h5>
-                <div className="flex-shrink-0">
-                  <Link to="" className="link-secondary">
-                    View Profile
-                  </Link>
-                </div>
-              </div>
-            </div>
-            <div className="card-body">
-              <ul className="list-unstyled mb-0 vstack gap-3">
-                <li>
-                  <div className="d-flex align-items-center">
-                    <div className="flex-shrink-0">
-                      <img
-                        src="assets/images/users/avatar-3.jpg"
-                        alt=""
-                        className="avatar-sm rounded"
-                      />
-                    </div>
-                    <div className="flex-grow-1 ms-3">
-                      <h6 className="fs-14 mb-1">Joseph Parkers</h6>
-                      <p className="text-muted mb-0">Customer</p>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <i className="ri-mail-line me-2 align-middle text-muted fs-16" />
-                  josephparker@gmail.com
-                </li>
-                <li>
-                  <i className="ri-phone-line me-2 align-middle text-muted fs-16" />
-                  +(256) 245451 441
-                </li>
-              </ul>
-            </div>
-          </div>
-          {/*end card*/}
-          <div className="card">
-            <div className="card-header">
-              <h5 className="card-title mb-0">
-                <i className="ri-map-pin-line align-middle me-1 text-muted" />
-                Billing Address
-              </h5>
-            </div>
-            <div className="card-body">
-              <ul className="list-unstyled vstack gap-2 fs-13 mb-0">
-                <li className="fw-medium fs-14">Joseph Parker</li>
-                <li>+(256) 245451 451</li>
-                <li>2186 Joyce Street Rocky Mount</li>
-                <li>New York - 25645</li>
-                <li>United States</li>
-              </ul>
-            </div>
-          </div>
-          {/*end card*/}
           <div className="card">
             <div className="card-header">
               <h5 className="card-title mb-0">
@@ -464,12 +438,10 @@ const Order_Detail = () => {
               </h5>
             </div>
             <div className="card-body">
-              <ul className="list-unstyled vstack gap-2 fs-13 mb-0">
-                <li className="fw-medium fs-14">Joseph Parker</li>
-                <li>+(256) 245451 451</li>
-                <li>2186 Joyce Street Rocky Mount</li>
-                <li>California - 24567</li>
-                <li>United States</li>
+              <ul className="list-unstyled vstack gap-2 fs-15 mb-0">
+              <li className="fw-medium fs-14">Name : {user.name}</li>
+                <li>Phone : {data[0].order.user_phone}</li>
+                <li>Address : {data[0].order.user_address}</li>
               </ul>
             </div>
           </div>

@@ -134,6 +134,10 @@ export const detailUser = async () => {
   const res = await Axios.get(`api/admin/users/${data.id}`);
   return res.data;
 };
+export const detailUserId = async (id) => {
+  const res = await Axios.get(`api/admin/users/${id}`);
+  return res.data;
+};
 export const deleteUser = async (id) => {
   const res = await Axios.delete(`api/admin/users/${id}`);
   return res.data;

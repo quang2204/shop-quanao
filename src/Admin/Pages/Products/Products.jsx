@@ -39,6 +39,7 @@ const Products = () => {
       />
     );
   }
+  console.log(products);
   return (
     <div className="row mx-2">
       <div className="col-lg-12">
@@ -152,78 +153,45 @@ const Products = () => {
                 >
                   <thead className="text-muted table-light">
                     <tr className="text-uppercase">
-                      <th scope="col" style={{ width: 25 }}>
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id="checkAll"
-                          />
-                        </div>
-                      </th>
-                      <th className="sort" data-sort="id">
-                        #
-                      </th>
-                      <th className="sort" data-sort="customer_name">
-                        Name
-                      </th>
-                      <th className="sort" data-sort="date">
-                        Product Date
-                      </th>
-                      <th className="sort" data-sort="amount">
-                        Amount
-                      </th>
-                      <th className="sort" data-sort="payment">
-                        Image
-                      </th>
-                      <th className="sort" data-sort="status">
-                        Status
-                      </th>
-                      <th className="sort" data-sort="city">
-                        Action
-                      </th>
+                      <th data-sort="id">#</th>
+
+                      <th data-sort="customer_name">Name</th>
+                      <th data-sort="date">Product Date</th>
+                      <th data-sort="amount">Amount</th>
+                      <th data-sort="payment">Image</th>
+                      <th data-sort="status">Status</th>
+                      <th data-sort="city">Action</th>
                     </tr>
                   </thead>
                   <tbody className="list form-check-all">
-                    {products?.data.map((item, index) => (
+                    {products?.data.data.map((item, index) => (
                       <tr key={index}>
-                        <th scope="row">
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              name="checkAll"
-                            />
-                          </div>
-                        </th>
                         <td className="id">
-                          <div
-                            to={`/admin/order_detail/${item.id}`}
-                            className="fw-medium"
-                          >
-                            {index + 1}
-                          </div>
+                          <div className="fw-medium">{index + 1}</div>
                         </td>
                         <td className="customer_name">
-                          <div
-                            to={`/admin/order_detail/${item.id}`}
-                            className="fw-medium link-primary"
+                          <Link
+                            to={`/admin/detailproduct/${item.id}`}
+                            className="fw-medium "
                           >
-                            {item.name}
-                          </div>
+                            {item.name.length > 30
+                              ? item.name.slice(0, 30) + "..."
+                              : item.name}
+                          </Link>
                         </td>
 
-                        <td className="date">
+                        <td className="datetext-center">
                           {<FormatDate date={item.created_at} />}
-                          <small className="text-muted">
-                            {<FormatDateTime dateString={item.created_at} />}
-                          </small>
                         </td>
                         <td className="amount">
-                          {/* {<FormatPrice price={order.total_amount} />} */}
+                          {<FormatPrice price={item.variants_min_price} />}
                         </td>
                         <td>
-                          <Image width={60} src={item.imageUrl} alt="product" />
+                          <Image
+                            width={60}
+                            src={item.img_thumb}
+                            alt="product"
+                          />
                         </td>
                         <td className="status">
                           <span
@@ -490,7 +458,7 @@ const Products = () => {
                           type="submit"
                           className="btn btn-success"
                           id="add-btn"
-                          onClick={()=>showModal(item.id)}
+                          onClick={() => showModal(item.id)}
                         >
                           Add Order
                         </button>
@@ -504,34 +472,34 @@ const Products = () => {
           </div>
         </div>
         <Modal
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
 
-        // className="modal fade zoomIn"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content border-none">
-            <div className="modal-body">
-              <div className="mt-2 text-center ">
-                <div className="flex justify-center">
-                  <img
-                    src="https://media-public.canva.com/de2y0/MAFqwzde2y0/1/tl.png"
-                    alt=""
-                    width={100}
-                  />
-                </div>
-                <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
-                  <h4>Are you sure ?</h4>
-                  <p className="text-muted mx-4 mb-0">
-                    Are you sure you want to remove this record ?
-                  </p>
+          // className="modal fade zoomIn"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content border-none">
+              <div className="modal-body">
+                <div className="mt-2 text-center ">
+                  <div className="flex justify-center">
+                    <img
+                      src="https://media-public.canva.com/de2y0/MAFqwzde2y0/1/tl.png"
+                      alt=""
+                      width={100}
+                    />
+                  </div>
+                  <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                    <h4>Are you sure ?</h4>
+                    <p className="text-muted mx-4 mb-0">
+                      Are you sure you want to remove this record ?
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </Modal>
+        </Modal>
       </div>
       {/*end col*/}
     </div>
