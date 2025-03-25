@@ -7,28 +7,26 @@ const Bill = () => {
   const { id } = useParams();
 
   const { data, isLoading } = UseDetailOrder(id);
-  // console.log(data[0].order.voucher.discount);
-  console.log(data);
-  if (isLoading) {
+  if (isLoading || !data || (Array.isArray(data) && data.length === 0)) {
     return (
       <Spin
         size="large"
-        className="h-[50vh] mt-[100px] flex items-center justify-center w-full "
+        className="h-[50vh] mt-[100px] flex items-center justify-center w-full"
       />
     );
   }
   const getOrderStatus = (status) => {
     const statusMapping = {
-      "1": "Chờ xử lý",
-      "2": "Đang xử lý",
-      "3": "Đang vận chuyển",
-      "4": "Đã giao hàng",
-      "5": "Hoàn thành",
-      "6": "Đã hủy",
-      "7": "Trả hàng",
-      "8": "Hoàn tiền"
+      1: "Chờ xử lý",
+      2: "Đang xử lý",
+      3: "Đang vận chuyển",
+      4: "Đã giao hàng",
+      5: "Hoàn thành",
+      6: "Đã hủy",
+      7: "Trả hàng",
+      8: "Hoàn tiền",
     };
-  
+
     return statusMapping[status] || "Trạng thái không xác định";
   };
   return (
@@ -142,14 +140,12 @@ const Bill = () => {
             <strong style={{ textTransform: "uppercase" }}>
               {data[0]?.order.status && getOrderStatus(data[0]?.order.status)}
             </strong>
-            
           </li>
           <li>
             Trạng thái thanh toán :
             <strong style={{ textTransform: "uppercase" }} className="ml-1">
               {data[0]?.order.payment_status && data[0]?.order.payment_status}
             </strong>
-            
           </li>
         </ul>
       </div>

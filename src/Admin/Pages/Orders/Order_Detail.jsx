@@ -20,7 +20,7 @@ const Order_Detail = () => {
   }
   const total =
     Number(data[0].order.total_amount) + Number(data[0].order.voucher.discount);
-  console.log(data);
+  
   return (
     <div>
       <div className="row mx-2">

@@ -3,7 +3,7 @@ import { Spin, Empty } from "antd";
 import { FormatPrice } from "../Format.jsx";
 import UseOrderByStatus from "../Hook/useOrderByStatus.jsx";
 import { useDetailOrderByUserId } from "../Hook/useOrder.jsx";
-import UseDetailUser from "../Hook/useDetailUser.jsx";
+import {UseDetailUser} from "../Hook/useDetailUser.jsx";
 
 const Order = () => {
   // const { data: user, isLoading } = useAuth();

@@ -170,7 +170,7 @@ const ShopingCart = () => {
                                 </div>
 
                                 <img
-                                  src={item.product_variant.product.img_thumb}
+                                  src={item?.product_variant?.product?.img_thumb}
                                   alt="IMG"
                                   style={{ width: 100, marginRight: 50 }}
                                 />
@@ -178,16 +178,16 @@ const ShopingCart = () => {
                             </td>
                             <td className="pl-8 ">
                               <Link
-                                to={`/product/${item.product_variant.product.id}`}
+                                to={`/product/${item?.product_variant?.product?.id}`}
                                 style={{ color: "black" }}
                               >
                                 <p className="m-b-4 text-[15px] font-normal">
-                                  {item.product_variant.product.name.length > 20
-                                    ? item.product_variant.product.name.slice(
+                                  {item?.product_variant?.product?.name.length > 20
+                                    ? item?.product_variant?.product?.name.slice(
                                         0,
                                         20
                                       ) + "..."
-                                    : item.product_variant.product.name}
+                                    : item?.product_variant?.product?.name}
                                 </p>
                               </Link>
                               <p className="text-gray-500 text-[14px]">

@@ -6,12 +6,21 @@ import { useParams } from "react-router-dom";
 import useAuth from "./useAuth.jsx";
 
 const UseDetailOrder = (id) => {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["order", id],
     queryFn: () => detailOrder(id),
-    // enabled: !!id,
+    enabled: !!id,
+    staleTime: 0, // Đảm bảo luôn fetch dữ liệu mới
+    cacheTime: 0, // Không cache dữ liệu
   });
-  return { data, isLoading };
+
+  return { 
+    data, 
+    isLoading, 
+    isError, 
+    error,
+    refetch // Cho phép refetch thủ công khi cần
+  };
 };
 const useDetailOrderByUserId = () => {
   const { data: auth } = useAuth();
