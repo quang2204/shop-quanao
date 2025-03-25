@@ -1,5 +1,5 @@
 import { Spin, message } from "antd";
-import UseDetailUser from "../Hook/useDetailUser";
+import {UseDetailUser} from "../Hook/useDetailUser";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

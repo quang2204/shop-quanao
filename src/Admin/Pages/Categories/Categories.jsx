@@ -53,9 +53,7 @@ const Categories = () => {
         <div className="card" id="orderList">
           <div className="card-header border-0 bg-none">
             <div className="row align-items-center gy-3">
-              <div className="col-sm">
-                <h5 className="card-title mb-0 fw-medium">Order History</h5>
-              </div>
+              <div className="col-sm"></div>
               <div className="col-sm-auto">
                 <div className="d-flex gap-1 flex-wrap">
                   <button
@@ -70,7 +68,7 @@ const Categories = () => {
               </div>
             </div>
           </div>
-          <div className="card-body border border-dashed border-end-0 border-start-0">
+          <div className="card-body border border-dashed border-end-0 border-start-0 mb-4">
             <form>
               <div className="row g-3">
                 <div className="col-xxl-5 col-sm-5">
@@ -78,7 +76,7 @@ const Categories = () => {
                     <input
                       type="text"
                       className="form-control search"
-                      placeholder="Search for order ID, customer, order status or something..."
+                      placeholder="Search for Categories "
                     />
                     <i className="ri-search-line search-icon" />
                   </div>
@@ -111,7 +109,7 @@ const Categories = () => {
                     </tr>
                   </thead>
                   <tbody className="list form-check-all">
-                    {category.map((item, index) => (
+                    {category?.data.map((item, index) => (
                       <tr key={item.id}>
                         <td>{index + 1}</td>
                         <td className="id">
@@ -186,7 +184,7 @@ const Categories = () => {
           </div>
         </div>
       </div>
-      //Modal delete
+      {/* //Modal delete */}
       <Modal
         open={isModalOpen}
         onOk={handleOk}
@@ -216,7 +214,7 @@ const Categories = () => {
           </div>
         </div>
       </Modal>
-      // Modal add
+      {/* // Modal add */}
       <Modal
         open={isModalOpenAdd}
         onOk={handleSubmit(onSubmit)}
@@ -226,7 +224,7 @@ const Categories = () => {
       >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content border-none">
-            <form className="tablelist-form" >
+            <form className="tablelist-form">
               <div className="">
                 <div className="mb-1">
                   <label htmlFor="customername-field" className="form-label">

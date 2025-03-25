@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import img from "../../images/icons/logo-02.png";
 import avatar from "../velzon/assets/images/users/avatar-1.jpg";
-import UseDetailUser from "../../Hook/useDetailUser";
+import {UseDetailUser} from "../../Hook/useDetailUser";
 import { Spin } from "antd";
 import FullScreenButton from "./FullScreen";
 import useAuth from "../../Hook/useAuth";
@@ -732,7 +732,7 @@ const Layout = () => {
                             {data.name}
                           </span>
                           <span className="d-none d-xl-block ms-1 fs-12 user-name-sub-text">
-                            {data.role === 1 ? "Admin" : "User"}
+                            Admin
                           </span>
                         </span>
                       </span>

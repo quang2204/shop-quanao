@@ -8,5 +8,12 @@ const UseDetailUser = () => {
   });
   return { data, isLoading };
 };
+const useDetailUserId=(id)=>{
+  const { data, isLoading } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => detailUser(id),
 
-export default UseDetailUser;
+  });
+  return { data, isLoading };
+}
+export  {UseDetailUser,useDetailUserId};

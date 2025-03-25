@@ -5,7 +5,7 @@ import { Image, Spin, Upload } from "antd";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import UseDetailUser from "../Hook/useDetailUser";
+import {UseDetailUser} from "../Hook/useDetailUser";
 import useUpdateUser from "../Hook/useUpdateUser";
 const Portfolio = () => {
   const [fileList, setFileList] = useState([]);

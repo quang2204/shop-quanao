@@ -4,7 +4,8 @@ import { Empty, Spin } from "antd";
 import { Link } from "react-router-dom";
 import { FormatPrice } from "../Format";
 import { useProductVariant } from "../Hook/useDetailProduct";
-
+import { motion } from "framer-motion";
+import { useBanners } from "../Hook/useBanner";
 const Home = () => {
   const slide = [
     {
@@ -20,8 +21,9 @@ const Home = () => {
       image: "src/images/slide-06.jpg",
     },
   ];
+  const { banners, loading, error } = useBanners();
+
   const { products, isProducts } = useProduct();
-  console.log(products);
   const [slick, setSlick] = useState(slide);
   const [count, setCount] = useState(0);
   const next = () => {
@@ -50,67 +52,50 @@ const Home = () => {
   }
   return (
     <>
-      <section className="section-slide">
-        <div className="wrap-slick1 rs2-slick1">
-          <div className="slick1">
-            <div
+    <section className="section-slide">
+      <div className="wrap-slick1 rs2-slick1">
+        <div className="slick1">
+          {banners.length > 0 && (
+            <motion.div
+              key={banners[count].id}
               className="item-slick1 bg-overlay1"
-              key={slick[count].id}
-              data-caption="Women’s Wear"
+              initial={{ opacity: 0, filter: "blur(10px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, filter: "blur(10px)" }}
+              transition={{ duration: 1 }}
               style={{
-                backgroundImage: `url(${slick[count].image})`,
+                backgroundImage: `url(${banners[count].image})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                height: "70vh",
+                borderRadius: "10px",
+                overflow: "hidden",
               }}
-            >
-              <div className="container h-full">
-                <div className="flex-col-c-m h-full p-t-100 p-b-60 respon5">
-                  <div
-                    className="layer-slick1 animated visible-false"
-                    data-appear="fadeInDown"
-                    data-delay="0"
-                  >
-                    <span className="ltext-202 txt-center cl0 respon2">
-                      Women Collection 2023
-                    </span>
-                  </div>
-                  <div
-                    className="layer-slick1 animated visible-false"
-                    data-appear="fadeInUp"
-                    data-delay="800"
-                  >
-                    <h2 className="ltext-104 txt-center cl0 p-t-22 p-b-40 respon1">
-                      New arrivals
-                    </h2>
-                  </div>
-                  <div
-                    className="layer-slick1 animated visible-false"
-                    data-appear="zoomIn"
-                    data-delay="1600"
-                  >
-                    <a
-                      className="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn2 p-lr-15 trans-04"
-                      href="?act=product"
-                    >
-                      Shop Now
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <button
-            className="arrow-slick1 prev-slick1 slick-arrow"
-            onClick={pre}
-          >
-            <i className="zmdi zmdi-caret-left"></i>
-          </button>
-          <button
-            className="arrow-slick1 next-slick1 slick-arrow"
-            onClick={next}
-          >
-            <i className="zmdi zmdi-caret-right"></i>
-          </button>
+            />
+          )}
         </div>
-      </section>
+        <button
+          className="arrow-slick1 prev-slick1 slick-arrow"
+          onClick={pre}
+          style={{
+            borderRadius: "50%",
+            padding: "10px",
+          }}
+        >
+          <i className="zmdi zmdi-caret-left" style={{ color: "#fff", fontSize: "50px" }}></i>
+        </button>
+        <button
+          className="arrow-slick1 next-slick1 slick-arrow"
+          onClick={next}
+          style={{
+            borderRadius: "50%",
+            padding: "10px",
+          }}
+        >
+          <i className="zmdi zmdi-caret-right" style={{ color: "#fff", fontSize: "50px" }}></i>
+        </button>
+      </div>
+    </section>
 
       <div className="sec-banner bg0 p-t-80 p-b-50">
         <div className="container">
