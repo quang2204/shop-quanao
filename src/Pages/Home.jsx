@@ -1,38 +1,47 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useProduct, useProducts } from "../Hook/useProduct";
 import { Empty, Spin } from "antd";
 import { Link } from "react-router-dom";
 import { FormatPrice } from "../Format";
 import { motion } from "framer-motion";
 import { useBanners } from "../Hook/useBanner";
-
 const Home = () => {
-  const { products, isProducts } = useProduct();
+  const slide = [
+    {
+      id: 1,
+      image: "src/images/slide-04.jpg",
+    },
+    {
+      id: 2,
+      image: "src/images/slide-05.jpg",
+    },
+    {
+      id: 3,
+      image: "src/images/slide-06.jpg",
+    },
+  ];
   const { banners, loading, error } = useBanners();
+
+  const { products, isProducts } = useProduct();
+  const [slick, setSlick] = useState(slide);
   const [count, setCount] = useState(0);
-
   const next = () => {
-    setCount((prev) => (prev + 1) % banners.length);
+    if (count < 2) {
+      setCount(count + 1);
+    }
+    if (count === 2) {
+      setCount(0);
+    }
   };
-
   const pre = () => {
-    setCount((prev) => (prev - 1 + banners.length) % banners.length);
+    if (count > 0) {
+      setCount(count - 1);
+    }
+    if (count === 0) {
+      setCount(2);
+    }
   };
-
-  useEffect(() => {
-    const interval = setInterval(next, 5000); 
-    return () => clearInterval(interval);
-  }, [banners.length]);
-
-  if (loading) {
-    return (
-      <Spin
-        size="large"
-        className="h-[50vh] mt-[100px] flex items-center justify-center w-full "
-      />
-    );
-  }
-  if (isProducts) {
+  if (isProducts ) {
     return (
       <Spin
         size="large"
@@ -42,7 +51,7 @@ const Home = () => {
   }
   return (
     <>
-<section className="section-slide">
+    <section className="section-slide">
       <div className="wrap-slick1 rs2-slick1">
         <div className="slick1">
           {banners.length > 0 && (
@@ -93,6 +102,7 @@ const Home = () => {
             <div className="col-md-6 col-xl-4 p-b-30 m-lr-auto">
               <div className="block1 wrap-pic-w">
                 <img src="src/images/banner-01.jpg" alt="IMG-BANNER" />
+
                 <a
                   href="product.html"
                   className="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3"
@@ -101,10 +111,12 @@ const Home = () => {
                     <span className="block1-name ltext-102 trans-04 p-b-8">
                       Women
                     </span>
+
                     <span className="block1-info stext-102 trans-04">
                       Spring 2018
                     </span>
                   </div>
+
                   <div className="block1-txt-child2 p-b-4 trans-05">
                     <div className="block1-link stext-101 cl0 trans-09">
                       Shop Now
@@ -117,6 +129,7 @@ const Home = () => {
             <div className="col-md-6 col-xl-4 p-b-30 m-lr-auto">
               <div className="block1 wrap-pic-w">
                 <img src="src/images/banner-02.jpg" alt="IMG-BANNER" />
+
                 <a
                   href="product.html"
                   className="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3"
@@ -125,10 +138,12 @@ const Home = () => {
                     <span className="block1-name ltext-102 trans-04 p-b-8">
                       Men
                     </span>
+
                     <span className="block1-info stext-102 trans-04">
                       Spring 2018
                     </span>
                   </div>
+
                   <div className="block1-txt-child2 p-b-4 trans-05">
                     <div className="block1-link stext-101 cl0 trans-09">
                       Shop Now
@@ -141,6 +156,7 @@ const Home = () => {
             <div className="col-md-6 col-xl-4 p-b-30 m-lr-auto">
               <div className="block1 wrap-pic-w">
                 <img src="src/images/banner-03.jpg" alt="IMG-BANNER" />
+
                 <a
                   href="product.html"
                   className="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3"
@@ -149,10 +165,12 @@ const Home = () => {
                     <span className="block1-name ltext-102 trans-04 p-b-8">
                       Accessories
                     </span>
+
                     <span className="block1-info stext-102 trans-04">
                       New Trend
                     </span>
                   </div>
+
                   <div className="block1-txt-child2 p-b-4 trans-05">
                     <div className="block1-link stext-101 cl0 trans-09">
                       Shop Now
@@ -173,9 +191,9 @@ const Home = () => {
 
           <div className="row isotope-grid mt-4">
             {products ? (
-              products?.data
+              products?.data?.data
                 .filter((item) => item.is_active === true)
-                .map((item) => (
+                .map((item, index) => (
                   <div
                     className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women"
                     key={item.id}
@@ -198,8 +216,8 @@ const Home = () => {
                           >
                             {item.name}
                           </Link>
-                          <span className="stext-105 cl3">
-                            {<FormatPrice price={item.price} />}{" "}
+                          <span className="stext-107 cl3">
+                            {<FormatPrice price={item.variants_min_price} />}
                           </span>
                         </div>
                       </div>
