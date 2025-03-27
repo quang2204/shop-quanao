@@ -250,6 +250,42 @@ export const getBanners = async (page = 1) => {
   return res.data;
 };
 
+//banners 
+export const getBannerDetail = async (id) => {
+  const res = await Axios.get(`/api/admin/banners/${id}`);
+  return res.data;
+};
+
+export const createBanner = async (data) => {
+  const res = await Axios.post(`/api/admin/banners`, data);
+  return res.data;
+};
+
+export const updateBanner = async (id, data) => {
+  const res = await Axios.put(`/api/admin/banners/${id}`, data);
+  return res.data;
+};
+
+export const deleteBanner = async (id) => {
+  await Axios.delete(`/api/admin/banners/${id}`);
+};
+//sizes 
+export const getSizes = async (page = 1) => {
+  const res = await Axios.get(`/api/admin/sizes?page=${page}`);
+  return res.data;
+};
+export const createSize = async (data) => {
+  const res = await Axios.post(`/api/admin/sizes`, data);
+  return res.data;
+};
+export const updateSize = async (id, data) => {
+  const res = await Axios.put(`/api/admin/sizes/${id}`, data);
+  return res.data;
+};
+export const deleteSize = async (id) => {
+  const res = await Axios.delete(`/api/admin/sizes/${id}`);
+  return res.data;
+};
 export const useLoginGoogle = () => {
   const loginWithGoogle = () => {
     // Chuyển hướng người dùng đến URL xác thực của Google
