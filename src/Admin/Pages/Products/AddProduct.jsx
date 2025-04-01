@@ -1,9 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { Form, Input, Select, Spin, TreeSelect, Upload } from "antd";
+import { Form, Input, Select, Spin, TreeSelect, Upload, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import {useCategory} from "../../../Hook/useCategory.jsx";
+import { useCategory } from "../../../Hook/useCategory.jsx";
 import TextArea from "antd/es/input/TextArea";
-import { useAddProduct } from "../../../Hook/useProduct.jsx";
+import { useNavigate } from "react-router-dom";
+import { addProduct, addProductGallerie } from "../../../Apis/Api.jsx";
+import { useMutation, useQueryClient } from "react-query";
+import { useColors } from "../../../Hook/useColor.jsx";
+import { useSizes } from "../../../Hook/useSize.jsx";
+// import { useAddProduct, useAddProductGalleries } from "../../../Hook/useProduct.jsx";
 // import { Link } from "react-router-dom";
 
 const AddProduct = () => {
@@ -15,8 +20,46 @@ const AddProduct = () => {
   const [classify1, setClassify1] = useState(false);
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
-  const { mutate } = useAddProduct();
+  const [fileList, setFileList] = useState([]);
+  const { colors, isLoading: isLoadingColor } = useColors();
+  const { sizes, isLoadingSize } = useSizes();
+  // const { mutate } = useAddProduct();
+  const queryClient = useQueryClient();
+
+  const navigate = useNavigate();
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (data) => addProduct(data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      message.success("Thêm sản phẩm thành công");
+      addProductGalleries(data.product.id);
+      // navigate("/admin");
+    },
+    onError: (error) => {
+      message.error(error.response.data.error);
+    },
+  });
+  const productGalleries = {
+    images: fileList.map((item) => item.url),
+  };
+  const { mutate: addProductGalleries, isLoading: isAddingGalleries } =
+    useMutation({
+      mutationFn: (id) => addProductGallerie(id, productGalleries),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["productsGalleries"] });
+      },
+      onError: (error) => {
+        message.error(error.response.data.error);
+      },
+    });
+
   const [types, setTypes] = useState([
+    {
+      id: 0,
+      type: "",
+    },
+  ]);
+  const [types1, setTypes1] = useState([
     {
       id: 0,
       type: "",
@@ -32,6 +75,7 @@ const AddProduct = () => {
       id: 0,
     },
   ]);
+
   const [selectedIds, setSelectedIds] = useState([0]);
   const [selectedvalue, setSelectedvalue] = useState([]);
   const [selectedIds1, setSelectedIds1] = useState([0]);
@@ -47,40 +91,95 @@ const AddProduct = () => {
     });
   }, [tabs]);
   const [value, setValue] = useState();
-  const [fileList, setFileList] = useState([]);
   const [fileList1, setFileList1] = useState([]);
-  const handleSelect = (id, value) => {
-    const check = classifys.filter((item) => item.id == id);
-    if (check.length > 0) return;
-    setClassifys([...classifys, { id }]);
-    setSelectedIds([...selectedIds, id]);
-    setSelectedvalue([...selectedvalue, value]);
-    setTypes([...types, { id, type: value }]);
+  const handleSelect = (index, value) => {
+    const id = value;
+
+    // Kiểm tra nếu id đã tồn tại => không cho tạo mới
+    if (classifys.some((item) => item.id === id)) {
+      return; // Dừng hàm ngay nếu id đã tồn tại
+    }
+
+    // Loại bỏ id = 0 nếu id mới > 0
+    let newClassifys =
+      id !== 0 ? classifys.filter((item) => item.id !== 0) : classifys;
+    let newSelectedIds =
+      id > 0 ? selectedIds.filter((item) => item !== 0) : selectedIds;
+    let newSelectedValues =
+      id > 0
+        ? selectedvalue.filter((item, i) => selectedIds[i] !== 0)
+        : selectedvalue;
+    let newTypes = id > 0 ? types.filter((item) => item.id !== 0) : types;
+
+    // Thêm mục đã chọn
+    newClassifys = [...newClassifys, { id }];
+    newSelectedIds = [...newSelectedIds, id];
+    newSelectedValues = [...newSelectedValues, value].filter(
+      (item) => item !== ""
+    ); // Loại bỏ giá trị rỗng
+    newTypes = [...newTypes, { id, type: value }];
+
+    // Nếu không có ô trống nào, thêm một ô trống mới (id = 0)
+    if (!newSelectedValues.includes("")) {
+      newClassifys.push({ id: 0 });
+      newSelectedIds.push(0);
+      newTypes.push({ id: 0, type: "" });
+    }
+
+    // Cập nhật state
+    setClassifys(newClassifys);
+    setSelectedIds(newSelectedIds);
+    setSelectedvalue(newSelectedValues);
+    setTypes(newTypes);
   };
-  const handleSelect1 = (id, value) => {
-    const check = classifys1.filter((item) => item.id == id);
-    if (check.length > 0) return;
-    setClassifys1([...classifys1, { id }]);
-    setSelectedIds1([...selectedIds1, id]);
-    setSelectedvalue1([...selectedvalue1, value]);
+
+  const handleSelect1 = (index, value) => {
+    const id = value; // Lấy id từ value
+    if (classifys1.some((item) => item.id === id)) return;
+    // Loại bỏ id = 0 nếu id mới > 0
+    let newClassifys =
+      id > 0 ? classifys1.filter((item) => item.id !== 0) : classifys1;
+    let newSelectedIds =
+      id > 0 ? selectedIds1.filter((item) => item !== 0) : selectedIds1;
+    let newSelectedValues =
+      id > 0
+        ? selectedvalue1.filter((item, i) => selectedIds1[i] !== 0)
+        : [...selectedvalue1];
+    let newTypes = id > 0 ? types1.filter((item) => item.id !== 0) : types1;
+
+    // Thêm mục đã chọn và một ô trống
+    newClassifys = [...newClassifys, { id }];
+    newSelectedIds = [...newSelectedIds, id];
+    newSelectedValues = [...newSelectedValues, value].filter(
+      (item) => item !== ""
+    ); // Loại bỏ giá trị rỗng
+    newTypes = [...newTypes, { id, type: value }];
+
+    // Nếu chưa có ô trống nào, thêm một ô trống mới
+    if (!newSelectedValues.includes("")) {
+      newClassifys.push({ id: 0 });
+      newSelectedIds.push(0);
+      newTypes.push({ id: 0, type: "" });
+    }
+
+    // Cập nhật state
+    setClassifys1(newClassifys);
+    setSelectedIds1(newSelectedIds);
+    setSelectedvalue1(newSelectedValues);
+    setTypes1(newTypes);
   };
+
   const transformToTreeData = (data) => {
     return data?.map((items) => {
       return {
         // selectable: false,
-        value: items._id,
+        value: items.id,
         title: items.name,
-        children: items.SubCategory?.map((item) => {
-          return {
-            value: item._id,
-            title: item.name,
-          };
-        }),
       };
     });
   };
 
-  const treeData = transformToTreeData(category);
+  const treeData = transformToTreeData(category?.data);
   const onChange = (newValue) => {
     setValue(newValue);
   };
@@ -100,6 +199,13 @@ const AddProduct = () => {
 
     setFileList(newFileList);
     // setImg(!img);
+  };
+  const beforeUpload = (file) => {
+    const isImage = file.type.startsWith("image/");
+    if (!isImage) {
+      message.error("Chỉ được tải lên định dạng ảnh!");
+    }
+    return isImage || Upload.LIST_IGNORE;
   };
   const handleDeleteSelect = () => {
     setClassify(false);
@@ -138,8 +244,6 @@ const AddProduct = () => {
       id: index,
       type: item,
     }));
-
-    console.log(result);
   };
   const onhandluploadimgPl = (e) => {
     let newFileList = [...e.fileList];
@@ -151,7 +255,6 @@ const AddProduct = () => {
       }
       return file;
     });
-    console.log(fileList1);
 
     setFileList1(newFileList);
     // setImg(!img);
@@ -165,11 +268,17 @@ const AddProduct = () => {
     } else {
       setSelectedIds(selectedIds.filter((item) => item !== id));
     }
+    setTypes(types.filter((item) => item.id !== id));
     setClassifys(classifys.filter((item) => item.id !== id));
     setSelectedvalue(selectedvalue.filter((_, i) => i !== id));
   };
   const handleDelete1 = (id) => {
-    setSelectedIds1(selectedIds.filter((item) => item !== id));
+    if (selectedIds1.length > 2) {
+      setSelectedIds1([]);
+    } else {
+      setSelectedIds1(selectedIds1.filter((item) => item !== id));
+    }
+    setTypes(types.filter((item) => item.id !== id));
     setClassifys1(classifys.filter((item) => item.id !== id));
     setSelectedvalue1(selectedvalue.filter((_, i) => i !== id));
   };
@@ -177,30 +286,33 @@ const AddProduct = () => {
   const onSubmit = (data) => {
     const variants = [];
     let index = 0;
-    while (data[`price${index}`] !== undefined) {
-      // Dynamically check and assign the `colorselect` field
-      const color =
-        data[`select${index + 1}`] === "color" ? selectedvalue[`${index}`] : "";
-      const size = data[`select2`] === "size" ? selectedvalue1[`${index}`] : "";
-      variants.push({
-        color, // Include colorselect if applicable
-        size,
-        price: data[`price-${index}`],
-        quantity: data[`quantity-${index}`],
-        imgUrl: data[`imgUrl-${index}`].fileList[0].url,
-      });
-      index++;
-    }
-    const datas = {
+    // while (data[`price${index}`] !== undefined) {
+    //   // Dynamically check and assign the `colorselect` field
+    //   const color =
+    //     data[`select${index + 1}`] === "color" ? selectedvalue[`${index}`] : "";
+    //   const size = data[`select2`] === "size" ? selectedvalue1[`${index}`] : "";
+    //   variants.push({
+    //     color, // Include colorselect if applicable
+    //     size,
+    //     price: data[`price-${index}`],
+    //     quantity: data[`quantity-${index}`],
+    //     imgUrl: data[`imgUrl-${index}`].fileList[0].url,
+    //   });
+    //   index++;
+    // }
+    const product = {
       name: data.productName,
-      price: data.price0,
-      caterori: data.categoryId,
-      albumImg: data.ablumImg.fileList.map((item) => item.url),
-      imageUrl: data.ablumImg.fileList.map((item) => item.url)[0],
+      // price: data.price,
+      category_id: data.categoryId,
+      // albumImg: data.ablumImg.fileList.map((item) => item.url),
+      img_thumb: data.ablumImg.fileList.map((item) => item.url)[0],
       description: data.description,
-      variants: variants,
+      slug: data.slugName,
+      is_active: true,
+      // variants: variants,
     };
-    mutate(datas);
+
+    mutate(product);
   };
   const validateFileList = () => {
     if (fileList.length < 1) {
@@ -291,10 +403,10 @@ const AddProduct = () => {
                 style={{ boxShadow: "0px 0px 4px 1px #d1d1d1" }}
               >
                 <div className=" text-[1.5rem] font-bold">Thông tin cơ bản</div>
-                <div className="grid grid-cols-12 gap-4">
-                  <div className="flex gap-1 mt-4 mb-2 col-span-2">
+                <div className="grid grid-cols-12 gap-4 ">
+                  <div className="flex gap-1 mt-4 mb-2 col-span-2 justify-end">
                     <span className="text-red-500 h-[17px] ">*</span>
-                    <div className="text-[1rem]">Hình ảnh sản phẩm</div>
+                    <div className="text-[1rem] ">Hình ảnh sản phẩm</div>
                   </div>
                   <Form.Item
                     name="ablumImg"
@@ -314,6 +426,7 @@ const AddProduct = () => {
                         upload_preset: "image1",
                       }}
                       accept="image/*"
+                      beforeUpload={beforeUpload}
                       maxCount={5}
                       onChange={(e) => onhandluploadimg(e)}
                     >
@@ -408,6 +521,37 @@ const AddProduct = () => {
                     />
                   </Form.Item>
                 </div>
+                <div className="grid grid-cols-12 gap-4 mb-2">
+                  <div className="text-[1rem] col-span-2 text-right">
+                    <span className="text-red-500 h-[17px] ">*</span>
+                    Slug
+                  </div>
+                  <Form.Item
+                    className="col-span-10"
+                    name="slugName"
+                    // label="Tên sản phẩm"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Slug là bắt buộc!",
+                      },
+                      {
+                        min: 3,
+                        message: "Slug phải có ít nhất 3 ký tự!",
+                      },
+                      {
+                        max: 50,
+                        message: "Slug không được vượt quá 50 ký tự!",
+                      },
+                    ]}
+                  >
+                    <Input
+                      size="large"
+                      placeholder="Slug sản phẩm"
+                      className="col-span-10"
+                    />
+                  </Form.Item>
+                </div>
                 <div className="grid grid-cols-12  gap-4 mb-2">
                   <div className="text-[0.99rem] col-span-2 text-right">
                     <span className="text-red-500 h-[17px] ">*</span>
@@ -429,7 +573,7 @@ const AddProduct = () => {
                       showSearch
                       value={value}
                       dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
-                      placeholder="Please select"
+                      placeholder="Vui lòng chọn ngành hàng"
                       allowClear
                       treeDefaultExpandAll
                       onChange={onChange}
@@ -455,6 +599,10 @@ const AddProduct = () => {
                       {
                         min: 100,
                         message: "Mô tả phải có ít nhất 100 ký tự!",
+                      },
+                      {
+                        max: 250,
+                        message: "Mô tả phải có không quá 250 ký tự!",
                       },
                     ]}
                   >
@@ -502,7 +650,7 @@ const AddProduct = () => {
                       ) : (
                         <div className="bg-[#f5f5f5] p-4 rounded-lg mb-4">
                           <div className="flex items-center gap-4 justify-content-between mb-3">
-                            <div className="flex  gap-4">
+                            <div className="flex gap-4">
                               <div className="text-[1.04rem]">Phân loại 1</div>
                               <Form.Item
                                 name="select1"
@@ -524,14 +672,13 @@ const AddProduct = () => {
                                     {
                                       value: "color",
                                       label: "Màu sắc",
-                                      disabled:
-                                        select1 === "color" ? true : false,
+
+                                      disabled: select1 === "color",
                                     },
                                     {
                                       value: "size",
                                       label: "Size",
-                                      disabled:
-                                        select1 === "size" ? true : false,
+                                      disabled: select1 === "size",
                                     },
                                   ]}
                                 />
@@ -547,15 +694,19 @@ const AddProduct = () => {
                             </button>
                           </div>
 
-                          <div className="flex items-center gap-8">
+                          <div className="flex items-center gap-10">
                             <div className="text-[1rem]">Tùy chọn</div>
-
                             <div className="grid grid-cols-2 gap-4">
                               {classifys.map((item, index) => (
-                                <div key={index}>
+                                <div
+                                  key={item.id || `new-${index}`}
+                                  className={item.id}
+                                >
+                                  {" "}
+                                  {/* Xử lý key cho item có id = 0 */}
                                   <Select
                                     showSearch
-                                    placeholder="Select a person"
+                                    placeholder={`Select a ${select}`}
                                     optionFilterProp="label"
                                     className="min-w-[200px]"
                                     onChange={(value) =>
@@ -563,53 +714,31 @@ const AddProduct = () => {
                                     }
                                     onSearch={onSearch}
                                     options={
-                                      select
-                                        ? [
-                                            {
-                                              value:
-                                                select === "color" ? "đỏ" : "m",
-                                              label:
-                                                select === "color" ? "Đỏ" : "M",
-                                              disabled:
-                                                selectedvalue.includes(
-                                                  select === "color"
-                                                    ? "đỏ"
-                                                    : "m"
-                                                ) &&
-                                                selectedvalue[index] !==
-                                                  (select === "color"
-                                                    ? "đỏ"
-                                                    : "m"),
-                                            },
-                                            {
-                                              value:
-                                                select === "color"
-                                                  ? "vàng"
-                                                  : "s",
-                                              label:
-                                                select === "color"
-                                                  ? "Vàng"
-                                                  : "S",
-                                              disabled:
-                                                selectedvalue.includes(
-                                                  select === "color"
-                                                    ? "vàng"
-                                                    : "s"
-                                                ) &&
-                                                selectedvalue[index] !==
-                                                  (select === "color"
-                                                    ? "vàng"
-                                                    : "s"),
-                                            },
-                                          ]
-                                        : []
+                                      select === "color"
+                                        ? colors?.data?.map((colorItem) => ({
+                                            value: colorItem.id,
+                                            label: colorItem.name,
+                                            disabled: selectedvalue.includes(
+                                              colorItem.id
+                                            ),
+                                          })) || []
+                                        : select === "size"
+                                          ? sizes?.data?.map((sizeItem) => ({
+                                              value: sizeItem.id,
+                                              label: sizeItem.name,
+                                              disabled: selectedIds.includes(
+                                                sizeItem.id
+                                              ),
+                                            })) || []
+                                          : []
                                     }
+                                    value={selectedvalue[index] || undefined}
                                   />
                                   {classifys.length > 1 && (
                                     <button
-                                      type="button"
-                                      className="ml-3"
-                                      onClick={() => handleDelete(index)}
+                                      onClick={() =>
+                                        handleDelete(index, item.id)
+                                      }
                                     >
                                       <i className="fa fa-trash text-[#ee4d2d] text-[17px]"></i>
                                     </button>
@@ -649,14 +778,12 @@ const AddProduct = () => {
                                     {
                                       value: "color",
                                       label: "Màu sắc",
-                                      disabled:
-                                        select1 === "color" ? true : false,
+                                      disabled: select === "color",
                                     },
                                     {
                                       value: "size",
                                       label: "Size",
-                                      disabled:
-                                        select1 === "size" ? true : false,
+                                      disabled: select === "size",
                                     },
                                   ]}
                                 />
@@ -679,7 +806,7 @@ const AddProduct = () => {
                                 <div key={index}>
                                   <Select
                                     showSearch
-                                    placeholder="Select a person"
+                                    placeholder={`Select a ${select}`}
                                     optionFilterProp="label"
                                     className="min-w-[200px]"
                                     onChange={(value) =>
@@ -687,51 +814,25 @@ const AddProduct = () => {
                                     }
                                     onSearch={onSearch}
                                     options={
-                                      select1
-                                        ? [
-                                            {
-                                              value:
-                                                select1 === "color"
-                                                  ? "đỏ"
-                                                  : "m",
-                                              label:
-                                                select1 === "color"
-                                                  ? "Đỏ"
-                                                  : "M",
-                                              disabled:
-                                                selectedvalue1.includes(
-                                                  select1 === "color"
-                                                    ? "đỏ"
-                                                    : "m"
-                                                ) &&
-                                                selectedvalue1[index] !==
-                                                  (select1 === "color"
-                                                    ? "đỏ"
-                                                    : "m"),
-                                            },
-                                            {
-                                              value:
-                                                select1 === "color"
-                                                  ? "vàng"
-                                                  : "s",
-                                              label:
-                                                select1 === "color"
-                                                  ? "Vàng"
-                                                  : "S",
-                                              disabled:
-                                                selectedvalue1.includes(
-                                                  select1 === "color"
-                                                    ? "vàng"
-                                                    : "s"
-                                                ) &&
-                                                selectedvalue1[index] !==
-                                                  (select1 === "color"
-                                                    ? "vàng"
-                                                    : "s"),
-                                            },
-                                          ]
-                                        : []
+                                      select1 === "color"
+                                        ? colors?.data?.map((colorItem) => ({
+                                            value: colorItem.id,
+                                            label: colorItem.name,
+                                            disabled: selectedvalue1.includes(
+                                              colorItem.name
+                                            ),
+                                          })) || []
+                                        : select1 === "size"
+                                          ? sizes?.data?.map((sizeItem) => ({
+                                              value: sizeItem.id,
+                                              label: sizeItem.name,
+                                              disabled: selectedIds1.includes(
+                                                sizeItem.id
+                                              ),
+                                            })) || []
+                                          : []
                                     }
+                                    value={selectedvalue1[index] || undefined}
                                   />
                                   {classifys1.length > 1 && (
                                     <button
@@ -760,7 +861,7 @@ const AddProduct = () => {
                       )}
                     </div>
                   </div>
-                  {classify === false && classify1 === false && (
+                  {/* {classify === false && classify1 === false && (
                     <div>
                       <div className="grid grid-cols-12 gap-4 mb-3">
                         <div className=" text-[1.03rem] col-span-2 text-right">
@@ -833,7 +934,7 @@ const AddProduct = () => {
                         </Form.Item>
                       </div>
                     </div>
-                  )}
+                  )} */}
                   {(classify === true || classify1 === true) && (
                     <div className="grid grid-cols-12 gap-4 items-center">
                       <div className="col-span-2 text-right text-[1rem]">
@@ -884,7 +985,7 @@ const AddProduct = () => {
                       <div className="col-span-10  text-[1rem]">
                         <div className="flex bg-[#F5F5F5] ">
                           <div
-                            className="min-w-[150px] border-[1px] p-3 border-[#EBEBEB] border-solid"
+                            className="min-w-[100px] border-[1px] p-3 border-[#EBEBEB] border-solid"
                             style={{
                               borderTopLeftRadius: "10px",
                             }}
@@ -927,144 +1028,95 @@ const AddProduct = () => {
                             </div>
                           </div>
                         </div>
-                        {types.map((item, index) => (
-                          <div
-                            className="border-[#EBEBEB] border-solid border-[1px] last:rounded-b-xl"
-                            key={index}
-                          >
-                            <div className="flex items-center">
-                              <div className="min-w-[150px] border-e-[1px]  p-3 ">
-                                <div className="flex items-center gap-4">
-                                  <Form.Item
-                                    name={`imgUrl-${index}`}
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: "Vui lọc nhập hình ảnh",
-                                      },
-                                    ]}
-                                  >
-                                    <Upload
-                                      className="custom-upload"
-                                      action="https://api.cloudinary.com/v1_1/dkrcsuwbc/image/upload"
-                                      listType="picture-card"
-                                      onChange={(e) => onhandluploadimgPl(e)}
-                                      data={{
-                                        upload_preset: "image1",
-                                      }}
-                                      maxCount={5}
-                                      style={{
-                                        width: 80, // Giảm chiều rộng của Upload
-                                        height: 90, // Giảm chiều cao của Upload
-                                      }}
-                                    >
-                                      {/*{fileList1.length < 1 && (*/}
-                                      <button
-                                        style={{
-                                          border: 0,
-                                          background: "none",
-                                          fontSize: "12px",
-                                          padding: "2px",
-                                        }}
-                                        type="button"
-                                      >
-                                        <PlusOutlined
-                                          style={{ fontSize: "16px" }}
-                                        />
-                                        <div
-                                          style={{
-                                            marginTop: 4,
-                                            color: "red",
-                                            fontSize: "10px",
-                                          }}
-                                        ></div>
-                                      </button>
-                                      {/*)}*/}
-                                    </Upload>
-                                  </Form.Item>
-
-                                  <div>
-                                    {selectedvalue[index] ||
-                                      selectedvalue1[index]}
-                                  </div>
-                                </div>
-                              </div>
-                              {select1 &&
-                                select &&
-                                selectedvalue.length > 0 &&
-                                selectedvalue1.length > 0 && (
-                                  <div className="min-w-[100px] flex justify-center = border-e-[1px] ">
+                        {types
+                          .filter((item) => item.id !== 0) // Lọc ra các item có id khác 0
+                          .map((item, index) => (
+                            <div
+                              className="border-[#EBEBEB] border-solid border-[1px] last:rounded-b-xl"
+                              key={index}
+                            >
+                              <div className="flex items-center">
+                                <div className="min-w-[100px]  border-e-[1px]  p-3 ">
+                                  <div className="flex items-center gap-4">
                                     <div>
-                                      {selectedvalue1.map((item, index) => (
-                                        <div
-                                          className="type text-center "
-                                          key={index}
-                                        >
-                                          {item}
-                                        </div>
-                                      )) ||
-                                        selectedvalue.map((item, indexs) => (
-                                          <div key={indexs}>{item}</div>
-                                        ))}
+                                      {selectedvalue[index] ||
+                                        selectedvalue1[index]}
                                     </div>
                                   </div>
-                                )}
-
-                              <div className="flex w-[100%] ">
-                                <div
-                                  className="flex-[1_0_205px]  flex justify-center border-e-[1px]
-                         px-3 py-[2.5rem] rounded-s border-[#EBEBEB] border-solid"
-                                >
-                                  <Form.Item
-                                    name={`price${index}`}
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: "Vui lọc nhập giá",
-                                      },
-                                      {
-                                        validator: (_, value) =>
-                                          value && value > 1000
-                                            ? Promise.resolve()
-                                            : Promise.reject(
-                                                new Error(
-                                                  "Giá phải lớn hơn 1.000"
-                                                )
-                                              ),
-                                      },
-                                    ]}
-                                  >
-                                    <Input
-                                      type="number"
-                                      size="large"
-                                      className="w-[100%] max-h-[40px]"
-                                      min={0}
-                                      // value={price}
-                                      // onChange={(e) => setPrice(e.target.value)}
-                                      placeholder="Giá"
-                                    />
-                                  </Form.Item>
                                 </div>
-                                <div
-                                  className="flex-[1_0_205px]  flex justify-center border-e-[1px]
+                                {select1 &&
+                                  select &&
+                                  selectedvalue.length > 0 &&
+                                  selectedvalue1.length > 0 && (
+                                    <div className="min-w-[100px] flex justify-center  border-e-[1px] ">
+                                      <div>
+                                        {selectedvalue1.map((item, index) => (
+                                          <div
+                                            className="type text-center "
+                                            key={index}
+                                          >
+                                            {item}
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+
+                                <div className="flex w-[100%] ">
+                                  <div
+                                    className="flex-[1_0_205px]  flex justify-center border-e-[1px]
                          px-3 py-[2.5rem] rounded-s border-[#EBEBEB] border-solid"
-                                >
-                                  <Form.Item name={`quantity-${index}`}>
-                                    <Input
-                                      type="number"
-                                      size="large"
-                                      className="w-[100%] max-h-[40px]"
-                                      min={0}
-                                      // value={price}
-                                      // onChange={(e) => setPrice(e.target.value)}
-                                      placeholder="Kho hàng"
-                                    />
-                                  </Form.Item>
+                                  >
+                                    <Form.Item
+                                      name={`price${index}`}
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Vui lọc nhập giá",
+                                        },
+                                        {
+                                          validator: (_, value) =>
+                                            value && value > 1000
+                                              ? Promise.resolve()
+                                              : Promise.reject(
+                                                  new Error(
+                                                    "Giá phải lớn hơn 1.000"
+                                                  )
+                                                ),
+                                        },
+                                      ]}
+                                    >
+                                      <Input
+                                        type="number"
+                                        size="large"
+                                        className="w-[100%] max-h-[40px]"
+                                        min={0}
+                                        // value={price}
+                                        // onChange={(e) => setPrice(e.target.value)}
+                                        placeholder="Giá"
+                                      />
+                                    </Form.Item>
+                                  </div>
+                                  <div
+                                    className="flex-[1_0_205px]  flex justify-center border-e-[1px]
+                         px-3 py-[2.5rem] rounded-s border-[#EBEBEB] border-solid"
+                                  >
+                                    <Form.Item name={`quantity-${index}`}>
+                                      <Input
+                                        type="number"
+                                        size="large"
+                                        className="w-[100%] max-h-[40px]"
+                                        min={0}
+                                        // value={price}
+                                        // onChange={(e) => setPrice(e.target.value)}
+                                        placeholder="Kho hàng"
+                                      />
+                                    </Form.Item>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
                       </div>
                     </div>
                   )}

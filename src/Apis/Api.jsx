@@ -22,6 +22,11 @@ export const productGalleries = async (id) => {
   const res = await Axios.get(`api/admin/admin/product-galleries/${id}`);
   return res.data;
 };
+export const addProductGallerie = async (id,data) => {
+  const res = await Axios.post(`api/admin/galleries/${id}`,data);
+  return res.data;
+};
+
 export const categoryProduct = async (id) => {
   const res = await Axios.get(`/products/category/${id}`);
   return res.data;
@@ -64,6 +69,7 @@ export const signup = async (data) => {
 //   });
 //   return res.data.user;
 // }
+
 export const logout = async () => {
   const authToken = localStorage.getItem("auth_token");
   if (!authToken) {
@@ -189,14 +195,14 @@ export const updatePassword = async (data, id) => {
   return res.data;
 };
 export const addProduct = async (data) => {
-  const res = await Axios.post(`/products`, data);
+  const res = await Axios.post(`api/admin/products`, data);
   return res.data;
 };
+
 
 // color
 export const getColors = async (page = 1) => {
   const res = await Axios.get(`/api/admin/colors?page=${page}`);
-  console.log("đã call được api của color");
   return res.data;
 };
 
@@ -252,6 +258,11 @@ export const deleteVoucher = async (id) => {
 
 export const forceDeleteVoucher = async (id) => {
   const res = await Axios.delete(`/api/admin/vouchers/force-delete/${id}`);
+  return res.data;
+};
+//size
+export const getSize = async () => {
+  const res = await Axios.get(`api/admin/sizes`);
   return res.data;
 };
 //slideslide

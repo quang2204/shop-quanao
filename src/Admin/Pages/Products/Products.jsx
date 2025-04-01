@@ -3,6 +3,7 @@ import { Button, Image, Modal, Spin, Table } from "antd";
 import { FormatDate, FormatDateTime, FormatPrice } from "../../../Format.jsx";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import Emptys from "../../Ui/Emty.jsx";
 const Products = () => {
   const { isProducts, products } = useProduct();
   const [id, setId] = useState("");
@@ -39,25 +40,41 @@ const Products = () => {
       />
     );
   }
-  console.log(products);
   return (
     <div className="row mx-2">
       <div className="col-lg-12">
-        <div className="card" id="orderList">
+     {products?.data.data.length>0?(
+       <div className="card" id="orderList">
           <div className="card-header border-0 bg-none">
             <div className="row align-items-center gy-3">
               <div className="col-sm">
-                <h5 className="card-title mb-0 fw-medium">Order History</h5>
+         
+                  <form>
+                    <div className="row g-3">
+                      <div className="col-xxl-5 col-sm-5">
+                        <div className="search-box">
+                          <input
+                            type="text"
+                            className="form-control search"
+                            placeholder="Search for product ..."
+                          />
+                          <i className="ri-search-line search-icon" />
+                        </div>
+                      </div>
+                    </div>
+                    {/*end row*/}
+                  </form>
+          
               </div>
               <div className="col-sm-auto">
                 <div className="d-flex gap-1 flex-wrap">
-                  <button
+                  <Link
+                    to="/admin/addproduct"
                     type="button"
                     className="text-white text-[0.9rem] bg-[#03A9F4] px-4 py-2 rounded-md "
                   >
-                    <i className="ri-file-download-line align-bottom me-1" />{" "}
-                    Import
-                  </button>
+                    Add product
+                  </Link>
                   <button
                     className="btn btn-soft-danger"
                     id="remove-actions"
@@ -69,81 +86,8 @@ const Products = () => {
               </div>
             </div>
           </div>
-          <div className="card-body border border-dashed border-end-0 border-start-0">
-            <form>
-              <div className="row g-3">
-                <div className="col-xxl-5 col-sm-5">
-                  <div className="search-box">
-                    <input
-                      type="text"
-                      className="form-control search"
-                      placeholder="Search for order ID, customer, order status or something..."
-                    />
-                    <i className="ri-search-line search-icon" />
-                  </div>
-                </div>
-                {/*end col*/}
-                <div className="col-xxl-2 col-sm-3">
-                  <div>
-                    <input
-                      type="text"
-                      className="form-control"
-                      data-provider="flatpickr"
-                      data-date-format="d M, Y"
-                      data-range-date="true"
-                      id="demo-datepicker"
-                      placeholder="Select date"
-                    />
-                  </div>
-                </div>
-                {/*end col*/}
-                <div className="col-xxl-2 col-sm-2">
-                  <div>
-                    <select
-                      className="form-control"
-                      data-choices=""
-                      data-choices-search-false=""
-                      name="choices-single-default"
-                      id="idStatus"
-                    >
-                      <option value="">Status</option>
-                      <option value="all" selected="">
-                        All
-                      </option>
-                      <option value="Pending">Pending</option>
-                      <option value="Inprogress">Inprogress</option>
-                      <option value="Cancelled">Cancelled</option>
-                      <option value="Pickups">Pickups</option>
-                      <option value="Returns">Returns</option>
-                      <option value="Delivered">Delivered</option>
-                    </select>
-                  </div>
-                </div>
-                {/*end col*/}
-                <div className="col-xxl-2 col-sm-2">
-                  <div>
-                    <select
-                      className="form-control"
-                      data-choices=""
-                      data-choices-search-false=""
-                      name="choices-single-default"
-                      id="idPayment"
-                    >
-                      <option value="">Select Payment</option>
-                      <option value="all" selected="">
-                        All
-                      </option>
-                      <option value="Mastercard">Mastercard</option>
-                      <option value="Paypal">Paypal</option>
-                      <option value="Visa">Visa</option>
-                      <option value="COD">COD</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              {/*end row*/}
-            </form>
-          </div>
+    
+
           <div className="card-body pt-0">
             <div>
               <div className="table-responsive table-card mb-1 mt-3">
@@ -188,7 +132,7 @@ const Products = () => {
                         </td>
                         <td>
                           <Image
-                            width={60}
+                            width={80}
                             src={item.img_thumb}
                             alt="product"
                           />
@@ -470,7 +414,11 @@ const Products = () => {
               </div>
             </div>
           </div>
+     
         </div>
+     ):<Emptys/>}
+       
+     
         <Modal
           open={isModalOpen}
           onOk={handleOk}

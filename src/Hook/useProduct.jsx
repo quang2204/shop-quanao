@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import {
   addProduct,
+  // addProductGalleries,
   categoryProduct,
   deleteProduct,
   getProducts,
@@ -34,32 +35,13 @@ export const useCategoryProducts = () => {
   });
   return { categoryproducts, iscategoryProducts };
 };
-export const useAddProduct = () => {
-  const queryClient = useQueryClient();
-
-  const navigate = useNavigate();
-  const { mutate, isLoading } = useMutation({
-    mutationFn: (data) => addProduct(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-      message.success("Thêm sản phẩm thành công");
-      navigate("/admin");
-    },
-    onError: () => {
-      message.error("Thêm sản phẩm không thành công");
-    },
-  });
-  return { mutate, isLoading };
-};
 export const useDeleteProduct = (onSuccessCallback) => {
-  const queryClient = useQueryClient();
-
   const { mutate, isLoading } = useMutation({
     mutationFn: (id) => deleteProduct(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       message.success("Xóa sản phẩm thành công");
-      onSuccessCallback?.(); 
+      onSuccessCallback?.();
     },
     onError: () => {
       message.error("Xóa sản phẩm không thành công");

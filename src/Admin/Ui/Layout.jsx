@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import img from "../../images/icons/logo-02.png";
 import avatar from "../velzon/assets/images/users/avatar-1.jpg";
-import {UseDetailUser} from "../../Hook/useDetailUser";
+import { UseDetailUser } from "../../Hook/useDetailUser";
 import { Spin } from "antd";
 import FullScreenButton from "./FullScreen";
 import useAuth from "../../Hook/useAuth";
@@ -27,7 +27,6 @@ const Layout = () => {
 
   const thirdPathSegment = capitalizeFirstLetter(pathname.split("/")[2]);
   const { data, isLoading } = useAuth();
-  console.log(data);
   if (isLoading) {
     return (
       <Spin
@@ -36,6 +35,7 @@ const Layout = () => {
       />
     );
   }
+
   return (
     <div>
       <>
@@ -57,139 +57,6 @@ const Layout = () => {
                       <span />
                     </span>
                   </button>
-                  {/* App Search*/}
-                  <form className="app-search d-none d-md-block">
-                    <div className="position-relative">
-                      <input
-                        type="text"
-                        className="form-control focus:bg-[#f3f3f9]"
-                        placeholder="Search..."
-                        autoComplete="off"
-                        id="search-options"
-                      />
-                      <span className="mdi mdi-magnify search-widget-icon" />
-                      <span
-                        className="mdi mdi-close-circle search-widget-icon search-widget-icon-close d-none"
-                        id="search-close-options"
-                      />
-                    </div>
-                    <div
-                      className="dropdown-menu dropdown-menu-lg"
-                      id="search-dropdown"
-                    >
-                      <div data-simplebar="" style={{ maxHeight: 320 }}>
-                        {/* item*/}
-                        <div className="dropdown-header">
-                          <h6 className="text-overflow text-muted mb-0 text-uppercase">
-                            Recent Searches
-                          </h6>
-                        </div>
-                        <div className="dropdown-item bg-transparent text-wrap">
-                          <a
-                            href="index.html"
-                            className="btn btn-soft-secondary btn-sm rounded-pill"
-                          >
-                            how to setup <i className="mdi mdi-magnify ms-1" />
-                          </a>
-                          <a
-                            href="index.html"
-                            className="btn btn-soft-secondary btn-sm rounded-pill"
-                          >
-                            buttons <i className="mdi mdi-magnify ms-1" />
-                          </a>
-                        </div>
-                        {/* item*/}
-                        <div className="dropdown-header mt-2">
-                          <h6 className="text-overflow text-muted mb-1 text-uppercase">
-                            Pages
-                          </h6>
-                        </div>
-                        {/* item*/}
-                        <Link className="dropdown-item notify-item">
-                          <i className="ri-bubble-chart-line align-middle fs-18 text-muted me-2" />
-                          <span>Analytics Dashboard</span>
-                        </Link>
-                        {/* item*/}
-                        <Link className="dropdown-item notify-item">
-                          <i className="ri-lifebuoy-line align-middle fs-18 text-muted me-2" />
-                          <span>Help Center</span>
-                        </Link>
-                        {/* item*/}
-                        <Link className="dropdown-item notify-item">
-                          <i className="ri-user-settings-line align-middle fs-18 text-muted me-2" />
-                          <span>My account settings</span>
-                        </Link>
-                        {/* item*/}
-                        <div className="dropdown-header mt-2">
-                          <h6 className="text-overflow text-muted mb-2 text-uppercase">
-                            Members
-                          </h6>
-                        </div>
-                        <div className="notification-list">
-                          {/* item */}
-                          <Link className="dropdown-item notify-item py-2">
-                            <div className="d-flex">
-                              <img
-                                src="assets/images/users/avatar-2.jpg"
-                                className="me-3 rounded-circle avatar-xs"
-                                alt="user-pic"
-                              />
-                              <div className="flex-grow-1">
-                                <h6 className="m-0">Angela Bernier</h6>
-                                <span className="fs-11 mb-0 text-muted">
-                                  Manager
-                                </span>
-                              </div>
-                            </div>
-                          </Link>
-                          {/* item */}
-                          <Link className="dropdown-item notify-item py-2">
-                            <div className="d-flex">
-                              <img
-                                src="assets/images/users/avatar-3.jpg"
-                                className="me-3 rounded-circle avatar-xs"
-                                alt="user-pic"
-                              />
-                              <div className="flex-grow-1">
-                                <h6 className="m-0">David Grasso</h6>
-                                <span className="fs-11 mb-0 text-muted">
-                                  Web Designer
-                                </span>
-                              </div>
-                            </div>
-                          </Link>
-                          {/* item */}
-                          <Link
-                            to="#"
-                            className="dropdown-item notify-item py-2"
-                          >
-                            <div className="d-flex">
-                              <img
-                                src="assets/images/users/avatar-5.jpg"
-                                className="me-3 rounded-circle avatar-xs"
-                                alt="user-pic"
-                              />
-                              <div className="flex-grow-1">
-                                <h6 className="m-0">Mike Bunch</h6>
-                                <span className="fs-11 mb-0 text-muted">
-                                  React Developer
-                                </span>
-                              </div>
-                            </div>
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="text-center pt-3 pb-1">
-                        <a
-                          href="pages-search-results.html"
-                          className="btn btn-primary btn-sm"
-                        >
-                          View All Results{" "}
-                          <i className="ri-arrow-right-line ms-1" />
-                        </a>
-                      </div>
-                    </div>
-                  </form>
                 </div>
                 <div className="d-flex align-items-center">
                   <div className="dropdown d-md-none topbar-head-dropdown header-item">
@@ -866,7 +733,7 @@ const Layout = () => {
           {/*=== App Menu=== */}
           <div className="app-menu navbar-menu bg-[#405189]">
             {/* LOGO */}
-            <div className="navbar-brand-box w-64 py-4 ml-9">
+            <div className="navbar-brand-box py-4 ml-9">
               {/* Dark Logo*/}
 
               {/* Light Logo*/}
@@ -888,20 +755,29 @@ const Layout = () => {
                     <span data-key="t-menu">Menu</span>
                   </li>
                   <li className="nav-item">
-                    <Link to="Dashboards" className="nav-link menu-link">
+                    <Link
+                      to="dashboards"
+                      className={`nav-link menu-link ${thirdPathSegment === "Dashboards" ? "active" : ""}`}
+                    >
                       <i className="ri-dashboard-2-line" />
                       <span data-key="t-dashboards">Dashboards</span>
                     </Link>
                   </li>
                   {/* end Dashboard Menu */}
                   <li className="nav-item">
-                    <Link to="products" className="nav-link menu-link ">
+                    <Link
+                      to="products"
+                      className={`nav-link menu-link ${thirdPathSegment == "Products" ? "active" : ""}`}
+                    >
                       <i className="ri-apps-2-line" />
                       <span data-key="t-apps">Products</span>
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="order" className="nav-link menu-link">
+                    <Link
+                      to="order"
+                      className={`nav-link menu-link ${thirdPathSegment == "Order" ? "active" : ""}`}
+                    >
                       <img
                         src="https://media-public.canva.com/fQMlo/MAF38jfQMlo/1/tl.png"
                         alt=""
@@ -913,13 +789,19 @@ const Layout = () => {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="order_detail" className="nav-link menu-link">
+                    <Link
+                      to="baner"
+                      className={`nav-link menu-link ${thirdPathSegment == "Baner" ? "active" : ""}`}
+                    >
                       <i className="ri-layout-3-line" />
                       <span data-key="t-layouts">Baner</span>
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="order_detail" className="nav-link menu-link">
+                    <Link
+                      to="blogs"
+                      className={`nav-link menu-link ${thirdPathSegment == "Blogs" ? "active" : ""}`}
+                    >
                       <img
                         src="https://media-public.canva.com/TbR0s/MADa1xTbR0s/2/tl.png"
                         alt=""
@@ -931,31 +813,34 @@ const Layout = () => {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="categories" className="nav-link menu-link">
+                    <Link
+                      to="categories"
+                      className={`nav-link menu-link ${thirdPathSegment == "Categories" ? "active" : ""}`}
+                    >
                       <i className="ri-layout-3-line" />
                       <span data-key="t-layouts">Categories</span>
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="colors" className="nav-link menu-link">
+                    <Link to="colors" className={`nav-link menu-link ${thirdPathSegment=="Color"?"active":""}`}>
                       <i className="ri-layout-3-line" />
                       <span data-key="t-layouts">Color</span>
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="vouchers" className="nav-link menu-link">
+                    <Link to="vouchers" className={`nav-link menu-link ${thirdPathSegment=="Vouchers"?"active":""}`}>
                       <i className="ri-layout-3-line" />
                       <span data-key="t-layouts">Voucher</span>
                     </Link>
                   </li>
-                  <li className="nav-item">
-                    <Link to="order_detail" className="nav-link menu-link">
+                  {/* <li className="nav-item">
+                    <Link to="Comment" className={`nav-link menu-link ${thirdPathSegment=="Order"?"active":""}`}>
                       <i class="fa fa-comment"></i>
                       <span data-key="t-layouts">Comments</span>
                     </Link>
-                  </li>
+                  </li> */}
                   <li className="nav-item">
-                    <Link to="customers" className="nav-link menu-link">
+                    <Link to="customers" className={`nav-link menu-link ${thirdPathSegment=="Customers"?"active":""}`}>
                       <i class="fa fa-user"></i>
                       <span data-key="t-layouts">User</span>
                     </Link>
@@ -1018,7 +903,7 @@ const Layout = () => {
                   <li className="nav-item">
                     <Link
                       to="profile"
-                      className="nav-link menu-link relative"
+                      className={`nav-link menu-link relative ${thirdPathSegment=="Profile"?"active":""}`}
                       role="button"
                     >
                       <i className="ri-pages-line" />
