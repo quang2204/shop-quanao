@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useSize, useCreateSize, useUpdateSize, useDeleteSize } from "../../../Hook/useSize";
 import { Link } from "react-router-dom";
-import { Modal, Spin } from "antd";
+import { Modal, Spin, Pagination, message } from "antd";
 import { useForm } from "react-hook-form";
 
 const Sizes = () => {
-  const { size, isSize } = useSize();
+  const [currentPage, setCurrentPage] = useState(1); // Quản lý trang hiện tại
+  const { size, isSize } = useSize(currentPage); // Lấy dữ liệu size từ hook
   const { mutate: createSize } = useCreateSize();
   const { mutate: updateSize } = useUpdateSize();
   const { mutate: deleteSize } = useDeleteSize();
@@ -13,6 +14,8 @@ const Sizes = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
   const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
+    const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
+  const [currentSizeDetail, setCurrentSizeDetail] = useState(null);
   const [currentSize, setCurrentSize] = useState(null);
   const [idDelete, setIdDelete] = useState("");
 
@@ -24,8 +27,8 @@ const Sizes = () => {
   } = useForm();
 
   const showModal = (id) => {
-    setIdDelete(id);
-    setIsModalOpen(true);
+    setIdDelete(id); // Lưu ID của size cần xóa
+    setIsModalOpen(true); // Hiển thị modal xóa
   };
 
   const handleCancel = () => {
@@ -44,9 +47,17 @@ const Sizes = () => {
   };
 
   const handleOk = () => {
-    deleteSize(idDelete);
-    setIsModalOpen(false);
-    setIdDelete("");
+    deleteSize(idDelete, {
+      onSuccess: () => {
+        setIsModalOpen(false); // Đóng modal
+        setIdDelete(""); // Xóa ID đã chọn
+        message.success("Size deleted successfully!"); // Hiển thị thông báo thành công
+      },
+      onError: (error) => {
+        message.error("Failed to delete size!"); // Hiển thị thông báo lỗi
+        console.error("Delete error:", error);
+      },
+    });
   };
 
   const onSubmit = (data) => {
@@ -72,6 +83,11 @@ const Sizes = () => {
   const showEditModal = (size) => {
     setCurrentSize(size);
     setIsModalOpenEdit(true);
+  };
+
+  const showDetailModal = (size) => {
+    setCurrentSizeDetail(size);
+    setIsModalOpenDetail(true);
   };
 
   if (isSize) {
@@ -117,17 +133,17 @@ const Sizes = () => {
                 <tbody className="list form-check-all">
                   {size?.data.map((item, index) => (
                     <tr key={item.id}>
-                      <td>{index + 1}</td>
+                      <td>{(currentPage - 1) * size.per_page + index + 1}</td>
                       <td>{item.name}</td>
                       <td>
                         <ul className="list-inline hstack gap-2 mb-0">
                           <li className="list-inline-item">
-                            <Link
-                              to={`/admin/sizes/${item.id}`}
-                              className="text-primary d-inline-block"
+                            <div
+                              className="text-primary d-inline-block edit-item-btn"
+                              onClick={() => showDetailModal(item)}
                             >
                               <i className="ri-eye-fill fs-16" />
-                            </Link>
+                            </div>
                           </li>
                           <li className="list-inline-item edit">
                             <div
@@ -140,7 +156,7 @@ const Sizes = () => {
                           <li className="list-inline-item">
                             <div
                               className="text-danger d-inline-block remove-item-btn"
-                              onClick={() => showModal(item.id)}
+                              onClick={() => showModal(item.id)} // Gọi showModal với ID của size
                             >
                               <i className="ri-delete-bin-5-fill fs-16"></i>
                             </div>
@@ -169,23 +185,22 @@ const Sizes = () => {
             </div>
           </div>
           <div className="d-flex justify-content-end">
-                <div className="pagination-wrap hstack gap-2">
-                  <a className="page-item pagination-prev disabled" href="#">
-                    Previous
-                  </a>
-                  <ul className="pagination listjs-pagination mb-0" />
-                  <a className="page-item pagination-next" href="#">
-                    Next
-                  </a>
-                </div>
+                
+                <Pagination
+                  current={currentPage}
+                  onChange={(page) => setCurrentPage(page)} // Cập nhật trang hiện tại
+                  total={size?.total || 0} // Tổng số bản ghi
+                  pageSize={size?.per_page || 10} // Số bản ghi trên mỗi trang
+                  className="mt-3"
+                />
               </div>
         </div>
       </div>
 
       {/* Modal Delete */}
-      <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+      <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel} title="Delete Size">
         <h4>Are you sure?</h4>
-        <p>Do you want to delete this size?</p>
+        <p>Do you want to delete this size permanently?</p>
       </Modal>
 
       {/* Modal Add */}
@@ -227,6 +242,23 @@ const Sizes = () => {
             {errors.name && <p className="text-danger">Name is required</p>}
           </div>
         </form>
+      </Modal>
+
+      {/* Modal Detail */}
+      <Modal
+        open={isModalOpenDetail}
+        onCancel={() => setIsModalOpenDetail(false)}
+        footer={null}
+        title="Size Details"
+      >
+        {currentSizeDetail && (
+          <div>
+            <div className="mb-3">
+              <label className="form-label">Size Name</label>
+              <p>{currentSizeDetail.name}</p>
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   );

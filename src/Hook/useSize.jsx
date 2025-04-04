@@ -2,10 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { getSizes, createSize, updateSize, deleteSize } from "../Apis/Api";
 import { message } from "antd";
 
-const useSize = () => {
+const useSize = (currentPage) => {
   const { data: size, isLoading: isSize, error } = useQuery({
-    queryKey: ["size"],
-    queryFn: () => getSizes(),
+    queryKey: ["size", currentPage],
+    queryFn: () => getSizes(currentPage),
     onError: () => {
       message.error("Failed to fetch sizes");
     },
