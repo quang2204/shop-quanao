@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 import { FormatPrice } from "../Format";
 import { useProductVariant } from "../Hook/useDetailProduct";
 import { motion } from "framer-motion";
-import { useBanners } from "../Hook/useBanner";
+import { useBanner } from "../Hook/useBanner";
+import { data } from "autoprefixer";
 const Home = () => {
   const slide = [
     {
@@ -21,9 +22,11 @@ const Home = () => {
       image: "src/images/slide-06.jpg",
     },
   ];
-  const { banners, loading, error } = useBanners();
+  const { banner, loading, error } = useBanner();
 
   const { products, isProducts } = useProduct();
+  console.log("Products:", products);
+
   const [slick, setSlick] = useState(slide);
   const [count, setCount] = useState(0);
   const next = () => {
@@ -55,7 +58,7 @@ const Home = () => {
     <section className="section-slide">
       <div className="wrap-slick1 rs2-slick1">
         <div className="slick1">
-          {banners.length > 0 && (
+          {banner.length > 0 && (
             <motion.div
               key={banners[count].id}
               className="item-slick1 bg-overlay1"

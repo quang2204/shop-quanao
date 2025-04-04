@@ -792,7 +792,8 @@ const Layout = () => {
                     <Link
                       to="baner"
                       className={`nav-link menu-link ${thirdPathSegment == "Baner" ? "active" : ""}`}
-                    >
+                    />
+                    <Link to="banners" className="nav-link menu-link">
                       <i className="ri-layout-3-line" />
                       <span data-key="t-layouts">Baner</span>
                     </Link>
@@ -828,7 +829,14 @@ const Layout = () => {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="vouchers" className={`nav-link menu-link ${thirdPathSegment=="Vouchers"?"active":""}`}>
+                    <Link to="vouchers" className={`nav-link menu-link ${thirdPathSegment=="Vouchers"?"active":""}`} />
+                    <Link to="sizes" className="nav-link menu-link">
+                      <i className="ri-layout-3-line" />
+                      <span data-key="t-layouts">Sizes</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="vouchers" className="nav-link menu-link">
                       <i className="ri-layout-3-line" />
                       <span data-key="t-layouts">Voucher</span>
                     </Link>

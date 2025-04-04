@@ -271,6 +271,56 @@ export const getBanners = async (page = 1) => {
   return res.data;
 };
 
+//banners 
+export const getBannerDetail = async (id) => {
+  const res = await Axios.get(`/api/admin/banners/${id}`);
+  return res.data;
+};
+
+export const createBanner = async (formData) => {
+  const res = await Axios.post(`/api/admin/banners`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};
+
+export const updateBanner = async (id, formData) => {
+  const res = await Axios.put(`/api/admin/banners/${id}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  if (res.status !== 200) {
+    throw new Error("Failed to update banner");
+  }
+  // Xử lý thành công
+  console.log("Banner updated successfully:", res.data);
+  // Trả về dữ liệu đã cập nhật
+  return res.data;
+};
+
+export const deleteBanner = async (id) => {
+  await Axios.delete(`/api/admin/banners/${id}`);
+};
+//sizes 
+export const getSizes = async (page = 1) => {
+  const res = await Axios.get(`/api/admin/sizes?page=${page}`);
+  return res.data;
+};
+export const createSize = async (data) => {
+  const res = await Axios.post(`/api/admin/sizes`, data);
+  return res.data;
+};
+export const updateSize = async (id, data) => {
+  const res = await Axios.put(`/api/admin/sizes/${id}`, data);
+  return res.data;
+};
+export const deleteSize = async (id) => {
+  const res = await Axios.delete(`/api/admin/sizes/${id}`);
+  return res.data;
+};
 export const useLoginGoogle = () => {
   const loginWithGoogle = () => {
     // Chuyển hướng người dùng đến URL xác thực của Google
