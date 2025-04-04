@@ -256,13 +256,27 @@ export const getBannerDetail = async (id) => {
   return res.data;
 };
 
-export const createBanner = async (data) => {
-  const res = await Axios.post(`/api/admin/banners`, data);
+export const createBanner = async (formData) => {
+  const res = await Axios.post(`/api/admin/banners`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res.data;
 };
 
-export const updateBanner = async (id, data) => {
-  const res = await Axios.put(`/api/admin/banners/${id}`, data);
+export const updateBanner = async (id, formData) => {
+  const res = await Axios.put(`/api/admin/banners/${id}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  if (res.status !== 200) {
+    throw new Error("Failed to update banner");
+  }
+  // Xử lý thành công
+  console.log("Banner updated successfully:", res.data);
+  // Trả về dữ liệu đã cập nhật
   return res.data;
 };
 

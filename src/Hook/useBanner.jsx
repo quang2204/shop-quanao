@@ -2,14 +2,16 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { getBanners, createBanner, updateBanner, deleteBanner } from "../Apis/Api";
 import { message } from "antd";
 
-const useBanner = () => {
-  const { data: banner, isLoading: isBanner, error } = useQuery({
-    queryKey: ["banner"],
-    queryFn: () => getBanners(),
-    onError: () => {
-      message.error("Failed to fetch banners");
-    },
-  });
+const useBanner = (page = 1) => {
+  const { data: banner, isLoading: isBanner, error } = useQuery(
+    ["banner", page],
+    () => getBanners(page),
+    {
+      onError: () => {
+        message.error("Failed to fetch banners");
+      },
+    }
+  );
   return { banner, isBanner, error };
 };
 
