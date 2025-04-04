@@ -262,7 +262,7 @@ export const forceDeleteVoucher = async (id) => {
 };
 //size
 export const getSize = async () => {
-  const res = await Axios.get(`api/admin/sizes`);
+  const res = await Axios.get(`/api/admin/sizes?page=${page}`);
   return res.data;
 };
 //slideslide
