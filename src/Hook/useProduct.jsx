@@ -36,6 +36,8 @@ export const useCategoryProducts = () => {
   return { categoryproducts, iscategoryProducts };
 };
 export const useDeleteProduct = (onSuccessCallback) => {
+  const queryClient = useQueryClient();
+
   const { mutate, isLoading } = useMutation({
     mutationFn: (id) => deleteProduct(id),
     onSuccess: () => {

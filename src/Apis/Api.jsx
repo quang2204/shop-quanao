@@ -22,11 +22,26 @@ export const productGalleries = async (id) => {
   const res = await Axios.get(`api/admin/admin/product-galleries/${id}`);
   return res.data;
 };
-export const addProductGallerie = async (id,data) => {
-  const res = await Axios.post(`api/admin/galleries/${id}`,data);
+export const addProductGallerie = async (id, data) => {
+  const res = await Axios.post(`api/admin/galleries/${id}`, data);
   return res.data;
 };
-
+export const addProductVariants = async (id, data) => {
+  const res = await Axios.post(`api/admin/product-variants/${id}`, data);
+  return res.data;
+};
+export const updateProductGallerie = async (id, data) => {
+  const res = await Axios.put(`api/admin/admin/product-galleries/${id}`, data);
+  return res.data;
+};
+export const updateProduct = async (id, data) => {
+  const res = await Axios.put(`api/admin/products/${id}`, data);
+  return res.data;
+};
+export const updateProductVariants = async (id, data) => {
+  const res = await Axios.put(`api/admin/product-variants/${id}`, data);
+  return res.data;
+};
 export const categoryProduct = async (id) => {
   const res = await Axios.get(`/products/category/${id}`);
   return res.data;
@@ -177,7 +192,7 @@ export const getOrderbystatus = async (status, userId) => {
   const res = await Axios.get(`/order/status/${status}/${userId}`);
   return res.data;
 };
-export const getOrderByUserid = async ( userId) => {
+export const getOrderByUserid = async (userId) => {
   const res = await Axios.get(`api/admin/orders/byuser/${userId}`);
   return res.data;
 };
@@ -198,7 +213,6 @@ export const addProduct = async (data) => {
   const res = await Axios.post(`api/admin/products`, data);
   return res.data;
 };
-
 
 // color
 export const getColors = async (page = 1) => {

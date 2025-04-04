@@ -86,7 +86,6 @@ const ProductDetail = () => {
       />
     );
   }
-console.log(indexImg);
   const pre = () => {
     if (indexImg == 0) {
       setindexImg(productGallerie.length - 1);
@@ -124,7 +123,7 @@ console.log(indexImg);
                 <div className="wrap-slick3 flex-sb flex-w">
                   <div className="wrap-slick3-dots">
                     <ul className="slick3-dots" role="tablist">
-                      {productGallerie.map((item, index) => (
+                      {productGallerie?.map((item, index) => (
                         <li
                           className=""
                           key={item.id}

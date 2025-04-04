@@ -1,15 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Spin } from "antd";
 import { UseDetailOrder } from "../../../Hook/useOrder";
 import { FormatDate, FormatPrice } from "../../../Format";
 import { useDetailUserId } from "../../../Hook/useDetailUser";
 const Order_Detail = () => {
-  const { data, isLoading } = UseDetailOrder();
+  const { id } = useParams();
+
+  const { data, isLoading } = UseDetailOrder(id);
   const { data: user, isLoading: isLoadingUser } = useDetailUserId(
     data?.[0]?.order?.user_id
   );
-
+  console.log(data);
   if (isLoading || isLoadingUser) {
     return (
       <Spin
@@ -19,8 +21,9 @@ const Order_Detail = () => {
     );
   }
   const total =
-    Number(data[0].order.total_amount) + Number(data[0].order.voucher.discount);
-  
+    Number(data?.[0]?.order?.total_amount || 0) +
+    Number(data?.[0]?.order?.voucher?.discount || 0);
+
   return (
     <div>
       <div className="row mx-2">
@@ -29,7 +32,7 @@ const Order_Detail = () => {
             <div className="card-header">
               <div className="d-flex align-items-center">
                 <h5 className="card-title flex-grow-1 items-center mb-0 text-uppercase">
-                  Order #{data[0].order.order_code}
+                  Order #{data?.[0]?.order?.order_code || "N/A"}
                 </h5>
                 <div className="flex-shrink-0">
                   <a
@@ -439,7 +442,7 @@ const Order_Detail = () => {
             </div>
             <div className="card-body">
               <ul className="list-unstyled vstack gap-2 fs-15 mb-0">
-              <li className="fw-medium fs-14">Name : {user.name}</li>
+                <li className="fw-medium fs-14">Name : {user.name}</li>
                 <li>Phone : {data[0].order.user_phone}</li>
                 <li>Address : {data[0].order.user_address}</li>
               </ul>

@@ -4,7 +4,11 @@ import { PlusOutlined } from "@ant-design/icons";
 import { useCategory } from "../../../Hook/useCategory.jsx";
 import TextArea from "antd/es/input/TextArea";
 import { useNavigate } from "react-router-dom";
-import { addProduct, addProductGallerie } from "../../../Apis/Api.jsx";
+import {
+  addProduct,
+  addProductGallerie,
+  addProductVariants,
+} from "../../../Apis/Api.jsx";
 import { useMutation, useQueryClient } from "react-query";
 import { useColors } from "../../../Hook/useColor.jsx";
 import { useSizes } from "../../../Hook/useSize.jsx";
@@ -21,8 +25,15 @@ const AddProduct = () => {
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
   const [fileList, setFileList] = useState([]);
+  const [selectedIds, setSelectedIds] = useState([0]);
+  const [selectedvalue, setSelectedvalue] = useState([]);
+  const [selectedIds1, setSelectedIds1] = useState([0]);
+  const [selectedvalue1, setSelectedvalue1] = useState([]);
   const { colors, isLoading: isLoadingColor } = useColors();
   const { sizes, isLoadingSize } = useSizes();
+  const test = sizes?.data?.find((item) => item.id === selectedvalue[0])?.name;
+  // console.log(test,selectedvalue1);
+  const [valueVariants, setvalueVariants] = useState();
   // const { mutate } = useAddProduct();
   const queryClient = useQueryClient();
 
@@ -33,7 +44,8 @@ const AddProduct = () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       message.success("Thêm sản phẩm thành công");
       addProductGalleries(data.product.id);
-      // navigate("/admin");
+      addProductVariant(data.product.id);
+      navigate("/admin/products");
     },
     onError: (error) => {
       message.error(error.response.data.error);
@@ -52,7 +64,16 @@ const AddProduct = () => {
         message.error(error.response.data.error);
       },
     });
-
+  const { mutate: addProductVariant, isLoading: isAddingVariants } =
+    useMutation({
+      mutationFn: (id) => addProductVariants(id, valueVariants),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["productsVariants"] });
+      },
+      onError: (error) => {
+        message.error(error.response.data.error);
+      },
+    });
   const [types, setTypes] = useState([
     {
       id: 0,
@@ -76,10 +97,6 @@ const AddProduct = () => {
     },
   ]);
 
-  const [selectedIds, setSelectedIds] = useState([0]);
-  const [selectedvalue, setSelectedvalue] = useState([]);
-  const [selectedIds1, setSelectedIds1] = useState([0]);
-  const [selectedvalue1, setSelectedvalue1] = useState([]);
   const handleScroll = (ref) => {
     ref.current.scrollIntoView({ behavior: "smooth" });
     setTabs(ref.current.id);
@@ -284,36 +301,43 @@ const AddProduct = () => {
   };
 
   const onSubmit = (data) => {
-    const variants = [];
-    let index = 0;
-    // while (data[`price${index}`] !== undefined) {
-    //   // Dynamically check and assign the `colorselect` field
-    //   const color =
-    //     data[`select${index + 1}`] === "color" ? selectedvalue[`${index}`] : "";
-    //   const size = data[`select2`] === "size" ? selectedvalue1[`${index}`] : "";
-    //   variants.push({
-    //     color, // Include colorselect if applicable
-    //     size,
-    //     price: data[`price-${index}`],
-    //     quantity: data[`quantity-${index}`],
-    //     imgUrl: data[`imgUrl-${index}`].fileList[0].url,
-    //   });
-    //   index++;
-    // }
+    let variants = [];
+    // Kiểm tra nếu selectedvalue và selectedvalue1 có dữ liệu đúng
+    const colors = select === "color" ? selectedvalue : selectedvalue1;
+    const sizes = select1 === "size" ? selectedvalue1 : selectedvalue;
+
+    // Duyệt qua tất cả tổ hợp màu sắc và kích thước
+    colors.forEach((color_id, colorIndex) => {
+      sizes.forEach((size_id, sizeIndex) => {
+        const variantIndex = select === "color" ? colorIndex : sizeIndex; // Lấy index của màu để xác định giá và số lượng
+        const variant = {
+          color_id,
+          size_id,
+          price: data[`price${variantIndex}`], // Lấy giá theo màu sắc
+          quantity: data[`quantity-${variantIndex}`], // Lấy số lượng theo màu sắc
+        };
+        variants.push(variant); // Thêm vào danh sách variants
+      });
+    });
+
+    const productvariants = {
+      variants: variants,
+    };
+    setvalueVariants(productvariants);
     const product = {
       name: data.productName,
-      // price: data.price,
       category_id: data.categoryId,
-      // albumImg: data.ablumImg.fileList.map((item) => item.url),
-      img_thumb: data.ablumImg.fileList.map((item) => item.url)[0],
+      img_thumb: data.ablumImg?.fileList?.[0]?.url || "",
       description: data.description,
       slug: data.slugName,
       is_active: true,
-      // variants: variants,
     };
 
-    mutate(product);
+    console.log("Product Data:", productvariants);
+
+    // mutate(product);
   };
+
   const validateFileList = () => {
     if (fileList.length < 1) {
       return Promise.reject(new Error("Vui lòng tải lên ít nhất 5 hình ảnh"));
@@ -332,7 +356,7 @@ const AddProduct = () => {
   return (
     <>
       <section className="grid grid-cols-12 gap-4 px-4">
-        <div
+        {/* <div
           className="col-span-3 bg-white rounded-xl h-[220px] "
           style={{ boxShadow: "0px 0px 4px 1px #d1d1d1" }}
         >
@@ -360,8 +384,8 @@ const AddProduct = () => {
               </div>
             </div>
           </div>
-        </div>
-        <section className="col-span-9" ref={section1Ref} id="section1">
+        </div> */}
+        <section className="col-span-12" ref={section1Ref} id="section1">
           <div
             className="  bg-white rounded-xl z-50 "
             style={{ boxShadow: "0px 0px 4px 1px #d1d1d1" }}
@@ -819,7 +843,7 @@ const AddProduct = () => {
                                             value: colorItem.id,
                                             label: colorItem.name,
                                             disabled: selectedvalue1.includes(
-                                              colorItem.name
+                                              colorItem.id
                                             ),
                                           })) || []
                                         : select1 === "size"
@@ -1012,13 +1036,19 @@ const AddProduct = () => {
 
                           <div className="flex w-[100%] ">
                             <div
-                              className="flex-[1_0_202px] rounded-none flex justify-center border-y-[1px]
+                              className="flex-[1_0_202px] rounded-none flex justify-center border-r-2 border-t-2 
                          p-3 rounded-s border-[#EBEBEB] border-solid"
                             >
                               Giá <span className="text-red-500">*</span>
                             </div>
                             <div
-                              className="flex-[1_0_202px] flex justify-center border-[1px]
+                              className="flex-[1_0_202px] rounded-none flex justify-center border-y-[1px]
+                         p-3 rounded-s border-[#EBEBEB] border-solid"
+                            >
+                              Price Sale <span className="text-red-500">*</span>
+                            </div>
+                            <div
+                              className="flex-[1_0_202px] flex justify-center border-[1px] border-y-[1px]
                          p-3 rounded-s border-[#EBEBEB] border-solid"
                               style={{
                                 borderTopRightRadius: "10px",
@@ -1039,8 +1069,23 @@ const AddProduct = () => {
                                 <div className="min-w-[100px]  border-e-[1px]  p-3 ">
                                   <div className="flex items-center gap-4">
                                     <div>
-                                      {selectedvalue[index] ||
-                                        selectedvalue1[index]}
+                                      {/* {selectedvalue[index] ||
+                                        selectedvalue1[index]} */}
+                                      {select === "color"
+                                        ? colors?.data?.find(
+                                            (item) =>
+                                              item.id === selectedvalue?.[index]
+                                          )?.name
+                                        : sizes?.data?.find(
+                                            (item) =>
+                                              item.id === selectedvalue?.[index]
+                                          )?.name}
+
+                                      {/* {colors?.data?.find(
+                                        (item) =>
+                                          item.id === selectedvalue[index]
+                                      )?.name ??
+                                        } */}
                                     </div>
                                   </div>
                                 </div>
@@ -1055,7 +1100,17 @@ const AddProduct = () => {
                                             className="type text-center "
                                             key={index}
                                           >
-                                            {item}
+                                            {select1 === "color"
+                                              ? colors?.data?.find(
+                                                  (item) =>
+                                                    item.id ===
+                                                    selectedvalue1?.[index]
+                                                )?.name
+                                              : sizes?.data?.find(
+                                                  (item) =>
+                                                    item.id ===
+                                                    selectedvalue1?.[index]
+                                                )?.name}
                                           </div>
                                         ))}
                                       </div>
@@ -1101,6 +1156,22 @@ const AddProduct = () => {
                                     className="flex-[1_0_205px]  flex justify-center border-e-[1px]
                          px-3 py-[2.5rem] rounded-s border-[#EBEBEB] border-solid"
                                   >
+                                    <Form.Item name={`pricesale${index}`}>
+                                      <Input
+                                        type="number"
+                                        size="large"
+                                        className="w-[100%] max-h-[40px]"
+                                        min={0}
+                                        // value={price}
+                                        // onChange={(e) => setPrice(e.target.value)}
+                                        placeholder="Price Sale"
+                                      />
+                                    </Form.Item>
+                                  </div>
+                                  <div
+                                    className="flex-[1_0_205px]  flex justify-center border-e-[1px]
+                         px-3 py-[2.5rem] rounded-s border-[#EBEBEB] border-solid"
+                                  >
                                     <Form.Item name={`quantity-${index}`}>
                                       <Input
                                         type="number"
@@ -1124,7 +1195,7 @@ const AddProduct = () => {
               </div>
             </section>
             <div
-              className="flex gap-4 justify-content-end bg-white p-3 rounded-lg mb-1 text-[1rem] fixed bottom-0 w-[60%]"
+              className="flex gap-4 justify-content-end bg-white p-3 rounded-lg mb-1 text-[1rem] fixed bottom-0 w-[82.5%]"
               style={{ boxShadow: "rgb(209, 209, 209) 0px 0px 4px 1px" }}
             >
               <button className="py-2 px-4 bg-white border-2 border-[#EBEBEB] rounded-lg border-solid text-black">

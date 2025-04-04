@@ -4686,11 +4686,11 @@ i {
 .type:nth-child(n + 2) {
   border-top: 1px solid #cbc8c8;
   width: 100%;
-  padding: 16px 46px;
+  padding: 16px 38px;
 }
 
 .type:first-child {
-  padding: 16px 46px;
+  padding: 16px 38px;
 }
 
 ul,

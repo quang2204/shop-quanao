@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import useAuth from "./useAuth.jsx";
 
 const UseDetailOrder = (id) => {
+  
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["order", id],
     queryFn: () => detailOrder(id),

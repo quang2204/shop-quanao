@@ -41,6 +41,7 @@ import Categories_Detail from "../Admin/Pages/Categories/Categories_Detail.jsx";
 import ColorList from "../Admin/Pages/Colors/ColorList.jsx";
 import VoucherList from "../Admin/Pages/Vouchers/VoucherList.jsx";
 import FullScreenButton from "../Admin/Ui/FullScreen.jsx";
+import UpdateProduct from "../Admin/Pages/Products/UpdateProduct.jsx";
 
 const Router = () => {
   ScrollToTop();
@@ -73,10 +74,11 @@ const Router = () => {
       <Route path="/admin" element={<LayoutAdmin />}>
         <Route index element={<Dashboards />} />
         <Route path="products" element={<Products />} />
+        <Route path="uppdateproduct/:id" element={<UpdateProduct />} />
         <Route path="addproduct" element={<AddProduct />} />
         <Route path="categories" element={<Categories />} />
         <Route path="categories/:id" element={<Categories_Detail />} />
-        <Route path="detailproduct/:id" element={<Detail_Product />} />
+        <Route path="product_detail/:id" element={<Detail_Product />} />
         <Route path="signin" element={<SignIn />} />
         <Route path="customers" element={<Customers />} />
         <Route path="customers/:id" element={<Customers />} />
