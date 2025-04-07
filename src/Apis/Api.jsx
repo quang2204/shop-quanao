@@ -301,6 +301,10 @@ export const deleteBanner = async (id) => {
   await Axios.delete(`/api/admin/banners/${id}`);
 };
 //sizes 
+export const getSize = async () => {
+  const res = await Axios.get(`api/admin/sizes`);
+  return res.data;
+};
 export const getSizes = async (page = 1) => {
   const res = await Axios.get(`/api/admin/sizes?page=${page}`);
   return res.data;

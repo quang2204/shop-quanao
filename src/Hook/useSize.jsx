@@ -1,6 +1,14 @@
+import { getSize } from "../Apis/Api";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { getSizes, createSize, updateSize, deleteSize } from "../Apis/Api";
 import { message } from "antd";
+const useSizes = () => {
+  const { data: sizes, isLoading: isLoadingSize } = useQuery({
+    queryKey: ["sizes"],
+    queryFn: getSize,
+  });
+  return { sizes, isLoadingSize };
+};
 
 const useSize = (currentPage) => {
   const {
@@ -62,4 +70,4 @@ const useDeleteSize = () => {
   return { mutate, isLoading };
 };
 
-export { useSize, useCreateSize, useUpdateSize, useDeleteSize };
+export { useSize, useCreateSize, useUpdateSize, useDeleteSize, useSizes };
