@@ -1,19 +1,13 @@
-import { useQuery } from "react-query";
-import { getSize } from "../Apis/Api";
-
-export const useSizes = () => {
-  const { data: sizes, isLoading:isLoadingSize } = useQuery({
-    queryKey: ["sizes"],
-    queryFn: getSize,
-  });
-  return { sizes, isLoadingSize };
-};
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { getSizes, createSize, updateSize, deleteSize } from "../Apis/Api";
 import { message } from "antd";
 
 const useSize = (currentPage) => {
-  const { data: size, isLoading: isSize, error } = useQuery({
+  const {
+    data: size,
+    isLoading: isSize,
+    error,
+  } = useQuery({
     queryKey: ["size", currentPage],
     queryFn: () => getSizes(currentPage),
     onError: () => {
