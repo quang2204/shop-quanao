@@ -3,84 +3,46 @@ import { Form, Input, Select, Spin, TreeSelect, Upload, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useCategory } from "../../../Hook/useCategory.jsx";
 import TextArea from "antd/es/input/TextArea";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
-  addProduct,
-  addProductGallerie,
-  addProductVariants,
+  updateProduct,
+  updateProductGallerie,
+  updateProductVariants,
 } from "../../../Apis/Api.jsx";
 import { useMutation, useQueryClient } from "react-query";
 import { useColors } from "../../../Hook/useColor.jsx";
 import { useSizes } from "../../../Hook/useSize.jsx";
+import {
+  useDetailProduct,
+  useProductGalleries,
+  useProductVariants,
+} from "../../../Hook/useDetailProduct.jsx";
 // import { useAddProduct, useAddProductGalleries } from "../../../Hook/useProduct.jsx";
 // import { Link } from "react-router-dom";
 
-const AddProduct = () => {
+const UpdateProduct = () => {
   const section1Ref = useRef(null);
   const section2Ref = useRef(null);
+  const { id } = useParams();
   const { category, isCategory } = useCategory();
   const [tabs, setTabs] = useState("section1");
   const [classify, setClassify] = useState(false);
   const [classify1, setClassify1] = useState(false);
+  const [categoryId, setCategoryId] = useState();
+  const [form] = Form.useForm();
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
-  const [fileList, setFileList] = useState([]);
+  const { detailProduct, isDetailProduct } = useDetailProduct();
+  const { isProductVariants, productVariant } = useProductVariants();
+  const { productGallerie, isproductGalleries } = useProductGalleries();
+  const { colors, isLoading: isLoadingColor } = useColors();
+  const { sizes, isLoadingSize } = useSizes();
+  const [valueVariants, setvalueVariants] = useState();
   const [selectedIds, setSelectedIds] = useState([0]);
   const [selectedvalue, setSelectedvalue] = useState([]);
   const [selectedIds1, setSelectedIds1] = useState([0]);
   const [selectedvalue1, setSelectedvalue1] = useState([]);
-  const { colors, isLoading: isLoadingColor } = useColors();
-  const { sizes, isLoadingSize } = useSizes();
-  const test = sizes?.data?.find((item) => item.id === selectedvalue[0])?.name;
-  // console.log(test,selectedvalue1);
-  const [valueVariants, setvalueVariants] = useState();
-  // const { mutate } = useAddProduct();
-  const queryClient = useQueryClient();
-
-  const navigate = useNavigate();
-  const { mutate, isLoading } = useMutation({
-    mutationFn: (data) => addProduct(data),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-      message.success("Thêm sản phẩm thành công");
-      addProductGalleries(data.product.id);
-      addProductVariant(data.product.id);
-      navigate("/admin/products");
-    },
-    onError: (error) => {
-      message.error(error.response.data.error);
-    },
-  });
-  const productGalleries = {
-    images: fileList.map((item) => item.url),
-  };
-  const { mutate: addProductGalleries, isLoading: isAddingGalleries } =
-    useMutation({
-      mutationFn: (id) => addProductGallerie(id, productGalleries),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["productsGalleries"] });
-      },
-      onError: (error) => {
-        message.error(error.response.data.error);
-      },
-    });
-  const { mutate: addProductVariant, isLoading: isAddingVariants } =
-    useMutation({
-      mutationFn: (id) => addProductVariants(id, valueVariants),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["productsVariants"] });
-      },
-      onError: (error) => {
-        message.error(error.response.data.error);
-      },
-    });
   const [types, setTypes] = useState([
-    {
-      id: 0,
-      type: "",
-    },
-  ]);
-  const [types1, setTypes1] = useState([
     {
       id: 0,
       type: "",
@@ -96,7 +58,187 @@ const AddProduct = () => {
       id: 0,
     },
   ]);
+  const [types1, setTypes1] = useState([
+    {
+      id: 0,
+      type: "",
+    },
+  ]);
+  const [priceAll, setpriceAll] = useState();
+  // const { mutate } = useAddProduct();
+  const queryClient = useQueryClient();
+  const [fileList, setFileList] = useState([]);
+  useEffect(() => {
+    if (!productVariant || productVariant.length === 0) return;
 
+    const product = productVariant[0].product;
+
+    // Set các field cố định
+    form.setFieldsValue({
+      productName: product?.name,
+      categoryId: product?.category_id,
+      description: product?.description,
+    });
+
+    // Set dynamic fields (giá, giá sale, số lượng)
+    const dynamicFields = {};
+    const validSizes = selectedvalue1.filter((item) => item !== 0);
+    const validColors = selectedvalue.filter((item) => item !== 0);
+
+    validColors.forEach((_, outerIndex) => {
+      validSizes.forEach((_, innerIndex) => {
+        const priceIndex = outerIndex * validSizes.length + innerIndex;
+        const priceData = priceAll[priceIndex];
+
+        dynamicFields[`price-${outerIndex}-${innerIndex}`] =
+          priceData?.price ?? 0;
+        dynamicFields[`pricesale-${outerIndex}-${innerIndex}`] =
+          priceData?.price_sale ?? 0;
+        dynamicFields[`quantity-${outerIndex}-${innerIndex}`] =
+          priceData?.quantity ?? 0;
+      });
+    });
+
+    form.setFieldsValue(dynamicFields);
+  }, [productVariant, priceAll, selectedvalue1, selectedvalue]);
+
+  useEffect(() => {
+    if (productGallerie?.length > 0) {
+      const images = productGallerie.map((item, index) => ({
+        uid: `-${index + 1}`,
+        name: `image${index + 1}.png`,
+        status: "done",
+        url: item.image,
+      }));
+      setFileList(images);
+    }
+  }, [productGallerie]);
+  // useEffect(() => {
+  //   if (detailProduct?.[0]?.category?.id) {
+  //     const defaultCategoryId = productVariant[0].product.category_id;
+  //     setCategoryId(defaultCategoryId);
+  //     form.setFieldsValue({
+  //       categoryId: defaultCategoryId,
+  //     });
+  //   }
+  // }, [detailProduct, form]);
+  const navigate = useNavigate();
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (data) => updateProduct(id, data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      updateProductGalleries();
+      updateProductVariant();
+      message.success("Cập nhật sản phẩm thành công");
+      // navigate("/admin/products");
+    },
+    onError: (error) => {
+      message.error(error.response.data.error);
+    },
+  });
+  const maxLength = Math.max(productGallerie?.length, fileList?.length);
+  const productGalleries = Array.from({ length: maxLength }, (_, index) => ({
+    id: productGallerie[index]?.id || null, // Nếu không có ID thì đặt null (ảnh mới)
+    image: fileList[index]?.url || "", // Nếu không có ảnh thì đặt ""
+  })).filter((item) => item.image !== ""); // Loại bỏ phần tử nếu không có ảnh
+
+  const itemproductGalleries = {
+    galleries: productGalleries,
+  };
+
+  const { mutate: updateProductGalleries, isLoading: isAddingGalleries } =
+    useMutation({
+      mutationFn: () => updateProductGallerie(id, itemproductGalleries),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["productsGalleries"] });
+      },
+      onError: (error) => {
+        message.error(error.response.data.error);
+      },
+    });
+  const { mutate: updateProductVariant, isLoading: isAddingVariants } =
+    useMutation({
+      mutationFn: () => updateProductVariants(id, valueVariants),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["productsVariants", id] });
+        navigate("/admin/products");
+      },
+      onError: (error) => {
+        message.error(error.response.data.error);
+      },
+    });
+
+  useEffect(() => {
+    if (!id || !productVariant || productVariant.length === 0) return;
+    setpriceAll([]);
+    setClassifys([]);
+    setSelectedvalue([]);
+    setTypes([]);
+    setClassifys1([]);
+    setSelectedvalue1([]);
+    setTypes1([]);
+
+    if (!id || !productVariant) return;
+
+    const extractUniqueItems = (items, getKeyValue, getDisplayValue) => {
+      return Array.from(
+        new Map(
+          items?.map((item) => [getKeyValue(item), getDisplayValue(item)])
+        ).values()
+      );
+    };
+
+    const allSizes = productVariant?.flatMap((variant) => variant.size || []);
+    const priceAll = Array.from(
+      new Map(
+        productVariant?.map((variant) => [
+          variant?.id,
+          {
+            quantity: variant.quantity,
+            price: variant.price,
+            price_sale: variant.price_sale,
+          },
+        ])
+      ).values()
+    );
+
+    const allColors = productVariant?.flatMap((variant) => variant.color || []);
+    const uniqueSizes = extractUniqueItems(
+      allSizes,
+      (item) => item?.id,
+      (item) => ({ id: item?.id, type: item?.name })
+    );
+
+    const sizeIds = extractUniqueItems(
+      allSizes,
+      (item) => item?.id,
+      (item) => item?.id
+    );
+
+    const uniqueColors = extractUniqueItems(
+      allColors,
+      (item) => item?.id,
+      (item) => ({ id: item?.id, type: item?.name })
+    );
+
+    const colorIds = extractUniqueItems(
+      allColors,
+      (item) => item?.id,
+      (item) => item?.id
+    );
+
+    // Add default 0 option
+    sizeIds.push(0);
+    colorIds.push(0);
+    // Set all states at once to prevent multiple re-renders
+    setpriceAll(priceAll);
+    setClassifys(colorIds);
+    setSelectedvalue(colorIds);
+    setTypes(uniqueColors);
+    setClassifys1(sizeIds);
+    setSelectedvalue1(sizeIds);
+    setTypes1(uniqueSizes);
+  }, [id, productVariant]); // Added productVariant to dependencies
   const handleScroll = (ref) => {
     ref.current.scrollIntoView({ behavior: "smooth" });
     setTabs(ref.current.id);
@@ -107,9 +249,9 @@ const AddProduct = () => {
       behavior: "smooth",
     });
   }, [tabs]);
+
   const [value, setValue] = useState();
   const [fileList1, setFileList1] = useState([]);
-
   const handleSelect = (index, value) => {
     handleGenericSelect(
       index,
@@ -191,25 +333,32 @@ const AddProduct = () => {
   };
 
   const treeData = transformToTreeData(category?.data);
-  const onChange = (newValue) => {
-    setValue(newValue);
-  };
   const onPopupScroll = () => {
     // console.log("onPopupScroll", e);
   };
   const onhandluploadimg = (e) => {
     let newFileList = [...e.fileList];
 
-    // Nếu upload thành công, cập nhật URL
+    // Cập nhật URL nếu upload thành công
     newFileList = newFileList.map((file) => {
       if (file.response) {
-        file.url = file.response.url; // URL trả về từ server
+        return {
+          ...file,
+          url: file.response.url, // URL trả về từ server
+        };
       }
       return file;
     });
 
-    setFileList(newFileList);
-    // setImg(!img);
+    // Tạo mảng images từ newFileList
+    const images = newFileList.map((file) => ({
+      uid: file.uid,
+      name: file.name,
+      status: file.status || "done",
+      url: file.url || file.thumbUrl,
+    }));
+
+    setFileList(images);
   };
   const beforeUpload = (file) => {
     const isImage = file.type.startsWith("image/");
@@ -274,24 +423,28 @@ const AddProduct = () => {
     // console.log("search:", value);
   };
   const handleDelete = (id) => {
-    if (selectedIds.length > 2) {
-      setSelectedIds([]);
-    } else {
-      setSelectedIds(selectedIds.filter((item) => item !== id));
+    if (id !== 0) {
+      if (selectedIds.length > 2) {
+        setSelectedIds([]);
+      } else {
+        setSelectedIds(selectedIds.filter((item) => item !== id));
+      }
+      // setTypes(types.filter((item) => item.id !== id));
+      setClassifys(classifys.filter((item) => item !== id));
+      setSelectedvalue(selectedvalue.filter((item) => item !== id));
     }
-    // setTypes(types.filter((item) => item.id !== id));
-    setClassifys(classifys.filter((item) => item !== id));
-    setSelectedvalue(selectedvalue.filter((item) => item !== id));
   };
   const handleDelete1 = (id) => {
-    if (selectedIds1.length > 2) {
-      setSelectedIds1([]);
-    } else {
-      setSelectedIds1(selectedIds1.filter((item) => item !== id));
+    if (id !== 0) {
+      if (selectedIds1.length > 2) {
+        setSelectedIds1([]);
+      } else {
+        setSelectedIds1(selectedIds1.filter((item) => item !== id));
+      }
+      // setTypes(types.filter((item) => item.id !== id));
+      setClassifys1(classifys1.filter((item) => item !== id));
+      setSelectedvalue1(selectedvalue1.filter((item) => item !== id));
     }
-    // setTypes(types.filter((item) => item.id !== id));
-    setClassifys1(classifys1.filter((item) => item !== id));
-    setSelectedvalue1(selectedvalue1.filter((item) => item !== id));
   };
 
   const onSubmit = (data) => {
@@ -311,7 +464,14 @@ const AddProduct = () => {
         // Xác định index cho key trong form data
         const outerIndex = isColorFirst ? colorIndex : sizeIndex;
         const innerIndex = isColorFirst ? sizeIndex : colorIndex;
+
+        const variantData = productVariant.find(
+          (variant) =>
+            variant.color_id === color_id && variant.size_id === size_id
+        );
+
         const variant = {
+          id: variantData?.id,
           color_id,
           size_id,
           price: Number(data[`price-${outerIndex}-${innerIndex}`]),
@@ -329,14 +489,20 @@ const AddProduct = () => {
     setvalueVariants(productvariants);
     const product = {
       name: data.productName,
-      category_id: data.categoryId,
-      img_thumb: data.ablumImg?.fileList?.[0]?.url || "",
+      category_id: data.categoryId === undefined ? categoryId : data.categoryId,
+      img_thumb:
+        data.ablumImg?.fileList?.[0]?.url === undefined
+          ? fileList[0]?.url
+          : data.ablumImg?.fileList?.[0]?.url,
       description: data.description,
       // slug: data.slugName,
       is_active: true,
     };
+    console.log("sds", variants);
+    // console.log(data);
     mutate(product);
   };
+  // console.log(productVariant);
 
   const validateFileList = () => {
     if (fileList.length < 1) {
@@ -345,7 +511,16 @@ const AddProduct = () => {
     return Promise.resolve();
   };
 
-  if (isCategory) {
+  if (
+    isCategory ||
+    isAddingGalleries ||
+    isAddingVariants ||
+    isDetailProduct ||
+    isproductGalleries ||
+    isLoadingColor ||
+    isLoadingSize ||
+    isProductVariants
+  ) {
     return (
       <Spin
         size="large"
@@ -414,13 +589,13 @@ const AddProduct = () => {
               <div
                 className="tab-link-bar"
                 style={{
-                  transform: `translateX(${tabs === "section1" ? "0" : "760"}px)`,
-                  width: "130px",
+                  transform: `translateX(${tabs === "section1" ? "0" : "1230"}px)`,
+                  width: "150px",
                 }}
               ></div>
             </div>
           </div>
-          <Form onFinish={onSubmit}>
+          <Form onFinish={onSubmit} form={form}>
             <section>
               <section
                 className={`bg-white mt-10 px-4 rounded-xl  py-2 text-left`}
@@ -449,12 +624,13 @@ const AddProduct = () => {
                       data={{
                         upload_preset: "image1",
                       }}
+                      fileList={fileList}
                       accept="image/*"
                       beforeUpload={beforeUpload}
                       maxCount={5}
                       onChange={(e) => onhandluploadimg(e)}
                     >
-                      {fileList.length < 5 && (
+                      {fileList?.length < 5 && (
                         <button
                           style={{
                             border: 0,
@@ -491,9 +667,9 @@ const AddProduct = () => {
                       upload_preset: "image1",
                     }}
                     disabled
-                    fileList={fileList[0] ? [fileList[0]] : []}
+                    fileList={fileList?.length > 0 ? [fileList[0]] : []}
                   >
-                    {fileList.length < 1 && (
+                    {fileList?.length < 1 && (
                       <button
                         style={{
                           border: 0,
@@ -522,7 +698,6 @@ const AddProduct = () => {
                   <Form.Item
                     className="col-span-10"
                     name="productName"
-                    // label="Tên sản phẩm"
                     rules={[
                       {
                         required: true,
@@ -553,6 +728,7 @@ const AddProduct = () => {
                   <Form.Item
                     className="col-span-10"
                     name="slugName"
+                    initialValue={detailProduct[0]?.slug}
                     // label="Tên sản phẩm"
                     rules={[
                       {
@@ -584,23 +760,24 @@ const AddProduct = () => {
                   <Form.Item
                     className="col-span-10"
                     name="categoryId"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng chọn một mục!",
-                      },
-                    ]}
+                    // rules={[
+                    //   {
+                    //     required: true,
+                    //     message: "Vui lòng chọn một mục!",
+                    //   },
+                    // ]}
                   >
                     <TreeSelect
                       size="large"
                       className="col-span-10"
                       showSearch
-                      value={value}
                       dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
                       placeholder="Vui lòng chọn ngành hàng"
                       allowClear
                       treeDefaultExpandAll
-                      onChange={onChange}
+                      onChange={(value) => {
+                        setCategoryId(value);
+                      }}
                       treeData={treeData}
                       onPopupScroll={onPopupScroll}
                     />
@@ -662,6 +839,16 @@ const AddProduct = () => {
                       </div>
                     </div>
                     <div className="col-span-10">
+                      {/* {classify === false ? (
+                        <button
+                          className="-mt-3 border-2 mb-6 border-gray-400 px-3 text-[#ee4d2d]
+                   py-2 rounded-md border-dotted text-[0.99rem]"
+                          onClick={() => setClassify(true)}
+                          type="button"
+                        >
+                          + Thêm nhóm phân loại
+                        </button>
+                      ) : ( */}
                       <div className="bg-[#f5f5f5] p-4 rounded-lg mb-4">
                         <div className="flex items-center gap-4 justify-content-between mb-3">
                           <div className="flex gap-4">
@@ -707,11 +894,11 @@ const AddProduct = () => {
 
                         <div className="flex gap-10">
                           <div className="text-[1rem]">Tùy chọn</div>
-                          <div className="grid grid-cols-2 gap-6">
+                          <div className="grid grid-cols-3 gap-4">
                             {classifys.map((item, index) => (
                               <div
                                 key={item.id || `new-${index}`}
-                                className="flex gap-2"
+                                className="flex gap-2 items-center"
                               >
                                 {/* {item} */}
                                 {/* Xử lý key cho item có id = 0 */}
@@ -733,12 +920,12 @@ const AddProduct = () => {
                                       ),
                                     })) || []
                                   }
-                                  value={item || undefined}
+                                  value={item || null}
                                 />
                                 {classifys.length > 1 && (
-                                  <button onClick={() => handleDelete(item)}>
+                                  <div onClick={() => handleDelete(item)}>
                                     <i className="fa fa-trash text-[#ee4d2d] text-[17px]"></i>
-                                  </button>
+                                  </div>
                                 )}
                               </div>
                             ))}
@@ -791,9 +978,12 @@ const AddProduct = () => {
 
                         <div className="flex gap-10">
                           <div className="text-[1rem]">Tùy chọn</div>
-                          <div className="grid grid-cols-2 gap-4">
+                          <div className="grid grid-cols-3 gap-4">
                             {classifys1.map((item, index) => (
-                              <div key={index}>
+                              <div
+                                key={index}
+                                className="flex items-center gap-2"
+                              >
                                 <Select
                                   showSearch
                                   placeholder={`Select a ${select}`}
@@ -812,16 +1002,16 @@ const AddProduct = () => {
                                       ),
                                     })) || []
                                   }
-                                  value={item || undefined}
+                                  value={item || null}
                                 />
                                 {classifys1.length > 1 && (
-                                  <button
+                                  <div
                                     type="button"
                                     className="ml-3"
                                     onClick={() => handleDelete1(item)}
                                   >
                                     <i className="fa fa-trash text-[#ee4d2d] text-[17px]"></i>
-                                  </button>
+                                  </div>
                                 )}
                               </div>
                             ))}
@@ -905,49 +1095,47 @@ const AddProduct = () => {
                       </div>
                     </div>
                   )} */}
-                  {(classify === true || classify1 === true) && (
-                    <div className="grid grid-cols-12 gap-4 items-center">
-                      <div className="col-span-2 text-right text-[1rem]">
-                        Danh sách phân loại hàng
-                      </div>
-                      <div className="col-span-7 flex">
-                        <Input
-                          type="number"
-                          size="large"
-                          className="w-[100%] "
-                          min={0}
-                          style={{
-                            borderTopRightRadius: 0,
-                            borderBottomRightRadius: 0,
-                          }}
-                          // value={price}
-                          // onChange={(e) => setPrice(e.target.value)}
-                          placeholder="Giá"
-                        />
-                        <Input
-                          type="number"
-                          size="large"
-                          className="w-[100%]"
-                          min={0}
-                          style={{
-                            borderTopLeftRadius: 0,
-                            borderBottomLeftRadius: 0,
-                          }}
-                          // value={price}
-                          // onChange={(e) => setPrice(e.target.value)}
-                          placeholder="Kho hàng"
-                        />
-                      </div>
-                      <div className="col-span-3">
-                        <button
-                          className=" px-[13px] text-white bg-[#ee4d2d] py-2 rounded-md  text-[0.99rem]"
-                          type="button"
-                        >
-                          Áp dụng cho tất cả phân loại
-                        </button>
-                      </div>
+                  {/* <div className="grid grid-cols-12 gap-4 items-center">
+                    <div className="col-span-2 text-right text-[1rem]">
+                      Danh sách phân loại hàng
                     </div>
-                  )}
+                    <div className="col-span-7 flex">
+                      <Input
+                        type="number"
+                        size="large"
+                        className="w-[100%] "
+                        min={0}
+                        style={{
+                          borderTopRightRadius: 0,
+                          borderBottomRightRadius: 0,
+                        }}
+                        // value={price}
+                        // onChange={(e) => setPrice(e.target.value)}
+                        placeholder="Giá"
+                      />
+                      <Input
+                        type="number"
+                        size="large"
+                        className="w-[100%]"
+                        min={0}
+                        style={{
+                          borderTopLeftRadius: 0,
+                          borderBottomLeftRadius: 0,
+                        }}
+                        // value={price}
+                        // onChange={(e) => setPrice(e.target.value)}
+                        placeholder="Kho hàng"
+                      />
+                    </div>
+                    <div className="col-span-3">
+                      <button
+                        className=" px-[13px] text-white bg-[#ee4d2d] py-2 rounded-md  text-[0.99rem]"
+                        type="button"
+                      >
+                        Áp dụng cho tất cả phân loại
+                      </button>
+                    </div>
+                  </div> */}
 
                   <div className="grid grid-cols-12 gap-4 items-center mt-3">
                     <div className="col-span-2 text-right"></div>
@@ -1158,4 +1346,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default UpdateProduct;

@@ -3,7 +3,7 @@ import useAuth from "../Hook/useAuth";
 import { Spin } from "antd";
 
 const PrivateRouter = (props) => {
-  const {data,isLoading}=useAuth();
+  const { data, isLoading } = useAuth();
   if (isLoading) {
     return (
       <Spin
@@ -12,7 +12,7 @@ const PrivateRouter = (props) => {
       />
     );
   }
-  if (data.role === 0) {
+  if (data.role !== "1") {
     return <Navigate to="/signin" />;
   }
   return <div>{props.children}</div>;

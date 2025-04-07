@@ -1,9 +1,16 @@
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
-import { detailOrder, getOrderByUserid, getOrdersAdmin } from "../Apis/Api.jsx";
+import {
+  detailOrder,
+  getOrderByUserid,
+  getOrdersAdmin,
+  orderUpdate,
+  udateStatusOrder,
+} from "../Apis/Api.jsx";
 import { useParams } from "react-router-dom";
 import useAuth from "./useAuth.jsx";
+import { message } from "antd";
 
 const UseDetailOrder = (id) => {
   const { data, isLoading, isError, error, refetch } = useQuery({
@@ -14,12 +21,12 @@ const UseDetailOrder = (id) => {
     cacheTime: 0, // Không cache dữ liệu
   });
 
-  return { 
-    data, 
-    isLoading, 
-    isError, 
+  return {
+    data,
+    isLoading,
+    isError,
     error,
-    refetch // Cho phép refetch thủ công khi cần
+    refetch, // Cho phép refetch thủ công khi cần
   };
 };
 const useDetailOrderByUserId = () => {
@@ -36,10 +43,10 @@ const useDetailOrderByUserId = () => {
   return { data, isLoading };
 };
 
-const useOrder = () => {
+const useOrder = (page) => {
   const { data, isLoading } = useQuery({
-    queryKey: "order",
-    queryFn: () => getOrdersAdmin(),
+    queryKey: ["order", page],
+    queryFn: () => getOrdersAdmin(page || 1),
   });
   return { data, isLoading };
 };
@@ -48,4 +55,31 @@ const useOrder = () => {
 //     mutationFn:(id)=>deleteOrder(id),
 //   })
 // }
-export { UseDetailOrder, useOrder, useDetailOrderByUserId };
+const useStatusOrder = (page) => {
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useMutation({
+    mutationFn: ({ id, data }) => udateStatusOrder(id, data),
+    onSuccess: () => {
+      message.success("Cập nhật trạng thái thành công");
+      queryClient.invalidateQueries({ queryKey: ["order", page] });
+    },
+    onError: (error) => {
+      message.error(error.response.data.message);
+    },
+  });
+  return { mutate, isLoading };
+};
+const useOrderUpdate = () => {
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useMutation({
+    mutationFn: ({ id, data }) => orderUpdate(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["order"] });
+    },
+    onError: (error) => {
+      message.error(error.response.data.message);
+    },
+  });
+  return { mutate, isLoading };
+};
+export { UseDetailOrder, useOrder, useDetailOrderByUserId, useStatusOrder,useOrderUpdate };

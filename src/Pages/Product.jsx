@@ -307,7 +307,7 @@ const Product = () => {
                         {item.name}
                       </Link>
                       <span className="stext-107 cl3">
-                        {<FormatPrice price={item.variants_min_price} />}
+                        {<FormatPrice price={item.variants_min_price_sale} />}
                       </span>
                     </div>
                   </div>

@@ -10,7 +10,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "react-query";
-import { addOrder, addOrderDetail, deleteAllCart } from "../Apis/Api.jsx";
+import {
+  addOrder,
+  addOrderDetail,
+  deleteAllCart,
+  orderMomo,
+} from "../Apis/Api.jsx";
 import useAuth from "../Hook/useAuth.jsx";
 const Pay = () => {
   const navigate = useNavigate();
@@ -24,13 +29,6 @@ const Pay = () => {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const { mutate: mutateDelete, isLoading: isLoading3 } = useMutation({
-    mutationFn: () => deleteAllCart(user.id),
-    onSuccess: () => {
-      queryCline.invalidateQueries({ queryKey: ["cart"] });
-      // message.success("Xoa tat ca san pham");
-    },
-  });
   const variant = data?.map((data) => data.product_variant);
   const quantity = data?.map((data) => data.quantity);
   const { mutate, isLoading: isLoadingOrder } = useMutation({
@@ -48,7 +46,7 @@ const Pay = () => {
           };
         }),
       });
-      navigate("/bill/" + data.order.id);
+      setId(data.order.id);
     },
     onError: (error) => {
       message.error(error.response?.data?.error || "Có lỗi xảy ra");
@@ -56,6 +54,25 @@ const Pay = () => {
   });
   const { mutate: orderdetail } = useMutation({
     mutationFn: (data) => addOrderDetail(data),
+    onSuccess: (data) => {
+      if (pay === "COD") {
+        navigate("/bill/" + data.orderDetails[0].order_id);
+      } else if (pay === "MOMO") {
+        momo({
+          order_id: data.orderDetails[0].order_id,
+        });
+      }
+    },
+    onError: (errors) => {
+      message.error(errors.response?.data?.error || "Có lỗi xảy ra");
+    },
+  });
+  const { mutate: momo } = useMutation({
+    mutationFn: (data) => orderMomo(data),
+    onSuccess: (data) => {
+      console.log(data.payment_url);
+      window.location.href = data.payment_url;
+    },
     onError: (errors) => {
       message.error(errors.response?.data?.error || "Có lỗi xảy ra");
     },
@@ -70,7 +87,7 @@ const Pay = () => {
     note: z.string().optional().nullable(),
   });
   const total = data?.reduce(
-    (total, item) => total + item.product_variant.price * item.quantity,
+    (total, item) => total + item.product_variant.price_sale * item.quantity,
     0
   );
 
@@ -223,7 +240,9 @@ const Pay = () => {
                     <td>
                       {
                         <FormatPrice
-                          price={item.product_variant.price * item.quantity}
+                          price={
+                            item.product_variant.price_sale * item.quantity
+                          }
                         />
                       }
                     </td>

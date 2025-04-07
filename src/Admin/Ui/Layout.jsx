@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import img from "../../images/icons/logo-02.png";
-import avatar from "../velzon/assets/images/users/avatar-1.jpg";
-import { UseDetailUser } from "../../Hook/useDetailUser";
 import { Spin } from "antd";
 import FullScreenButton from "./FullScreen";
 import useAuth from "../../Hook/useAuth";
@@ -26,6 +24,7 @@ const Layout = () => {
     str ? str.charAt(0).toUpperCase() + str.slice(1) : "Dashboards";
 
   const thirdPathSegment = capitalizeFirstLetter(pathname.split("/")[2]);
+  console.log(thirdPathSegment);
   const { data, isLoading } = useAuth();
   if (isLoading) {
     return (
@@ -616,10 +615,10 @@ const Layout = () => {
                     >
                       {/* item*/}
                       <h6 className="dropdown-header">Welcome Anna!</h6>
-                      <a className="dropdown-item" href="pages-profile.html">
+                      <Link className="dropdown-item" to={"/admin/profile"}>
                         <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1" />
                         <span className="align-middle">Profile</span>
-                      </a>
+                      </Link>
                       <a className="dropdown-item" href="apps-chat.html">
                         <i className="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1" />
                         <span className="align-middle">Messages</span>
@@ -790,12 +789,11 @@ const Layout = () => {
                   </li>
                   <li className="nav-item">
                     <Link
-                      to="baner"
-                      className={`nav-link menu-link ${thirdPathSegment == "Baner" ? "active" : ""}`}
-                    />
-                    <Link to="banners" className="nav-link menu-link">
+                      to="banners"
+                      className={`nav-link menu-link ${thirdPathSegment == "Banners" ? "active" : ""}`}
+                    >
                       <i className="ri-layout-3-line" />
-                      <span data-key="t-layouts">Baner</span>
+                      <span data-key="t-layouts">Banners</span>
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -823,13 +821,19 @@ const Layout = () => {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="colors" className={`nav-link menu-link ${thirdPathSegment=="Color"?"active":""}`}>
+                    <Link
+                      to="colors"
+                      className={`nav-link menu-link ${thirdPathSegment == "Color" ? "active" : ""}`}
+                    >
                       <i className="ri-layout-3-line" />
                       <span data-key="t-layouts">Color</span>
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="vouchers" className={`nav-link menu-link ${thirdPathSegment=="Vouchers"?"active":""}`} />
+                    <Link
+                      to="vouchers"
+                      className={`nav-link menu-link ${thirdPathSegment == "Vouchers" ? "active" : ""}`}
+                    />
                     <Link to="sizes" className="nav-link menu-link">
                       <i className="ri-layout-3-line" />
                       <span data-key="t-layouts">Sizes</span>
@@ -848,7 +852,10 @@ const Layout = () => {
                     </Link>
                   </li> */}
                   <li className="nav-item">
-                    <Link to="customers" className={`nav-link menu-link ${thirdPathSegment=="Customers"?"active":""}`}>
+                    <Link
+                      to="customers"
+                      className={`nav-link menu-link ${thirdPathSegment == "Customers" ? "active" : ""}`}
+                    >
                       <i class="fa fa-user"></i>
                       <span data-key="t-layouts">User</span>
                     </Link>
@@ -911,7 +918,7 @@ const Layout = () => {
                   <li className="nav-item">
                     <Link
                       to="profile"
-                      className={`nav-link menu-link relative ${thirdPathSegment=="Profile"?"active":""}`}
+                      className={`nav-link menu-link relative ${thirdPathSegment == "Profile" ? "active" : ""}`}
                       role="button"
                     >
                       <i className="ri-pages-line" />

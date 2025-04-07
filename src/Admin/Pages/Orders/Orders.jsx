@@ -1,11 +1,43 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { useOrder } from "../../../Hook/useOrder";
-import { Spin } from "antd";
+import React, { useState } from "react";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useOrder, useStatusOrder } from "../../../Hook/useOrder";
+import { Modal, Pagination, Spin } from "antd";
 import { FormatDate, FormatDateTime, FormatPrice } from "../../../Format";
+import { useForm } from "react-hook-form";
 
 const Orders = () => {
-  const { data, isLoading } = useOrder();
+  const [pageProduct, setPageProduct] = useState();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const page = parseInt(searchParams.get("page")) || 1;
+  const { data, isLoading } = useOrder(page);
+  const [isOpen, setIsOpen] = useState(false);
+  const [idOpen, setIdOpen] = useState("");
+  const [status, setStatus] = useState();
+  const { isLoading: isLoadingorder, mutate } = useStatusOrder(page);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+  const handleOpen = (id) => {
+    setIdOpen(id);
+    setStatus(id.status);
+    setIsOpen(true);
+  };
+  const handleCancel = (id) => {
+    setIdOpen("");
+    setIsOpen(false);
+  };
+  const onSubmitUpdate = () => {
+    mutate({ id: idOpen.id, data: status });
+    if (!isLoadingorder) {
+      setIdOpen("");
+      setIsOpen(false);
+    }
+  };
   const getOrderStatus = (status) => {
     const statusMapping = {
       1: "Chờ xử lý",
@@ -19,6 +51,14 @@ const Orders = () => {
     };
 
     return statusMapping[status] || "Trạng thái không xác định";
+  };
+  const onShowSizeChange = (current, pageSize) => {
+    // setPageProduct(current);
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", current);
+    // searchParams.set("limit", pageSize);
+
+    navigate(`${location.pathname}?${searchParams.toString()}`);
   };
   const getOrderStatusColor = (status) => {
     const statusMapping = {
@@ -46,31 +86,6 @@ const Orders = () => {
     <div className="row mx-2">
       <div className="col-lg-12">
         <div className="card" id="orderList">
-          <div className="card-header border-0 bg-none">
-            <div className="row align-items-center gy-3">
-              <div className="col-sm">
-                <h5 className="card-title mb-0 fw-medium">Order History</h5>
-              </div>
-              <div className="col-sm-auto">
-                <div className="d-flex gap-1 flex-wrap">
-                  <button
-                    type="button"
-                    className="text-white text-[0.9rem] bg-[#03A9F4] px-4 py-2 rounded-md "
-                  >
-                    <i className="ri-file-download-line align-bottom me-1" />{" "}
-                    Import
-                  </button>
-                  <button
-                    className="btn btn-soft-danger"
-                    id="remove-actions"
-                    onclick="deleteMultiple()"
-                  >
-                    <i className="ri-delete-bin-2-line" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
           <div className="card-body border border-dashed border-end-0 border-start-0">
             <form>
               <div className="row g-3">
@@ -90,10 +105,6 @@ const Orders = () => {
                     <input
                       type="text"
                       className="form-control"
-                      data-provider="flatpickr"
-                      data-date-format="d M, Y"
-                      data-range-date="true"
-                      id="demo-datepicker"
                       placeholder="Select date"
                     />
                   </div>
@@ -148,77 +159,7 @@ const Orders = () => {
           </div>
           <div className="card-body pt-0">
             <div>
-              <ul
-                className="nav nav-tabs nav-tabs-custom nav-success mb-3"
-                role="tablist"
-              >
-                <li className="nav-item">
-                  <a
-                    className="nav-link active All py-3"
-                    data-bs-toggle="tab"
-                    id="All"
-                    href="#home1"
-                    role="tab"
-                    aria-selected="true"
-                  >
-                    <i className="ri-store-2-fill me-1 align-bottom" /> All
-                    Orders
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link py-3 Delivered"
-                    data-bs-toggle="tab"
-                    id="Delivered"
-                    href="#delivered"
-                    role="tab"
-                    aria-selected="false"
-                  >
-                    <i className="ri-checkbox-circle-line me-1 align-bottom" />{" "}
-                    Delivered
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link py-3 Pickups"
-                    data-bs-toggle="tab"
-                    id="Pickups"
-                    href="#pickups"
-                    role="tab"
-                    aria-selected="false"
-                  >
-                    <i className="ri-truck-line me-1 align-bottom" /> Pickups{" "}
-                    <span className="badge bg-danger align-middle ms-1">2</span>
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link py-3 Returns"
-                    data-bs-toggle="tab"
-                    id="Returns"
-                    href="#returns"
-                    role="tab"
-                    aria-selected="false"
-                  >
-                    <i className="ri-arrow-left-right-fill me-1 align-bottom" />{" "}
-                    Returns
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link py-3 Cancelled"
-                    data-bs-toggle="tab"
-                    id="Cancelled"
-                    href="#cancelled"
-                    role="tab"
-                    aria-selected="false"
-                  >
-                    <i className="ri-close-circle-line me-1 align-bottom" />{" "}
-                    Cancelled
-                  </a>
-                </li>
-              </ul>
-              <div className="table-responsive table-card mb-1">
+              <div className="table-responsive table-card mb-1 mt-3">
                 <table
                   className="table table-nowrap align-middle"
                   id="orderTable"
@@ -315,18 +256,11 @@ const Orders = () => {
                             </li>
                             <li
                               className="list-inline-item edit"
-                              data-bs-toggle="tooltip"
-                              data-bs-trigger="hover"
-                              data-bs-placement="top"
-                              title="Edit"
+                              onClick={() => handleOpen(order)}
                             >
-                              <a
-                                href="#showModal"
-                                data-bs-toggle="modal"
-                                className="text-primary d-inline-block edit-item-btn"
-                              >
+                              <div className="text-primary d-inline-block edit-item-btn">
                                 <i className="ri-pencil-fill fs-16" />
-                              </a>
+                              </div>
                             </li>
                           </ul>
                         </td>
@@ -350,17 +284,14 @@ const Orders = () => {
                   </div>
                 </div>
               </div>
-              <div className="d-flex justify-content-end">
-                <div className="pagination-wrap hstack gap-2">
-                  <a className="page-item pagination-prev disabled" href="#">
-                    Previous
-                  </a>
-                  <ul className="pagination listjs-pagination mb-0" />
-                  <a className="page-item pagination-next" href="#">
-                    Next
-                  </a>
-                </div>
-              </div>
+              <Pagination
+                showSizeChanger
+                onChange={onShowSizeChange}
+                current={data.current_page}
+                total={data.total}
+                pageSize={data.per_page}
+                align="center"
+              />
             </div>
             <div
               className="modal fade"
@@ -610,6 +541,38 @@ const Orders = () => {
           </div>
         </div>
       </div>
+      <Modal
+        open={isOpen}
+        onOk={handleSubmit(onSubmitUpdate)}
+        onCancel={handleCancel}
+        title="Order status"
+        width={800}
+        // className="modal fade zoomIn"
+      >
+        <>
+          <div className="radio-inputs-order my-6">
+            {[
+              { label: "Chờ xử lý", value: 1 },
+              { label: "Đang xử lý", value: 2 },
+              { label: "Đang vận chuyển", value: 3 },
+              { label: "Đã giao hàng", value: 4 },
+              { label: "Hoàn thành", value: 5 },
+              { label: "Đã hủy", value: 6 },
+            ].map((item) => (
+              <label className="radio" key={item.value}>
+                <input
+                  type="radio"
+                  name="radio"
+                  value={item.value}
+                  checked={status === item.value}
+                  onChange={() => setStatus(item.value)}
+                />
+                <span className="name">{item.label}</span>
+              </label>
+            ))}
+          </div>
+        </>
+      </Modal>
       {/*end col*/}
     </div>
   );

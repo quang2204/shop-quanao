@@ -1,17 +1,39 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { getBanners, createBanner, updateBanner, deleteBanner } from "../Apis/Api";
+import {
+  getBanners,
+  createBanner,
+  updateBanner,
+  deleteBanner,
+} from "../Apis/Api";
 import { message } from "antd";
+import { useEffect, useState } from "react";
+export const useBanners = (page = 1) => {
+  const [banners, setBanners] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchBanners = async () => {
+      setLoading(true);
+      const data = await getBanners(page);
+      setBanners(data.data);
+      setLoading(false);
+    };
+
+    fetchBanners();
+  }, [page]);
+
+  return { banners, loading };
+};
 const useBanner = (page = 1) => {
-  const { data: banner, isLoading: isBanner, error } = useQuery(
-    ["banner", page],
-    () => getBanners(page),
-    {
-      onError: () => {
-        message.error("Failed to fetch banners");
-      },
-    }
-  );
+  const {
+    data: banner,
+    isLoading: isBanner,
+    error,
+  } = useQuery(["banner", page], () => getBanners(page), {
+    onError: () => {
+      message.error("Failed to fetch banners");
+    },
+  });
   return { banner, isBanner, error };
 };
 

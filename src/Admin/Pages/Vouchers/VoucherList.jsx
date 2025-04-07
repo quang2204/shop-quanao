@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Modal, Spin, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { Modal, Pagination, Spin, message } from "antd";
 import { useForm } from "react-hook-form";
 import {
   useDeleteVoucher,
@@ -7,22 +7,34 @@ import {
   useAddVoucher,
   useUpdateVoucher,
 } from "../../../Hook/useVoucher";
-import { Link } from "react-router-dom";
-
+import { FormatDate, FormatPrice } from "../../../Format";
 const VoucherList = () => {
+  const [pageProduct, setPageProduct] = useState(1);
   const { vouchers, isLoading } = useVouchers();
   const { mutate: addVoucher } = useAddVoucher();
   const { mutate: deleteVoucher } = useDeleteVoucher();
   const { mutate: updateVoucher } = useUpdateVoucher();
-
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
   const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [voucherToDelete, setVoucherToDelete] = useState(null);
-  const [voucherToUpdate, setVoucherToUpdate] = useState(null);
+  const [voucherToUpdate, setVoucherToUpdate] = useState("");
+  const [voucherToDetail, setVoucherToDetail] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDetail, setIsDetail] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  useEffect(() => {
+    reset({
+      code: voucherToUpdate?.code,
+      discount: voucherToUpdate?.discount,
+      start_date: voucherToUpdate?.start_date,
+      end_date: voucherToUpdate?.end_date,
+      min_money: voucherToUpdate?.min_money,
+      max_money: voucherToUpdate?.max_money,
+      quantity: voucherToUpdate?.quantity,
+      is_active: voucherToUpdate?.is_active,
+    });
+  }, [voucherToUpdate]);
   const showConfirmDelete = (id) => {
     setVoucherToDelete(id);
     setIsConfirmDeleteOpen(true);
@@ -32,7 +44,14 @@ const VoucherList = () => {
     setIsConfirmDeleteOpen(false);
     setVoucherToDelete(null);
   };
-
+  const handleCancelDetail = () => {
+    setIsDetail(false);
+    setVoucherToDetail("");
+  };
+  const handleOkDetail = (value) => {
+    setIsDetail(true);
+    setVoucherToDetail(value);
+  };
   const handleConfirmDelete = () => {
     if (voucherToDelete && !isDeleting) {
       setIsDeleting(true);
@@ -53,27 +72,25 @@ const VoucherList = () => {
 
   const handleCancelAdd = () => {
     setIsModalOpenAdd(false);
-    reset();
   };
 
   const handleCancelUpdate = () => {
     setIsModalOpenUpdate(false);
     setVoucherToUpdate(null);
-    reset();
   };
 
   const handleEdit = (voucher) => {
     setVoucherToUpdate(voucher);
-    reset(voucher);
     setIsModalOpenUpdate(true);
   };
 
   const handleAdd = () => {
     setVoucherToUpdate(null);
-    reset();
     setIsModalOpenAdd(true);
   };
-
+  const onShowSizeChange = (current, pageSize) => {
+    setPageProduct(current);
+  };
   const {
     register,
     handleSubmit,
@@ -97,9 +114,22 @@ const VoucherList = () => {
   };
 
   const onUpdate = (data) => {
+    const datares = {
+      code: data?.code,
+      discount: data?.discount,
+      start_date: data?.start_date,
+      end_date: data?.end_date,
+      min_money: data?.min_money,
+      max_money: data?.max_money,
+      quantity: data?.quantity,
+      is_active:
+        typeof data?.is_active === "boolean"
+          ? data.is_active
+          : data?.is_active?.toString().toLowerCase() === "true",
+    };
     setIsSubmitting(true);
     updateVoucher(
-      { id: voucherToUpdate.id, ...data },
+      { id: voucherToUpdate.id, ...datares },
       {
         onSuccess: () => {
           reset();
@@ -140,9 +170,23 @@ const VoucherList = () => {
       <div className="col-lg-12">
         <div className="card">
           <div className="card-header border-0 bg-none">
-            <div className="row align-items-center gy-3">
+            <div className="row align-items-center gy-3 mb-1">
               <div className="col-sm">
-                <h5 className="card-title mb-0 fw-medium">Voucher List</h5>
+                <form>
+                  <div className="row g-3">
+                    <div className="col-xxl-5 col-sm-5">
+                      <div className="search-box">
+                        <input
+                          type="text"
+                          className="form-control search"
+                          placeholder="Search for Categories "
+                        />
+                        <i className="ri-search-line search-icon" />
+                      </div>
+                    </div>
+                  </div>
+                  {/*end row*/}
+                </form>
               </div>
               <div className="col-sm-auto">
                 <button
@@ -167,6 +211,7 @@ const VoucherList = () => {
                     <th>End Date</th>
                     <th>Min Money</th>
                     <th>Max Money</th>
+                    <th>Is_active</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -178,17 +223,25 @@ const VoucherList = () => {
                       <td>{item.discount}</td>
                       <td>{item.start_date}</td>
                       <td>{item.end_date}</td>
-                      <td>{item.min_money}</td>
-                      <td>{item.max_money}</td>
+                      <td>{<FormatPrice price={item.min_money} />}</td>
+                      <td>{<FormatPrice price={item.max_money} />}</td>
+                      <td
+                        className="customer_name"
+                        style={{
+                          color: item.is_active ? "green" : "red",
+                        }}
+                      >
+                        {item.is_active ? "Active" : "Block"}
+                      </td>
                       <td>
                         <ul className="list-inline hstack gap-2 mb-0">
                           <li className="list-inline-item">
-                            <Link
-                              to={`/admin/vouchers/${item.id}`}
+                            <div
                               className="text-primary d-inline-block"
+                              onClick={() => handleOkDetail(item)}
                             >
                               <i className="ri-eye-fill fs-16" />
-                            </Link>
+                            </div>
                           </li>
                           <li className="list-inline-item">
                             <div
@@ -213,6 +266,14 @@ const VoucherList = () => {
                 </tbody>
               </table>
             </div>
+          <Pagination
+            showSizeChanger
+            onChange={onShowSizeChange}
+            current={vouchers.current_page}
+            total={vouchers.total}
+            pageSize={vouchers.per_page}
+            align="center"
+          />
           </div>
         </div>
       </div>
@@ -334,9 +395,74 @@ const VoucherList = () => {
               <span className="text-red-500">Quantity is required.</span>
             )}
           </div>
+          <div className="mb-3">
+            <label htmlFor="email-field" className="form-label">
+              Is_Active
+            </label>
+            <select
+              id="email-field"
+              className="form-select"
+              aria-label="Default select example"
+              {...register("is_active", { required: true })}
+            >
+              <option value={true}>Active</option>
+              <option value={false}>Block</option>
+            </select>
+          </div>
         </form>
       </Modal>
 
+      {/* detail */}
+      <Modal
+        open={isDetail}
+        onOk={handleOkDetail}
+        onCancel={handleCancelDetail}
+        title="Detail Voucher"
+      >
+        <form id="voucherForm">
+          <div className="mb-3">
+            <label className="form-label">
+              Voucher Code : {voucherToDetail.code}
+            </label>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">
+              Discount : {<FormatPrice price={voucherToDetail.discount} />}
+            </label>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">
+              Start Date : {<FormatDate date={voucherToDetail.start_date} />}{" "}
+            </label>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">
+              End Date : {<FormatDate date={voucherToDetail.end_date} />}{" "}
+            </label>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">
+              Min Money : {<FormatPrice price={voucherToDetail.max_money} />}
+            </label>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">
+              Max Money : {<FormatPrice price={voucherToDetail.min_money} />}
+            </label>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">
+              Quantity : {voucherToDetail.quantity}
+            </label>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="email-field" className="form-label">
+              Is_Active :{" "}
+              {voucherToDetail.is_active === true ? "Active" : "Block"}
+            </label>
+          </div>
+        </form>
+      </Modal>
       {/* Modal Update */}
       <Modal
         open={isModalOpenUpdate}
@@ -350,7 +476,6 @@ const VoucherList = () => {
             <input
               type="text"
               className="form-control"
-              defaultValue={voucherToUpdate?.code}
               {...register("code", { required: true })}
             />
             {errors.code && (
@@ -362,7 +487,6 @@ const VoucherList = () => {
             <input
               type="number"
               className="form-control"
-              defaultValue={voucherToUpdate?.discount}
               {...register("discount", { required: true })}
             />
             {errors.discount && (
@@ -374,7 +498,6 @@ const VoucherList = () => {
             <input
               type="date"
               className="form-control"
-              defaultValue={voucherToUpdate?.start_date}
               {...register("start_date", { required: true })}
             />
             {errors.start_date && (
@@ -386,7 +509,6 @@ const VoucherList = () => {
             <input
               type="date"
               className="form-control"
-              defaultValue={voucherToUpdate?.end_date}
               {...register("end_date", { required: true })}
             />
             {errors.end_date && (
@@ -398,7 +520,6 @@ const VoucherList = () => {
             <input
               type="number"
               className="form-control"
-              defaultValue={voucherToUpdate?.min_money}
               {...register("min_money", { required: true })}
             />
             {errors.min_money && (
@@ -410,7 +531,6 @@ const VoucherList = () => {
             <input
               type="number"
               className="form-control"
-              defaultValue={voucherToUpdate?.max_money}
               {...register("max_money", { required: true })}
             />
             {errors.max_money && (
@@ -422,12 +542,25 @@ const VoucherList = () => {
             <input
               type="number"
               className="form-control"
-              defaultValue={voucherToUpdate?.quantity}
               {...register("quantity", { required: true })}
             />
             {errors.quantity && (
               <span className="text-red-500">Quantity is required.</span>
             )}
+          </div>
+          <div className="mb-3">
+            <label htmlFor="email-field" className="form-label">
+              Is_Active
+            </label>
+            <select
+              id="email-field"
+              className="form-select"
+              aria-label="Default select example"
+              {...register("is_active", { required: true })}
+            >
+              <option value={true}>Active</option>
+              <option value={false}>Block</option>
+            </select>
           </div>
         </form>
       </Modal>

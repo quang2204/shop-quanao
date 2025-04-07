@@ -4686,11 +4686,54 @@ i {
 .type:nth-child(n + 2) {
   border-top: 1px solid #cbc8c8;
   width: 100%;
-  padding: 16px 46px;
+  padding: 16px 38px;
 }
 
 .type:first-child {
-  padding: 16px 46px;
+  padding: 16px 38px;
+}
+
+/* From Uiverse.io by Yaya12085 */
+.radio-inputs-order {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 0.5rem;
+  background-color: #EEE;
+  box-sizing: border-box;
+  box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+  padding: 0.25rem;
+  font-size: 14px;
+}
+
+.radio-inputs-order .radio {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+.radio-inputs-order .radio input {
+  display: none;
+}
+
+.radio-inputs-order .radio .name {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: none;
+  padding: .5rem 0;
+  color: rgba(51, 65, 85, 1);
+  transition: all .15s ease-in-out;
+}
+
+.radio-inputs-order .radio {
+  margin-bottom: 0;
+}
+
+.radio-inputs-order .radio input:checked+.name {
+  background-color: #fff;
+  font-weight: 600;
 }
 
 ul,

@@ -20,6 +20,7 @@ import UpdatePassWord from "../Pages/UpdatePassWord.jsx";
 import Logout from "../Pages/Logout.jsx";
 import LoginCallback from "../Pages/LoginCallback.jsx";
 import AuthSuccess from "../Pages/AuthSuccess.jsx";
+import "../../node_modules/nprogress/nprogress.css";
 
 // Admin Imports
 import LayoutAdmin from "../Admin/Ui/Layout.jsx";
@@ -30,6 +31,8 @@ import AddProduct from "../Admin/Pages/Products/AddProduct.jsx";
 import Detail_Product from "../Admin/Pages/Products/Detail.jsx";
 import Customers from "../Admin/Pages/User/Customers.jsx";
 import TwoStep from "../Admin/Pages/User/TwoStep.jsx";
+
+
 import Order_Detail from "../Admin/Pages/Orders/Order_Detail.jsx";
 import Profile from "../Admin/Pages/Profile.jsx";
 import Login from "../Admin/Pages/Login.jsx";
@@ -43,6 +46,7 @@ import VoucherList from "../Admin/Pages/Vouchers/VoucherList.jsx";
 import FullScreenButton from "../Admin/Ui/FullScreen.jsx";
 import Banner from "../Admin/Pages/Banners/Banners.jsx";
 import Sizes from "../Admin/Pages/Sizes/Sizes.jsx";
+import UpdateProduct from "../Admin/Pages/Products/UpdateProduct.jsx";
 
 const Router = () => {
   ScrollToTop();
@@ -72,15 +76,25 @@ const Router = () => {
       </Route>
 
       {/* Admin Routes */}
-      <Route path="/admin" element={<LayoutAdmin />}>
+      <Route
+        path="/admin"
+        element={
+          <PrivateRouter>
+            <LayoutAdmin />
+          </PrivateRouter>
+        }
+      >
         <Route index element={<Dashboards />} />
         <Route path="products" element={<Products />} />
+        <Route path="uppdateproduct/:id" element={<UpdateProduct />} />
         <Route path="addproduct" element={<AddProduct />} />
         <Route path="categories" element={<Categories />} />
         <Route path="categories/:id" element={<Categories_Detail />} />
+
         <Route path="banners" element={<Banner />} />
         <Route path="sizes" element={<Sizes />} />
-        <Route path="detailproduct/:id" element={<Detail_Product />} />
+
+        <Route path="product_detail/:id" element={<Detail_Product />} />
         <Route path="signin" element={<SignIn />} />
         <Route path="customers" element={<Customers />} />
         <Route path="customers/:id" element={<Customers />} />

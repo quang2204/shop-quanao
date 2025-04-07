@@ -11,9 +11,12 @@ import {
   updateCartItem,
 } from "../Apis/Api.jsx";
 import { useEffect, useState } from "react";
+import { useProductVariants } from "../Hook/useDetailProduct.jsx";
 const ShopingCart = () => {
   const [voucherid, setVoucherId] = useState(0);
   const [voucher, setVoucher] = useState(0);
+  // const { isProductVariants, productVariant } = useProductVariants();
+
   const queryCline = useQueryClient();
   const { mutate, isLoading: isLoadingCart } = useMutation({
     mutationFn: ({ data, id }) => updateCartItem(data, id),
@@ -60,14 +63,15 @@ const ShopingCart = () => {
   //tăng
   const increaseNumber = (id) => {
     const check = counts.find((item) => item.id === id);
-    // console.log(counts);
+    const item = cartItem.find((item) => item.id === id);
     if (check) {
-      const newCount = check.quantity + 1;
-      const cart = {
-        quantity: newCount,
-      };
-      mutate({ data: { quantity: newCount }, id: check.id });
-      // console.log({ quantity: newCount, id: check.id });
+      const maxQuantity = item.product_variant.quantity;
+      if (check.quantity + 1 > maxQuantity) {
+        message.error("Số lượng tối đa chỉ còn " + maxQuantity);
+      } else {
+        const newCount = check.quantity + 1;
+        mutate({ data: { quantity: newCount }, id: check.id });
+      }
     }
   };
   //giảm
@@ -75,35 +79,94 @@ const ShopingCart = () => {
     const check = counts?.find((item) => item.id === id);
     if (check && check.quantity > 1) {
       const newCount = check.quantity - 1;
-      const cart = {
-        quantity: newCount,
-      };
       mutate({ data: { quantity: newCount }, id: check.id });
     }
   };
-  const numberDirectly = (input, id) => {
-    const check = counts.find((item) => item.id === id);
-    if (check) {
-      setInputValues({ ...check, quantity: input });
-
-      // setInputValues({ ...inputValues } )
-      // mutate({ cartItem: cart, id: check.id });
+  const [pre, setPre] = useState();
+  const numberDirectly = (input, id, index) => {
+    // Cho phép người dùng nhập giá trị rỗng tạm thời
+    if (input === "") {
+      const updatedValues = [...inputValues];
+      if (updatedValues[index]) {
+        updatedValues[index] = {
+          ...updatedValues[index],
+          quantity: "",
+        };
+        setInputValues(updatedValues);
+      }
+      return;
     }
-  };
-  const handleBlur = (id) => {
-    const check = counts.find((item) => item.id === id);
+    const value = parseInt(input);
+    if (isNaN(value) || value < 1) return;
 
-    if (check) {
-      const cart = {
-        quantity: inputValues.quantity,
+    const item = cartItem.find((item) => item.id === id);
+    const maxQuantity = item.product_variant.quantity;
+
+    // Kiểm tra xem người dùng nhập quá số lượng tối đa
+    if (value > maxQuantity) {
+      // Hiển thị thông báo lỗi nếu giá trị vượt quá
+      message.error(`Số lượng tối đa là ${maxQuantity}`);
+      return; // Không lưu giá trị vào state
+    }
+
+    // Cập nhật giá trị vào state nếu không vượt quá số lượng tối đa
+    const updatedValues = [...inputValues];
+    if (updatedValues[index]) {
+      updatedValues[index] = {
+        ...updatedValues[index],
+        quantity: value, // Lưu giá trị hợp lệ vào state
       };
-      // setInputValues({ ...inputValues } )
-
-      mutate({ cartItem: cart, id: check.id });
+      setPre(updatedValues);
+      setInputValues(updatedValues);
     }
   };
+
+  const handleBlur = (id, index) => {
+    const item = cartItem.find((item) => item.id === id);
+    const check = counts.find((item) => item.id === id);
+    console.log(index);
+    if (!item || !check) return;
+    console.log(pre[index]);
+    // Lấy giá trị cũ từ inputValues
+    const prevQuantity = inputValues?.[index]?.quantity;
+
+    // Lấy giá trị mới từ input
+    const newQuantity = inputValues?.[index]?.quantity;
+
+    // Nếu người dùng xóa toàn bộ (input === ""), trả lại giá trị cũ
+    if (newQuantity === "") {
+      setInputValues(pre);
+      return; // Dừng lại không thực hiện gì thêm
+    }
+
+    // Nếu quantity là không hợp lệ, không thực hiện gì
+    if (isNaN(newQuantity) || newQuantity < 1) return;
+
+    const maxQuantity = item.product_variant.quantity;
+    const finalQuantity = Math.min(newQuantity, maxQuantity);
+
+    const cart = {
+      quantity: finalQuantity,
+    };
+
+
+    mutate({ data: { quantity: newQuantity }, id: check.id });
+
+    // Cập nhật lại giá trị trong state
+    setInputValues((prevState) => {
+      const updatedValues = [...prevState];
+      updatedValues[index] = {
+        ...updatedValues[index],
+        quantity: finalQuantity,
+      };
+      return updatedValues;
+    });
+
+    // console.log("Updated quantity:", finalQuantity);
+  };
+
   const total = cartItem?.reduce(
-    (total, item) => total + item.product_variant.price * item.quantity,
+    (total, item) => total + item.product_variant.price_sale * item.quantity,
     0
   );
 
@@ -132,7 +195,7 @@ const ShopingCart = () => {
         </div>
       </div>
       <div className="container" style={{ marginTop: 20 }}>
-        {cartItem &&cartItem?.length > 0 ? (
+        {cartItem && cartItem?.length > 0 ? (
           <div className="row">
             <div className="col-lg-10 col-xl-7 m-lr-auto m-b-50">
               <div className="m-l-25 m-r--38 m-lr-0-xl">
@@ -170,7 +233,9 @@ const ShopingCart = () => {
                                 </div>
 
                                 <img
-                                  src={item?.product_variant?.product?.img_thumb}
+                                  src={
+                                    item?.product_variant?.product?.img_thumb
+                                  }
                                   alt="IMG"
                                   style={{ width: 100, marginRight: 50 }}
                                 />
@@ -182,7 +247,8 @@ const ShopingCart = () => {
                                 style={{ color: "black" }}
                               >
                                 <p className="m-b-4 text-[15px] font-normal">
-                                  {item?.product_variant?.product?.name.length > 20
+                                  {item?.product_variant?.product?.name.length >
+                                  20
                                     ? item?.product_variant?.product?.name.slice(
                                         0,
                                         20
@@ -201,7 +267,7 @@ const ShopingCart = () => {
                             <td className="column-3 text-center subtotal-for-product-116 font-bold">
                               {
                                 <FormatPrice
-                                  price={item.product_variant.price}
+                                  price={item.product_variant.price_sale}
                                 />
                               }
                             </td>
@@ -220,17 +286,14 @@ const ShopingCart = () => {
                                   onChange={(e) =>
                                     numberDirectly(
                                       e.target.value,
-                                      item.product_variant.id
+                                      item.id,
+                                      index
                                     )
                                   }
                                   value={inputValues?.[index]?.quantity}
-                                  onBlur={() =>
-                                    handleBlur(
-                                      item.product_variant.id,
-                                      inputValues?.[index]?.quantity
-                                    )
-                                  }
+                                  onBlur={() => handleBlur(item.id, index)}
                                 />
+
                                 <div
                                   className="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"
                                   onClick={() => increaseNumber(item.id)}
@@ -242,7 +305,8 @@ const ShopingCart = () => {
                             <td className="column-5 font-bold">
                               <FormatPrice
                                 price={
-                                  item.product_variant.price * item.quantity
+                                  item.product_variant.price_sale *
+                                  item.quantity
                                 }
                               />
                             </td>

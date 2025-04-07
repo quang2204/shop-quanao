@@ -16,7 +16,7 @@ const ProductDetail = () => {
   const queryCline = useQueryClient();
   const { detailProduct, isDetailProduct } = useDetailProduct();
   const { isProductVariants, productVariant } = useProductVariants();
-  const {productGallerie,isproductGalleries}=useProductGalleries()
+  const { productGallerie, isproductGalleries } = useProductGalleries();
   const [color, setColor] = useState();
   const [size, setSize] = useState();
   const [idVariants, setidVariants] = useState();
@@ -28,6 +28,7 @@ const ProductDetail = () => {
     inputValue,
     handleBlur,
   } = useQuantity();
+  console.log(productVariant);
   const [indexImg, setindexImg] = useState(0);
   const { data: cart } = useCart();
 
@@ -62,7 +63,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const checkid = productVariant?.filter(
       (item) =>
-        item.size_id === size && item.color_id === color && item.quantity > 0
+        item.size_id === size && item.color_id === color && item.quantity >= 0
     );
 
     if (checkid?.length > 0) {
@@ -78,7 +79,7 @@ const ProductDetail = () => {
   const handleColor = (color) => {
     setColor(color);
   };
-  if (isDetailProduct || isProductVariants||isproductGalleries) {
+  if (isDetailProduct || isProductVariants || isproductGalleries) {
     return (
       <Spin
         size="large"
@@ -86,7 +87,6 @@ const ProductDetail = () => {
       />
     );
   }
-console.log(indexImg);
   const pre = () => {
     if (indexImg == 0) {
       setindexImg(productGallerie.length - 1);
@@ -109,11 +109,10 @@ console.log(indexImg);
             Home
             <i aria-hidden="true" className="fa fa-angle-right m-l-9 m-r-10" />
           </Link>
-          <Link className="stext-109 cl8 hov-cl1 trans-04" to="">
-            {detailProduct?.category?.name}
-            <i aria-hidden="true" className="fa fa-angle-right m-l-9 m-r-10" />
-          </Link>
-          <span className="stext-109 cl4"> {detailProduct?.name}</span>
+          <span className="stext-109 cl4">
+            {" "}
+            {productVariant[0]?.product?.name}
+          </span>
         </div>
       </div>
       <section className="sec-product-detail bg0 p-t-65 p-b-60">
@@ -124,7 +123,7 @@ console.log(indexImg);
                 <div className="wrap-slick3 flex-sb flex-w">
                   <div className="wrap-slick3-dots">
                     <ul className="slick3-dots" role="tablist">
-                      {productGallerie.map((item, index) => (
+                      {productGallerie?.map((item, index) => (
                         <li
                           className=""
                           key={item.id}
@@ -155,9 +154,11 @@ console.log(indexImg);
                       <div className="slick-track">
                         <div
                           className="item-slick3 slick-slide slick-current slick-active"
-                          style={{
-                            // width: 513,
-                          }}
+                          style={
+                            {
+                              // width: 513,
+                            }
+                          }
                         >
                           <div className="wrap-pic-w pos-relative">
                             <Image
@@ -175,20 +176,23 @@ console.log(indexImg);
             <div className="col-md-6 col-lg-5 p-b-30">
               <div className="p-r-50 p-t-5 p-lr-0-lg">
                 <h4 className="mtext-105 cl2 js-name-detail p-b-14">
-                  {detailProduct?.name}
+                  {productVariant[0]?.product?.name}
                 </h4>
                 <div className="flex items-center gap-2">
                   <span className="text-3xl text-red-500">
                     {
                       <FormatPrice
-                        price={idVariants?.price ?? productVariant?.[0]?.price}
+                        price={
+                          idVariants?.price_sale ??
+                          productVariant?.[0]?.price_sale
+                        }
                       />
                     }
                   </span>
                   <span className="text-2xl cl4 text-decoration-line-through">
                     {
                       <FormatPrice
-                        price={idVariants?.price_sale ?? productVariant?.[0]?.price_sale}
+                        price={idVariants?.price ?? productVariant?.[0]?.price}
                       />
                     }
                   </span>
@@ -283,8 +287,7 @@ console.log(indexImg);
                             (acc, item) => acc + item.quantity,
                             0
                           )}
-                          <span> sản phẩm có sẵn</span>
-                       
+                        <span> sản phẩm có sẵn</span>
                       </div>
                     </div>
                   </div>
@@ -348,7 +351,7 @@ console.log(indexImg);
                   {
                     label: "Chi tiết sản phẩm",
                     key: "1",
-                    children: `${detailProduct?.description}`,
+                    children: `${detailProduct[0]?.description}`,
                   },
                   {
                     label: "Đánh giá",

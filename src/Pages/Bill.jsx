@@ -1,10 +1,35 @@
-import { Link, useParams } from "react-router-dom";
-import { UseDetailOrder } from "../Hook/useOrder.jsx";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { UseDetailOrder, useOrderUpdate } from "../Hook/useOrder.jsx";
 import { Spin } from "antd";
 import { FormatDate, FormatDateTime, FormatPrice } from "../Format.jsx";
+import { useEffect } from "react";
 
 const Bill = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const { mutate } = useOrderUpdate();
+  const resultCode = queryParams.get("resultCode");
+  useEffect(() => {
+    // Check if resultCode exists before running the effect
+    if (resultCode !== null) {
+      if (resultCode == 0) {
+        mutate({
+          id: id,
+          data: {
+            payment_status: "paid",
+          },
+        });
+      } else {
+        mutate({
+          id: id,
+          data: {
+            payment_status: "paid",
+          },
+        });
+      }
+    }
+  }, [id, resultCode]); // Add resultCode to the dependency array
 
   const { data, isLoading } = UseDetailOrder(id);
   if (isLoading || !data || (Array.isArray(data) && data.length === 0)) {
@@ -15,6 +40,7 @@ const Bill = () => {
       />
     );
   }
+  console.log(data);
   const getOrderStatus = (status) => {
     const statusMapping = {
       1: "Chờ xử lý",
@@ -58,7 +84,7 @@ const Bill = () => {
                 <td className="text-right">
                   {
                     <FormatPrice
-                      price={item.product_variant.price * item.quantity}
+                      price={item.product_variant.price_sale * item.quantity}
                     />
                   }
                 </td>
