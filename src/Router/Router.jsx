@@ -30,6 +30,9 @@ import AddProduct from "../Admin/Pages/Products/AddProduct.jsx";
 import Detail_Product from "../Admin/Pages/Products/Detail.jsx";
 import Customers from "../Admin/Pages/User/Customers.jsx";
 import TwoStep from "../Admin/Pages/User/TwoStep.jsx";
+
+import "../../node_modules/nprogress/nprogress.css";
+
 import Order_Detail from "../Admin/Pages/Orders/Order_Detail.jsx";
 import Profile from "../Admin/Pages/Profile.jsx";
 import Login from "../Admin/Pages/Login.jsx";
@@ -71,7 +74,12 @@ const Router = () => {
       </Route>
 
       {/* Admin Routes */}
-      <Route path="/admin" element={<LayoutAdmin />}>
+      <Route path="/admin"  element={
+        <PrivateRouter>
+
+      <LayoutAdmin />
+        </PrivateRouter>
+      }>
         <Route index element={<Dashboards />} />
         <Route path="products" element={<Products />} />
         <Route path="uppdateproduct/:id" element={<UpdateProduct />} />

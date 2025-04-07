@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useProduct, useProducts } from "../Hook/useProduct";
 import { Empty, Spin } from "antd";
 import { Link } from "react-router-dom";
@@ -42,7 +42,11 @@ const Home = () => {
       setCount(2);
     }
   };
-  if (isProducts ) {
+  useEffect(() => {
+    const interval = setInterval(next, 5000);
+    return () => clearInterval(interval);
+  }, [banners.length]);
+  if (isProducts) {
     return (
       <Spin
         size="large"
@@ -52,50 +56,53 @@ const Home = () => {
   }
   return (
     <>
-    <section className="section-slide">
-      <div className="wrap-slick1 rs2-slick1">
-        <div className="slick1">
-          {banners.length > 0 && (
-            <motion.div
-              key={banners[count].id}
-              className="item-slick1 bg-overlay1"
-              initial={{ opacity: 0, filter: "blur(10px)" }}
-              animate={{ opacity: 1, filter: "blur(0px)" }}
-              exit={{ opacity: 0, filter: "blur(10px)" }}
-              transition={{ duration: 1 }}
-              style={{
-                backgroundImage: `url(${banners[count].image})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                height: "70vh",
-                borderRadius: "10px",
-                overflow: "hidden",
-              }}
-            />
-          )}
+      <section className="section-slide mt-[5rem]">
+        <div className="wrap-slick1 rs2-slick1">
+          <div className="slick1">
+            {banners.length > 0 && (
+              <motion.div
+                key={banners[count].id}
+                className="item-slick1 bg-overlay1"
+                transition={{ duration: 1 }}
+                style={{
+                  backgroundImage: `url(${banners[count].image})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  height: "70vh",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                }}
+              />
+            )}
+          </div>
+          <button
+            className="arrow-slick1 prev-slick1 slick-arrow"
+            onClick={pre}
+            style={{
+              borderRadius: "50%",
+              padding: "10px",
+            }}
+          >
+            <i
+              className="zmdi zmdi-caret-left"
+              style={{ color: "#fff", fontSize: "50px" }}
+            ></i>
+          </button>
+          <button
+            className="arrow-slick1 next-slick1 slick-arrow"
+            onClick={next}
+            style={{
+              borderRadius: "50%",
+              padding: "10px",
+            }}
+          >
+            <i
+              className="zmdi zmdi-caret-right"
+              style={{ color: "#fff", fontSize: "50px" }}
+            ></i>
+          </button>
         </div>
-        <button
-          className="arrow-slick1 prev-slick1 slick-arrow"
-          onClick={pre}
-          style={{
-            borderRadius: "50%",
-            padding: "10px",
-          }}
-        >
-          <i className="zmdi zmdi-caret-left" style={{ color: "#fff", fontSize: "50px" }}></i>
-        </button>
-        <button
-          className="arrow-slick1 next-slick1 slick-arrow"
-          onClick={next}
-          style={{
-            borderRadius: "50%",
-            padding: "10px",
-          }}
-        >
-          <i className="zmdi zmdi-caret-right" style={{ color: "#fff", fontSize: "50px" }}></i>
-        </button>
-      </div>
-    </section>
+      </section>
 
       <div className="sec-banner bg0 p-t-80 p-b-50">
         <div className="container">
@@ -217,7 +224,7 @@ const Home = () => {
                             {item.name}
                           </Link>
                           <span className="stext-107 cl3">
-                            {<FormatPrice price={item.variants_min_price} />}
+                            {<FormatPrice price={item.variants_min_price_sale} />}
                           </span>
                         </div>
                       </div>

@@ -1,17 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Modal, Spin } from "antd";
-import { useCategory, useDeleteCategory } from "../../../Hook/useCategory";
+import { Modal, Pagination, Spin, message } from "antd";
+import {
+  useAddCategory,
+  useCategory,
+  useDeleteCategory,
+  useUpdateCategory,
+} from "../../../Hook/useCategory";
 import { useForm } from "react-hook-form";
 
 const Categories = () => {
-  const { category, isCategory } = useCategory();
+  const [pageProduct, setPageProduct] = useState(1);
+  const { category, isCategory } = useCategory(pageProduct);
+  const { mutate: updateCategory } = useUpdateCategory();
+  const { mutate: addCategory } = useAddCategory();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idDelete, setIdDelete] = useState("");
+  const [idUpdate, setIdUpdate] = useState("");
+  const [idDetail, setIdDetail] = useState("");
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
+  const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
+  const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
   const showModal = (id) => {
     setIdDelete(id);
     setIsModalOpen(true);
+  };
+  const showModalUpdate = (id) => {
+    setIdUpdate(id);
+    setIsModalOpenUpdate(true);
+  };
+  const showModalDetail = (id) => {
+    setIdDetail(id);
+    setIsModalOpenDetail(true);
   };
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -19,6 +39,11 @@ const Categories = () => {
   const handleCancelAdd = () => {
     setIsModalOpenAdd(false);
   };
+  const handleCancelUpdate = () => {
+    setIdUpdate("");
+    setIsModalOpenUpdate(false);
+  };
+
   const { mutate } = useDeleteCategory();
   const handleOk = () => {
     mutate(idDelete);
@@ -28,17 +53,44 @@ const Categories = () => {
   const handleOkAdd = () => {
     setIsModalOpenAdd(false);
   };
+  const handleCancelDetail = () => {
+    setIdDetail("");
+    setIsModalOpenDetail(false);
+  };
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm();
+  useEffect(() => {
+    reset({
+      name: idUpdate.name,
+      is_active: idUpdate.is_active,
+    });
+  }, [idUpdate]);
   const onSubmit = (data) => {
-    console.log(data);
+    const datares = {
+      name: data.name,
+      is_active: data.is_active.toLowerCase() === "true",
+    };
     reset();
     handleOkAdd();
+    addCategory(datares);
   };
+  const onSubmitUpdate = (data) => {
+    const datares = {
+      name: data.name?.trim(), // loại bỏ khoảng trắng
+      is_active:
+        typeof data?.is_active === "boolean"
+          ? data.is_active
+          : data?.is_active?.toString().toLowerCase() === "true",
+    };
+    setIsModalOpenUpdate(false);
+    updateCategory({ id: idUpdate.id, data: datares });
+    reset();
+  };
+
   if (isCategory) {
     return (
       <Spin
@@ -47,13 +99,32 @@ const Categories = () => {
       />
     );
   }
+  const onShowSizeChange = (current, pageSize) => {
+    setPageProduct(current);
+  };
   return (
     <div className="row mx-2">
       <div className="col-lg-12">
-        <div className="card" id="orderList">
+        <div className="card " id="orderList">
           <div className="card-header border-0 bg-none">
-            <div className="row align-items-center gy-3">
-              <div className="col-sm"></div>
+            <div className="row align-items-center gy-3 mb-8">
+              <div className="col-sm ">
+                <form>
+                  <div className="row g-3">
+                    <div className="col-xxl-5 col-sm-5">
+                      <div className="search-box">
+                        <input
+                          type="text"
+                          className="form-control search"
+                          placeholder="Search for Categories "
+                        />
+                        <i className="ri-search-line search-icon" />
+                      </div>
+                    </div>
+                  </div>
+                  {/*end row*/}
+                </form>
+              </div>
               <div className="col-sm-auto">
                 <div className="d-flex gap-1 flex-wrap">
                   <button
@@ -68,23 +139,7 @@ const Categories = () => {
               </div>
             </div>
           </div>
-          <div className="card-body border border-dashed border-end-0 border-start-0 mb-4">
-            <form>
-              <div className="row g-3">
-                <div className="col-xxl-5 col-sm-5">
-                  <div className="search-box">
-                    <input
-                      type="text"
-                      className="form-control search"
-                      placeholder="Search for Categories "
-                    />
-                    <i className="ri-search-line search-icon" />
-                  </div>
-                </div>
-              </div>
-              {/*end row*/}
-            </form>
-          </div>
+
           <div className="card-body pt-0">
             <div>
               <div className="table-responsive table-card mb-1">
@@ -127,15 +182,18 @@ const Categories = () => {
                         <td>
                           <ul className="list-inline hstack gap-2 mb-0">
                             <li className="list-inline-item">
-                              <Link
-                                to={`/admin/categories/${item.id}`}
+                              <div
                                 className="text-primary d-inline-block"
+                                onClick={() => showModalDetail(item)}
                               >
                                 <i className="ri-eye-fill fs-16" />
-                              </Link>
+                              </div>
                             </li>
                             <li className="list-inline-item edit">
-                              <div className="text-primary d-inline-block edit-item-btn">
+                              <div
+                                className="text-primary d-inline-block edit-item-btn"
+                                onClick={() => showModalUpdate(item)}
+                              >
                                 <i className="ri-pencil-fill fs-16" />
                               </div>
                             </li>
@@ -169,7 +227,7 @@ const Categories = () => {
                   </div>
                 </div>
               </div>
-              <div className="d-flex justify-content-end">
+              {/* <div className="d-flex justify-content-end">
                 <div className="pagination-wrap hstack gap-2">
                   <a className="page-item pagination-prev disabled" href="#">
                     Previous
@@ -179,7 +237,15 @@ const Categories = () => {
                     Next
                   </a>
                 </div>
-              </div>
+              </div> */}
+              <Pagination
+                showSizeChanger
+                onChange={onShowSizeChange}
+                current={category.current_page}
+                total={category.total}
+                pageSize={category.per_page}
+                align="center"
+              />
             </div>
           </div>
         </div>
@@ -260,7 +326,83 @@ const Categories = () => {
           </div>
         </div>
       </Modal>
-      {/*end col*/}
+      {/* //update */}
+      <Modal
+        open={isModalOpenUpdate}
+        onOk={handleSubmit(onSubmitUpdate)}
+        onCancel={handleCancelUpdate}
+        title="Add Category"
+        // className="modal fade zoomIn"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content border-none">
+            <form className="tablelist-form">
+              <div className="">
+                <div className="mb-1">
+                  <label htmlFor="customername-field" className="form-label">
+                    Categorie Name
+                  </label>
+                  <input
+                    type="text"
+                    id="customername-field"
+                    className="form-control"
+                    placeholder="Enter categorie name"
+                    {...register("name", { required: true })}
+                  />
+                </div>
+                <div className="text-red-500 mb-1">
+                  {errors.name && "Please enter a customer name."}
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="email-field" className="form-label">
+                    Is_Active
+                  </label>
+                  <select
+                    id="email-field"
+                    className="form-select"
+                    aria-label="Default select example"
+                    {...register("is_active", { required: true })}
+                  >
+                    <option value={true}>Active</option>
+                    <option value={false}>Block</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </Modal>
+      {/*detail*/}
+      <Modal
+        open={isModalOpenDetail}
+        onOk={handleCancelDetail}
+        onCancel={handleCancelDetail}
+        title="Detail Category"
+        // className="modal fade zoomIn"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content border-none">
+            <form className="tablelist-form">
+              <div className="">
+                <div className="mb-1">
+                  <label htmlFor="customername-field" className="form-label">
+                    Categorie Name : {idDetail.name}
+                  </label>
+                </div>
+                <div className="text-red-500 mb-1">
+                  {errors.name && "Please enter a customer name."}
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="email-field" className="form-label">
+                    Is_Active :{" "}
+                    {idDetail.is_active === true ? "Đang hiện thị" : "Đang ẩn"}
+                  </label>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

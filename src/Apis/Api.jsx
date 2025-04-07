@@ -5,15 +5,24 @@ export const getProducts = async (page) => {
   const res = await Axios.get(`api/admin/products?page=${page}`);
   return res.data;
 };
-export const getCategory = async () => {
-  const res = await Axios.get(`api/admin/categories`);
+export const getCategory = async (page) => {
+  const res = await Axios.get(`api/admin/categories?page=${page}`);
   return res.data;
 };
 export const deleteCategory = async (id) => {
   const res = await Axios.delete(`api/admin/categories/${id}`);
   return res.data;
 };
+export const updateCategory = async (id, data) => {
+  console.log(data);
+  const res = await Axios.put(`api/admin/categories/${id}`, data);
+  return res.data;
+};
 
+export const addCategory = async (data) => {
+  const res = await Axios.post(`api/admin/categories`, data);
+  return res.data;
+};
 export const DetailProduct = async (id) => {
   const res = await Axios.get(`api/admin/products/${id}`);
   return res.data;
@@ -141,8 +150,8 @@ export const updateCart = async (data, id) => {
   return res.data.data;
 };
 
-export const getVouchers = async () => {
-  const res = await Axios.get(`api/admin/vouchers`);
+export const getVouchers = async (page) => {
+  const res = await Axios.get(`api/admin/vouchers?page=${page}`);
   return res.data;
 };
 
@@ -151,8 +160,8 @@ export const user = async (page) => {
   return res.data;
 };
 export const detailUser = async () => {
-  const { data } = useAuth();
-  const res = await Axios.get(`api/admin/users/${data.id}`);
+  const { data: user } = useAuth();
+  const res = await Axios.get(`api/admin/users/${user.id}`);
   return res.data;
 };
 export const detailUserId = async (id) => {
@@ -168,12 +177,19 @@ export const addUsers = async (data) => {
   return res.data;
 };
 
-export const getOrdersAdmin = async () => {
-  const res = await Axios.get(`api/admin/orders`);
+export const getOrdersAdmin = async (page) => {
+  const res = await Axios.get(`api/admin/orders/?page=${page}`);
   return res.data;
 };
 export const addOrder = async (data) => {
   const res = await Axios.post(`api/admin/orders`, data);
+  return res.data;
+};
+export const udateStatusOrder = async (id, data) => {
+  console.log(data);
+  const res = await Axios.post(`api/admin/orders/status/${id}`, {
+    status: data,
+  });
   return res.data;
 };
 export const detailOrder = async (id) => {
@@ -215,7 +231,7 @@ export const addProduct = async (data) => {
 };
 
 // color
-export const getColors = async (page = 1) => {
+export const getColors = async (page) => {
   const res = await Axios.get(`/api/admin/colors?page=${page}`);
   return res.data;
 };
@@ -293,3 +309,11 @@ export const useLoginGoogle = () => {
 
   return { loginWithGoogle };
 };
+export const orderMomo = async (data) => {
+  const res = await Axios.post(`api/momo/create-payment`,data);
+  return res.data;
+};
+export const orderUpdate=async (id,data)=>{
+  const res = await Axios.put(`api/admin/orders/${id}`,data);
+  return res.data;
+}

@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { getColors, deleteColor, forceDeleteColor, getColorDetail, updateColor, createColor } from "../Apis/Api";
 
-export const useColors = () => {
+export const useColors = (page) => {
   const { data: colors, isLoading } = useQuery({
     queryKey: ["colors"],
-    queryFn: getColors,
+    queryFn: () => getColors(page || 1),
   });
   return { colors, isLoading };
 };
@@ -30,7 +30,6 @@ export const useAddColor = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["colors"] });
       message.success("Thêm màu sắc thành công");
-      navigate("/admin/colors");
     },
     onError: () => {
       message.error("Thêm màu sắc thất bại");
@@ -44,7 +43,7 @@ export const useUpdateColor = () => {
   const queryClient = useQueryClient();
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: ({ id, ...data }) => updateColor(id, data),
+    mutationFn: ({ id, data }) => updateColor(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["colors"] });
       message.success("Cập nhật màu sắc thành công");

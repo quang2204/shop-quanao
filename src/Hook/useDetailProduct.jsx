@@ -1,6 +1,11 @@
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
-import { DetailProduct,productGalleries,productVariant,productVariants } from "../Apis/Api";
+import {
+  DetailProduct,
+  productGalleries,
+  productVariant,
+  productVariants,
+} from "../Apis/Api";
 const useDetailProduct = () => {
   const { id } = useParams();
 
@@ -17,8 +22,8 @@ const useProductVariants = () => {
 
   const { data: productVariant, isLoading: isProductVariants } = useQuery({
     queryKey: ["productVariants", id],
-    queryFn: () => productVariants(id),
-    enabled: !!id,
+    queryFn: () => productVariants(id ),
+    // enabled: !!id,
   });
   return { productVariant, isProductVariants };
 };
@@ -37,4 +42,9 @@ const useProductGalleries = () => {
   });
   return { productGallerie, isproductGalleries };
 };
-export  {useDetailProduct,useProductVariants,useProductVariant,useProductGalleries};
+export {
+  useDetailProduct,
+  useProductVariants,
+  useProductVariant,
+  useProductGalleries,
+};

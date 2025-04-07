@@ -5,9 +5,6 @@ import { useCategory } from "../../../Hook/useCategory.jsx";
 import TextArea from "antd/es/input/TextArea";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  addProduct,
-  addProductGallerie,
-  addProductVariants,
   updateProduct,
   updateProductGallerie,
   updateProductVariants,
@@ -40,11 +37,71 @@ const UpdateProduct = () => {
   const { productGallerie, isproductGalleries } = useProductGalleries();
   const { colors, isLoading: isLoadingColor } = useColors();
   const { sizes, isLoadingSize } = useSizes();
-
   const [valueVariants, setvalueVariants] = useState();
+  const [selectedIds, setSelectedIds] = useState([0]);
+  const [selectedvalue, setSelectedvalue] = useState([]);
+  const [selectedIds1, setSelectedIds1] = useState([0]);
+  const [selectedvalue1, setSelectedvalue1] = useState([]);
+  const [types, setTypes] = useState([
+    {
+      id: 0,
+      type: "",
+    },
+  ]);
+  const [classifys, setClassifys] = useState([
+    {
+      id: 0,
+    },
+  ]);
+  const [classifys1, setClassifys1] = useState([
+    {
+      id: 0,
+    },
+  ]);
+  const [types1, setTypes1] = useState([
+    {
+      id: 0,
+      type: "",
+    },
+  ]);
+  const [priceAll, setpriceAll] = useState();
   // const { mutate } = useAddProduct();
   const queryClient = useQueryClient();
   const [fileList, setFileList] = useState([]);
+  useEffect(() => {
+    if (!productVariant || productVariant.length === 0) return;
+
+    const product = productVariant[0].product;
+
+    // Set các field cố định
+    form.setFieldsValue({
+      productName: product?.name,
+      categoryId: product?.category_id,
+      description: product?.description,
+    });
+
+    // Set dynamic fields (giá, giá sale, số lượng)
+    const dynamicFields = {};
+    const validSizes = selectedvalue1.filter((item) => item !== 0);
+    const validColors = selectedvalue.filter((item) => item !== 0);
+
+    validColors.forEach((_, outerIndex) => {
+      validSizes.forEach((_, innerIndex) => {
+        const priceIndex = outerIndex * validSizes.length + innerIndex;
+        const priceData = priceAll[priceIndex];
+
+        dynamicFields[`price-${outerIndex}-${innerIndex}`] =
+          priceData?.price ?? 0;
+        dynamicFields[`pricesale-${outerIndex}-${innerIndex}`] =
+          priceData?.price_sale ?? 0;
+        dynamicFields[`quantity-${outerIndex}-${innerIndex}`] =
+          priceData?.quantity ?? 0;
+      });
+    });
+
+    form.setFieldsValue(dynamicFields);
+  }, [productVariant, priceAll, selectedvalue1, selectedvalue]);
+
   useEffect(() => {
     if (productGallerie?.length > 0) {
       const images = productGallerie.map((item, index) => ({
@@ -56,15 +113,15 @@ const UpdateProduct = () => {
       setFileList(images);
     }
   }, [productGallerie]);
-  useEffect(() => {
-    if (detailProduct?.[0]?.category?.id) {
-      const defaultCategoryId = detailProduct[0].category.id;
-      setCategoryId(defaultCategoryId);
-      form.setFieldsValue({
-        categoryId: defaultCategoryId,
-      });
-    }
-  }, [detailProduct, form]);
+  // useEffect(() => {
+  //   if (detailProduct?.[0]?.category?.id) {
+  //     const defaultCategoryId = productVariant[0].product.category_id;
+  //     setCategoryId(defaultCategoryId);
+  //     form.setFieldsValue({
+  //       categoryId: defaultCategoryId,
+  //     });
+  //   }
+  // }, [detailProduct, form]);
   const navigate = useNavigate();
   const { mutate, isLoading } = useMutation({
     mutationFn: (data) => updateProduct(id, data),
@@ -73,7 +130,7 @@ const UpdateProduct = () => {
       updateProductGalleries();
       updateProductVariant();
       message.success("Cập nhật sản phẩm thành công");
-      navigate("/admin/products");
+      // navigate("/admin/products");
     },
     onError: (error) => {
       message.error(error.response.data.error);
@@ -103,40 +160,26 @@ const UpdateProduct = () => {
     useMutation({
       mutationFn: () => updateProductVariants(id, valueVariants),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["productsVariants"] });
+        queryClient.invalidateQueries({ queryKey: ["productsVariants", id] });
+        navigate("/admin/products");
       },
       onError: (error) => {
         message.error(error.response.data.error);
       },
     });
-  const [selectedIds, setSelectedIds] = useState([0]);
-  const [selectedvalue, setSelectedvalue] = useState([]);
-  const [selectedIds1, setSelectedIds1] = useState([0]);
-  const [selectedvalue1, setSelectedvalue1] = useState([]);
-  const [types, setTypes] = useState([
-    {
-      id: 0,
-      type: "",
-    },
-  ]);
-  const [classifys, setClassifys] = useState([
-    {
-      id: 0,
-    },
-  ]);
-  const [classifys1, setClassifys1] = useState([
-    {
-      id: 0,
-    },
-  ]);
-  const [types1, setTypes1] = useState([
-    {
-      id: 0,
-      type: "",
-    },
-  ]);
-  const [priceAll, setpriceAll] = useState();
+
   useEffect(() => {
+    if (!id || !productVariant || productVariant.length === 0) return;
+    setpriceAll([]);
+    setClassifys([]);
+    setSelectedvalue([]);
+    setTypes([]);
+    setClassifys1([]);
+    setSelectedvalue1([]);
+    setTypes1([]);
+
+    if (!id || !productVariant) return;
+
     const extractUniqueItems = (items, getKeyValue, getDisplayValue) => {
       return Array.from(
         new Map(
@@ -149,7 +192,7 @@ const UpdateProduct = () => {
     const priceAll = Array.from(
       new Map(
         productVariant?.map((variant) => [
-          variant.color?.id,
+          variant?.id,
           {
             quantity: variant.quantity,
             price: variant.price,
@@ -158,8 +201,7 @@ const UpdateProduct = () => {
         ])
       ).values()
     );
-    setpriceAll(priceAll);
-    console.log(priceAll);
+
     const allColors = productVariant?.flatMap((variant) => variant.color || []);
     const uniqueSizes = extractUniqueItems(
       allSizes,
@@ -188,16 +230,15 @@ const UpdateProduct = () => {
     // Add default 0 option
     sizeIds.push(0);
     colorIds.push(0);
-
+    // Set all states at once to prevent multiple re-renders
+    setpriceAll(priceAll);
     setClassifys(colorIds);
     setSelectedvalue(colorIds);
     setTypes(uniqueColors);
-
     setClassifys1(sizeIds);
     setSelectedvalue1(sizeIds);
     setTypes1(uniqueSizes);
-  }, [productVariant]);
-
+  }, [id, productVariant]); // Added productVariant to dependencies
   const handleScroll = (ref) => {
     ref.current.scrollIntoView({ behavior: "smooth" });
     setTabs(ref.current.id);
@@ -382,52 +423,63 @@ const UpdateProduct = () => {
     // console.log("search:", value);
   };
   const handleDelete = (id) => {
-    if (selectedIds.length > 2) {
-      setSelectedIds([]);
-    } else {
-      setSelectedIds(selectedIds.filter((item) => item !== id));
+    if (id !== 0) {
+      if (selectedIds.length > 2) {
+        setSelectedIds([]);
+      } else {
+        setSelectedIds(selectedIds.filter((item) => item !== id));
+      }
+      // setTypes(types.filter((item) => item.id !== id));
+      setClassifys(classifys.filter((item) => item !== id));
+      setSelectedvalue(selectedvalue.filter((item) => item !== id));
     }
-    // setTypes(types.filter((item) => item.id !== id));
-    setClassifys(classifys.filter((item) => item !== id));
-    setSelectedvalue(selectedvalue.filter((item) => item !== id));
   };
   const handleDelete1 = (id) => {
-    if (selectedIds1.length > 2) {
-      setSelectedIds1([]);
-    } else {
-      setSelectedIds1(selectedIds1.filter((item) => item !== id));
+    if (id !== 0) {
+      if (selectedIds1.length > 2) {
+        setSelectedIds1([]);
+      } else {
+        setSelectedIds1(selectedIds1.filter((item) => item !== id));
+      }
+      // setTypes(types.filter((item) => item.id !== id));
+      setClassifys1(classifys1.filter((item) => item !== id));
+      setSelectedvalue1(selectedvalue1.filter((item) => item !== id));
     }
-    // setTypes(types.filter((item) => item.id !== id));
-    setClassifys1(classifys1.filter((item) => item !== id));
-    setSelectedvalue1(selectedvalue1.filter((item) => item !== id));
   };
+
   const onSubmit = (data) => {
     let variants = [];
     // Kiểm tra nếu selectedvalue và selectedvalue1 có dữ liệu đúng
     const colors = selectedvalue;
     const sizes = selectedvalue1;
-    const checklength = selectedvalue.length > selectedvalue1.length;
+    const isColorFirst = data.select1 === "color";
     // Duyệt qua tất cả tổ hợp màu sắc và kích thước
-    colors.forEach((color_id, colorIndex) => {
-      sizes.forEach((size_id, sizeIndex) => {
-        // Kiểm tra nếu color_id hoặc size_id có giá trị là 0
-        if (color_id === 0 || size_id === 0) {
-          return; // Bỏ qua và không thêm vào variants nếu giá trị là 0
-        }
+    const filteredColors = colors.filter((color) => color !== 0);
+    const filteredSizes = sizes.filter((size) => size !== 0);
+
+    filteredColors.forEach((color_id, colorIndex) => {
+      filteredSizes.forEach((size_id, sizeIndex) => {
+        if (color_id === 0 || size_id === 0) return;
+
+        // Xác định index cho key trong form data
+        const outerIndex = isColorFirst ? colorIndex : sizeIndex;
+        const innerIndex = isColorFirst ? sizeIndex : colorIndex;
+
         const variantData = productVariant.find(
           (variant) =>
             variant.color_id === color_id && variant.size_id === size_id
         );
-        const variantIndex = checklength === false ? colorIndex : sizeIndex; // Lấy index của màu để xác định giá và số lượng
+
         const variant = {
-          id: variantData ? variantData.id : undefined,
+          id: variantData?.id,
           color_id,
           size_id,
-          price: data[`price${variantIndex}`], // Lấy giá theo màu sắc
-          quantity: data[`quantity-${variantIndex}`], // Lấy số lượng theo màu sắc
-          price_sale: data[`pricesale${variantIndex}`],
+          price: Number(data[`price-${outerIndex}-${innerIndex}`]),
+          quantity: Number(data[`quantity-${outerIndex}-${innerIndex}`]),
+          price_sale: Number(data[`pricesale-${outerIndex}-${innerIndex}`]),
         };
-        variants.push(variant); // Thêm vào danh sách variants
+
+        variants.push(variant);
       });
     });
 
@@ -443,10 +495,11 @@ const UpdateProduct = () => {
           ? fileList[0]?.url
           : data.ablumImg?.fileList?.[0]?.url,
       description: data.description,
-      slug: data.slugName,
+      // slug: data.slugName,
       is_active: true,
     };
     console.log("sds", variants);
+    // console.log(data);
     mutate(product);
   };
   // console.log(productVariant);
@@ -458,7 +511,16 @@ const UpdateProduct = () => {
     return Promise.resolve();
   };
 
-  if (isCategory || isAddingGalleries || isAddingVariants || isDetailProduct) {
+  if (
+    isCategory ||
+    isAddingGalleries ||
+    isAddingVariants ||
+    isDetailProduct ||
+    isproductGalleries ||
+    isLoadingColor ||
+    isLoadingSize ||
+    isProductVariants
+  ) {
     return (
       <Spin
         size="large"
@@ -533,7 +595,7 @@ const UpdateProduct = () => {
               ></div>
             </div>
           </div>
-          <Form onFinish={onSubmit}>
+          <Form onFinish={onSubmit} form={form}>
             <section>
               <section
                 className={`bg-white mt-10 px-4 rounded-xl  py-2 text-left`}
@@ -636,8 +698,6 @@ const UpdateProduct = () => {
                   <Form.Item
                     className="col-span-10"
                     name="productName"
-                    initialValue={detailProduct[0]?.name}
-                    // label="Tên sản phẩm"
                     rules={[
                       {
                         required: true,
@@ -660,7 +720,7 @@ const UpdateProduct = () => {
                     />
                   </Form.Item>
                 </div>
-                <div className="grid grid-cols-12 gap-4 mb-2">
+                {/* <div className="grid grid-cols-12 gap-4 mb-2">
                   <div className="text-[1rem] col-span-2 text-right">
                     <span className="text-red-500 h-[17px] ">*</span>
                     Slug
@@ -691,7 +751,7 @@ const UpdateProduct = () => {
                       className="col-span-10"
                     />
                   </Form.Item>
-                </div>
+                </div> */}
                 <div className="grid grid-cols-12  gap-4 mb-2">
                   <div className="text-[0.99rem] col-span-2 text-right">
                     <span className="text-red-500 h-[17px] ">*</span>
@@ -711,8 +771,6 @@ const UpdateProduct = () => {
                       size="large"
                       className="col-span-10"
                       showSearch
-                      value={detailProduct[0].category.id}
-                      defaultValue={detailProduct[0].category.id}
                       dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
                       placeholder="Vui lòng chọn ngành hàng"
                       allowClear
@@ -734,7 +792,6 @@ const UpdateProduct = () => {
                   <Form.Item
                     name="description"
                     className=" col-span-10"
-                    initialValue={detailProduct[0]?.description}
                     rules={[
                       {
                         required: true,
@@ -821,11 +878,6 @@ const UpdateProduct = () => {
 
                                     disabled: select1 === "color",
                                   },
-                                  {
-                                    value: "size",
-                                    label: "Size",
-                                    disabled: select1 === "size",
-                                  },
                                 ]}
                               />
                             </Form.Item>
@@ -840,13 +892,13 @@ const UpdateProduct = () => {
                           </button> */}
                         </div>
 
-                        <div className="flex items-center gap-10">
+                        <div className="flex gap-10">
                           <div className="text-[1rem]">Tùy chọn</div>
-                          <div className="grid grid-cols-2 gap-4">
+                          <div className="grid grid-cols-3 gap-4">
                             {classifys.map((item, index) => (
                               <div
                                 key={item.id || `new-${index}`}
-                                className={item.id}
+                                className="flex gap-2 items-center"
                               >
                                 {/* {item} */}
                                 {/* Xử lý key cho item có id = 0 */}
@@ -868,12 +920,12 @@ const UpdateProduct = () => {
                                       ),
                                     })) || []
                                   }
-                                  value={item || undefined}
+                                  value={item || null}
                                 />
                                 {classifys.length > 1 && (
-                                  <button onClick={() => handleDelete(item)}>
+                                  <div onClick={() => handleDelete(item)}>
                                     <i className="fa fa-trash text-[#ee4d2d] text-[17px]"></i>
-                                  </button>
+                                  </div>
                                 )}
                               </div>
                             ))}
@@ -885,7 +937,7 @@ const UpdateProduct = () => {
                       {/* {classify1 && ( */}
                       <div className="bg-[#f5f5f5] p-4 rounded-lg mb-10">
                         <div className="flex items-center gap-4 justify-content-between mb-3">
-                          <div className="flex items-center gap-4">
+                          <div className="flex  gap-4">
                             <div className="text-[1.04rem]">Phân loại 2</div>
 
                             <Form.Item
@@ -902,19 +954,13 @@ const UpdateProduct = () => {
                                 showSearch
                                 placeholder="Select a person"
                                 optionFilterProp="label"
-                                className="min-w-[200px]"
+                                className="min-w-[200px] "
                                 onChange={(value) => setSelect1(value)}
                                 onSearch={onSearch}
                                 options={[
                                   {
-                                    value: "color",
-                                    label: "Màu sắc",
-                                    disabled: select === "color",
-                                  },
-                                  {
                                     value: "size",
                                     label: "Size",
-                                    disabled: select === "size",
                                   },
                                 ]}
                               />
@@ -930,11 +976,14 @@ const UpdateProduct = () => {
                           </button> */}
                         </div>
 
-                        <div className="flex items-center gap-10">
+                        <div className="flex gap-10">
                           <div className="text-[1rem]">Tùy chọn</div>
-                          <div className="grid grid-cols-2 gap-4">
+                          <div className="grid grid-cols-3 gap-4">
                             {classifys1.map((item, index) => (
-                              <div key={index}>
+                              <div
+                                key={index}
+                                className="flex items-center gap-2"
+                              >
                                 <Select
                                   showSearch
                                   placeholder={`Select a ${select}`}
@@ -948,21 +997,21 @@ const UpdateProduct = () => {
                                     sizes?.data?.map((sizeItem) => ({
                                       value: sizeItem.id,
                                       label: sizeItem.name,
-                                      disabled: selectedIds1.includes(
+                                      disabled: selectedvalue1.includes(
                                         sizeItem.id
                                       ),
                                     })) || []
                                   }
-                                  value={item || undefined}
+                                  value={item || null}
                                 />
                                 {classifys1.length > 1 && (
-                                  <button
+                                  <div
                                     type="button"
                                     className="ml-3"
                                     onClick={() => handleDelete1(item)}
                                   >
                                     <i className="fa fa-trash text-[#ee4d2d] text-[17px]"></i>
-                                  </button>
+                                  </div>
                                 )}
                               </div>
                             ))}
@@ -970,16 +1019,6 @@ const UpdateProduct = () => {
                         </div>
                       </div>
                       {/* )} */}
-                      {classify && classify1 === false && (
-                        <button
-                          className="-mt-3 mb-6 border-2 border-gray-400 px-3 text-[#ee4d2d]
-                   py-2 rounded-md border-dotted text-[0.99rem]"
-                          onClick={() => setClassify1(true)}
-                          type="button"
-                        >
-                          + Thêm nhóm phân loại 2
-                        </button>
-                      )}
                     </div>
                   </div>
                   {/* {classify === false && classify1 === false && (
@@ -1146,139 +1185,134 @@ const UpdateProduct = () => {
                       </div>
                       {selectedvalue
                         .filter((item) => item !== 0)
-                        .map((item, index) => (
+                        .map((item, outerIndex) => (
                           <div
                             className="border-[#EBEBEB] border-solid border-[1px] last:rounded-b-xl"
-                            key={index}
+                            key={outerIndex}
                           >
                             <div className="flex items-center">
-                              <div className="min-w-[100px]  border-e-[1px]  p-3 ">
+                              <div className="min-w-[100px] max-w-[100px] border-e-[1px] p-3 ">
                                 <div className="flex items-center gap-4">
                                   <div>
                                     {
                                       colors?.data?.find(
-                                        (item) =>
-                                          item.id === selectedvalue?.[index]
+                                        (colorItem) => colorItem.id === item
                                       )?.name
                                     }
                                   </div>
                                 </div>
                               </div>
-                              {selectedvalue1.length > 0 && (
-                                <div className="min-w-[100px] flex justify-center  border-e-[1px] ">
-                                  <div>
-                                    {selectedvalue1.map((item, index) => (
-                                      <div
-                                        className="type text-center "
-                                        key={index}
-                                      >
-                                        {select1 === "color"
-                                          ? colors?.data?.find(
-                                              (item) =>
-                                                item.id ===
-                                                selectedvalue1?.[index]
-                                            )?.name
-                                          : sizes?.data?.find(
-                                              (item) =>
-                                                item.id ===
-                                                selectedvalue1?.[index]
-                                            )?.name}
-                                      </div>
-                                    ))}
+                              {selectedvalue1.length > 0 &&
+                                selectedvalue1.filter((item) => item !== 0) && (
+                                  <div className="min-w-[100px] flex justify-center  border-e-[1px] ">
+                                    <div>
+                                      {selectedvalue1.map(
+                                        (item, innerIndex) => (
+                                          <div
+                                            className="type text-center"
+                                            key={innerIndex}
+                                          >
+                                            {
+                                              sizes?.data?.find(
+                                                (sizeItem) =>
+                                                  sizeItem.id === item
+                                              )?.name
+                                            }
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
                                   </div>
-                                </div>
-                              )}
-                              <div className="flex w-[100%] ">
-                                <div
-                                  className="flex-[1_0_205px]  flex justify-center border-e-[1px]
-                         px-3 py-[2.5rem] rounded-s border-[#EBEBEB] border-solid"
-                                >
-                                  <Form.Item
-                                    name={`price${index}`}
-                                    initialValue={priceAll[index].price}
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: "Vui lọc nhập giá",
-                                      },
-                                      {
-                                        validator: (_, value) =>
-                                          value && value > 1000
-                                            ? Promise.resolve()
-                                            : Promise.reject(
-                                                new Error(
-                                                  "Giá phải lớn hơn 1.000"
-                                                )
-                                              ),
-                                      },
-                                    ]}
-                                  >
-                                    <Input
-                                      type="number"
-                                      size="large"
-                                      className="w-[100%] max-h-[40px]"
-                                      min={0}
-                                      value={priceAll[index].price}
-                                      // onChange={(e) => setPrice(e.target.value)}
-                                      placeholder="Giá"
-                                    />
-                                  </Form.Item>
-                                </div>
-                                <div
-                                  className="flex-[1_0_205px]  flex justify-center border-e-[1px]
-                         px-3 py-[2.5rem] rounded-s border-[#EBEBEB] border-solid"
-                                >
-                                  <Form.Item
-                                    name={`pricesale${index}`}
-                                    initialValue={priceAll[index].price_sale}
-                                    
-                                  >
-                                    <Input
-                                      type="number"
-                                      size="large"
-                                      className="w-[100%] max-h-[40px]"
-                                      min={0}
-                                      value={priceAll[index].price_sale}
-                                      // onChange={(e) => setPrice(e.target.value)}
-                                      placeholder="Price Sale"
-                                    />
-                                  </Form.Item>
-                                </div>
-                                <div
-                                  className="flex-[1_0_205px]  flex justify-center border-e-[1px]
-                         px-3 py-[2.5rem] rounded-s border-[#EBEBEB] border-solid"
-                                >
-                                  <Form.Item
-                                    name={`quantity-${index}`}
-                                    initialValue={priceAll[index].quantity}
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: "Vui lọc số lượng",
-                                      },
-                                      {
-                                        validator: (_, value) =>
-                                          value && value > 0
-                                            ? Promise.resolve()
-                                            : Promise.reject(
-                                                new Error(
-                                                  "Giá phải lớn hơn 1"
-                                                )
-                                              ),
-                                      },
-                                    ]}
-                                  >
-                                    <Input
-                                      type="number"
-                                      size="large"
-                                      className="w-[100%] max-h-[40px]"
-                                      min={0}
-                                      value={priceAll[index].quantity}
-                                      // onChange={(e) => setPrice(e.target.value)}
-                                      placeholder="Kho hàng"
-                                    />
-                                  </Form.Item>
-                                </div>
+                                )}
+                              <div className="w-full flex-wrap gap-4">
+                                {selectedvalue1
+                                  .filter((item) => item !== 0) // Lọc các item không phải 0
+                                  .map((item, innerIndex) => {
+                                    return (
+                                      <div
+                                        key={innerIndex}
+                                        className="flex gap-2"
+                                      >
+                                        {/* Input: Giá */}
+                                        <div className="flex-[1_0_205px] flex justify-center border-e px-3 rounded-s border-[#EBEBEB] border-solid">
+                                          <Form.Item
+                                            name={`price-${outerIndex}-${innerIndex}`}
+                                            rules={[
+                                              {
+                                                required: true,
+                                                message: "Vui lòng nhập giá",
+                                              },
+                                              {
+                                                validator: (_, value) =>
+                                                  value && value > 1000
+                                                    ? Promise.resolve()
+                                                    : Promise.reject(
+                                                        new Error(
+                                                          "Giá phải lớn hơn 1.000"
+                                                        )
+                                                      ),
+                                              },
+                                            ]}
+                                          >
+                                            <Input
+                                              type="number"
+                                              size="large"
+                                              className="w-full max-h-[40px]"
+                                              min={0}
+                                              placeholder="Giá"
+                                            />
+                                          </Form.Item>
+                                        </div>
+
+                                        {/* Input: Giá sale */}
+                                        <div className="flex-[1_0_205px] flex justify-center border-e px-3 rounded-s border-[#EBEBEB] border-solid">
+                                          <Form.Item
+                                            name={`pricesale-${outerIndex}-${innerIndex}`}
+                                          >
+                                            <Input
+                                              type="number"
+                                              size="large"
+                                              className="w-full max-h-[40px]"
+                                              min={0}
+                                              placeholder="Price Sale"
+                                            />
+                                          </Form.Item>
+                                        </div>
+
+                                        {/* Input: Số lượng */}
+                                        <div className="flex-[1_0_205px] flex justify-center border-e px-3 rounded-s border-[#EBEBEB] border-solid">
+                                          <Form.Item
+                                            name={`quantity-${outerIndex}-${innerIndex}`}
+                                            rules={[
+                                              {
+                                                required: true,
+                                                message:
+                                                  "Vui lòng nhập số lượng",
+                                              },
+                                              {
+                                                validator: (_, value) =>
+                                                  value && value > 0
+                                                    ? Promise.resolve()
+                                                    : Promise.reject(
+                                                        new Error(
+                                                          "Số lượng phải lớn hơn 1"
+                                                        )
+                                                      ),
+                                              },
+                                            ]}
+                                          >
+                                            <Input
+                                              type="number"
+                                              size="large"
+                                              className="w-full max-h-[40px]"
+                                              min={0}
+                                              placeholder="Kho hàng"
+                                            />
+                                          </Form.Item>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
                               </div>
                             </div>
                           </div>

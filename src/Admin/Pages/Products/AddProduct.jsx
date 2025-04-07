@@ -109,81 +109,75 @@ const AddProduct = () => {
   }, [tabs]);
   const [value, setValue] = useState();
   const [fileList1, setFileList1] = useState([]);
+
   const handleSelect = (index, value) => {
+    handleGenericSelect(
+      index,
+      value,
+      classifys,
+      setClassifys,
+      selectedIds,
+      setSelectedIds,
+      selectedvalue,
+      setSelectedvalue,
+      types1,
+      setTypes1
+    );
+  };
+  const handleGenericSelect = (
+    index,
+    value,
+    classifysState,
+    setClassifysState,
+    selectedIds,
+    setSelectedIds,
+    selectedValues,
+    setSelectedValues,
+    types,
+    setTypes
+  ) => {
     const id = value;
 
-    // Kiểm tra nếu id đã tồn tại => không cho tạo mới
-    if (classifys.some((item) => item.id === id)) {
-      return; // Dừng hàm ngay nếu id đã tồn tại
-    }
+    let newClassifys = [...classifysState];
+    let newSelectedIds = [...selectedIds];
+    let newSelectedValues = [...selectedValues];
+    let newTypes = [...types];
 
-    // Loại bỏ id = 0 nếu id mới > 0
-    let newClassifys =
-      id !== 0 ? classifys.filter((item) => item.id !== 0) : classifys;
-    let newSelectedIds =
-      id > 0 ? selectedIds.filter((item) => item !== 0) : selectedIds;
-    let newSelectedValues =
-      id > 0
-        ? selectedvalue.filter((item, i) => selectedIds[i] !== 0)
-        : selectedvalue;
-    let newTypes = id > 0 ? types.filter((item) => item.id !== 0) : types;
+    // Cập nhật hoặc thêm tại đúng index
+    newClassifys[index - 1] = id;
+    newSelectedIds[index - 1] = id;
+    newSelectedValues[index - 1] = value;
+    newTypes[index - 1] = { id, type: value };
 
-    // Thêm mục đã chọn
-    newClassifys = [...newClassifys, { id }];
-    newSelectedIds = [...newSelectedIds, id];
-    newSelectedValues = [...newSelectedValues, value].filter(
-      (item) => item !== ""
-    ); // Loại bỏ giá trị rỗng
-    newTypes = [...newTypes, { id, type: value }];
-
-    // Nếu không có ô trống nào, thêm một ô trống mới (id = 0)
-    if (!newSelectedValues.includes("")) {
-      newClassifys.push({ id: 0 });
+    // Nếu không có giá trị rỗng nào thì thêm dòng mới (0)
+    const hasEmpty =
+      newSelectedValues.includes("") || newSelectedValues.includes(0);
+    if (!hasEmpty) {
+      newClassifys.push(0);
       newSelectedIds.push(0);
+      newSelectedValues.push(0);
       newTypes.push({ id: 0, type: "" });
     }
 
-    // Cập nhật state
-    setClassifys(newClassifys);
+    setClassifysState(newClassifys);
     setSelectedIds(newSelectedIds);
-    setSelectedvalue(newSelectedValues);
+    setSelectedValues(newSelectedValues);
     setTypes(newTypes);
   };
 
   const handleSelect1 = (index, value) => {
-    const id = value; // Lấy id từ value
-    if (classifys1.some((item) => item.id === id)) return;
-    // Loại bỏ id = 0 nếu id mới > 0
-    let newClassifys =
-      id > 0 ? classifys1.filter((item) => item.id !== 0) : classifys1;
-    let newSelectedIds =
-      id > 0 ? selectedIds1.filter((item) => item !== 0) : selectedIds1;
-    let newSelectedValues =
-      id > 0
-        ? selectedvalue1.filter((item, i) => selectedIds1[i] !== 0)
-        : [...selectedvalue1];
-    let newTypes = id > 0 ? types1.filter((item) => item.id !== 0) : types1;
-
-    // Thêm mục đã chọn và một ô trống
-    newClassifys = [...newClassifys, { id }];
-    newSelectedIds = [...newSelectedIds, id];
-    newSelectedValues = [...newSelectedValues, value].filter(
-      (item) => item !== ""
-    ); // Loại bỏ giá trị rỗng
-    newTypes = [...newTypes, { id, type: value }];
-
-    // Nếu chưa có ô trống nào, thêm một ô trống mới
-    if (!newSelectedValues.includes("")) {
-      newClassifys.push({ id: 0 });
-      newSelectedIds.push(0);
-      newTypes.push({ id: 0, type: "" });
-    }
-
-    // Cập nhật state
-    setClassifys1(newClassifys);
-    setSelectedIds1(newSelectedIds);
-    setSelectedvalue1(newSelectedValues);
-    setTypes1(newTypes);
+    handleGenericSelect(
+      index,
+      value,
+      classifys1,
+      setClassifys1,
+      selectedIds1,
+      setSelectedIds1,
+      selectedvalue1,
+      setSelectedvalue1,
+      types1,
+      setTypes1
+    );
   };
 
   const transformToTreeData = (data) => {
@@ -285,9 +279,9 @@ const AddProduct = () => {
     } else {
       setSelectedIds(selectedIds.filter((item) => item !== id));
     }
-    setTypes(types.filter((item) => item.id !== id));
-    setClassifys(classifys.filter((item) => item.id !== id));
-    setSelectedvalue(selectedvalue.filter((_, i) => i !== id));
+    // setTypes(types.filter((item) => item.id !== id));
+    setClassifys(classifys.filter((item) => item !== id));
+    setSelectedvalue(selectedvalue.filter((item) => item !== id));
   };
   const handleDelete1 = (id) => {
     if (selectedIds1.length > 2) {
@@ -295,28 +289,37 @@ const AddProduct = () => {
     } else {
       setSelectedIds1(selectedIds1.filter((item) => item !== id));
     }
-    setTypes(types.filter((item) => item.id !== id));
-    setClassifys1(classifys.filter((item) => item.id !== id));
-    setSelectedvalue1(selectedvalue.filter((_, i) => i !== id));
+    // setTypes(types.filter((item) => item.id !== id));
+    setClassifys1(classifys1.filter((item) => item !== id));
+    setSelectedvalue1(selectedvalue1.filter((item) => item !== id));
   };
 
   const onSubmit = (data) => {
     let variants = [];
     // Kiểm tra nếu selectedvalue và selectedvalue1 có dữ liệu đúng
-    const colors = select === "color" ? selectedvalue : selectedvalue1;
-    const sizes = select1 === "size" ? selectedvalue1 : selectedvalue;
-
+    const colors = selectedvalue;
+    const sizes = selectedvalue1;
+    const isColorFirst = data.select1 === "color";
     // Duyệt qua tất cả tổ hợp màu sắc và kích thước
-    colors.forEach((color_id, colorIndex) => {
-      sizes.forEach((size_id, sizeIndex) => {
-        const variantIndex = select === "color" ? colorIndex : sizeIndex; // Lấy index của màu để xác định giá và số lượng
+    const filteredColors = colors.filter((color) => color !== 0);
+    const filteredSizes = sizes.filter((size) => size !== 0);
+
+    filteredColors.forEach((color_id, colorIndex) => {
+      filteredSizes.forEach((size_id, sizeIndex) => {
+        if (color_id === 0 || size_id === 0) return;
+
+        // Xác định index cho key trong form data
+        const outerIndex = isColorFirst ? colorIndex : sizeIndex;
+        const innerIndex = isColorFirst ? sizeIndex : colorIndex;
         const variant = {
           color_id,
           size_id,
-          price: data[`price${variantIndex}`], // Lấy giá theo màu sắc
-          quantity: data[`quantity-${variantIndex}`], // Lấy số lượng theo màu sắc
+          price: Number(data[`price-${outerIndex}-${innerIndex}`]),
+          quantity: Number(data[`quantity-${outerIndex}-${innerIndex}`]),
+          price_sale: Number(data[`pricesale-${outerIndex}-${innerIndex}`]),
         };
-        variants.push(variant); // Thêm vào danh sách variants
+
+        variants.push(variant);
       });
     });
 
@@ -329,13 +332,10 @@ const AddProduct = () => {
       category_id: data.categoryId,
       img_thumb: data.ablumImg?.fileList?.[0]?.url || "",
       description: data.description,
-      slug: data.slugName,
+      // slug: data.slugName,
       is_active: true,
     };
-
-    console.log("Product Data:", productvariants);
-
-    // mutate(product);
+    mutate(product);
   };
 
   const validateFileList = () => {
@@ -533,8 +533,8 @@ const AddProduct = () => {
                         message: "Tên sản phẩm phải có ít nhất 3 ký tự!",
                       },
                       {
-                        max: 50,
-                        message: "Tên sản phẩm không được vượt quá 50 ký tự!",
+                        max: 255,
+                        message: "Tên sản phẩm không được vượt quá 255 ký tự!",
                       },
                     ]}
                   >
@@ -545,7 +545,7 @@ const AddProduct = () => {
                     />
                   </Form.Item>
                 </div>
-                <div className="grid grid-cols-12 gap-4 mb-2">
+                {/* <div className="grid grid-cols-12 gap-4 mb-2">
                   <div className="text-[1rem] col-span-2 text-right">
                     <span className="text-red-500 h-[17px] ">*</span>
                     Slug
@@ -575,7 +575,7 @@ const AddProduct = () => {
                       className="col-span-10"
                     />
                   </Form.Item>
-                </div>
+                </div> */}
                 <div className="grid grid-cols-12  gap-4 mb-2">
                   <div className="text-[0.99rem] col-span-2 text-right">
                     <span className="text-red-500 h-[17px] ">*</span>
@@ -662,227 +662,173 @@ const AddProduct = () => {
                       </div>
                     </div>
                     <div className="col-span-10">
-                      {classify === false ? (
-                        <button
-                          className="-mt-3 border-2 mb-6 border-gray-400 px-3 text-[#ee4d2d]
-                   py-2 rounded-md border-dotted text-[0.99rem]"
-                          onClick={() => setClassify(true)}
-                          type="button"
-                        >
-                          + Thêm nhóm phân loại
-                        </button>
-                      ) : (
-                        <div className="bg-[#f5f5f5] p-4 rounded-lg mb-4">
-                          <div className="flex items-center gap-4 justify-content-between mb-3">
-                            <div className="flex gap-4">
-                              <div className="text-[1.04rem]">Phân loại 1</div>
-                              <Form.Item
-                                name="select1"
-                                rules={[
+                      <div className="bg-[#f5f5f5] p-4 rounded-lg mb-4">
+                        <div className="flex items-center gap-4 justify-content-between mb-3">
+                          <div className="flex gap-4">
+                            <div className="text-[1.04rem]">Phân loại 1</div>
+                            <Form.Item
+                              name="select1"
+                              initialValue="color"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Vui lòng chọn một mục!",
+                                },
+                              ]}
+                            >
+                              <Select
+                                showSearch
+                                placeholder="Select a person"
+                                optionFilterProp="label"
+                                className="min-w-[200px]"
+                                value="color"
+                                onChange={(value) => setSelect(value)}
+                                onSearch={onSearch}
+                                options={[
                                   {
-                                    required: true,
-                                    message: "Vui lòng chọn một mục!",
+                                    value: "color",
+                                    label: "Màu sắc",
+
+                                    disabled: select1 === "color",
                                   },
                                 ]}
+                              />
+                            </Form.Item>
+                          </div>
+
+                          {/* <button
+                            className="text-[#ee4d2d] text-[1.4rem]"
+                            type="button"
+                            onClick={handleDeleteSelect}
+                          >
+                            X
+                          </button> */}
+                        </div>
+
+                        <div className="flex gap-10">
+                          <div className="text-[1rem]">Tùy chọn</div>
+                          <div className="grid grid-cols-2 gap-6">
+                            {classifys.map((item, index) => (
+                              <div
+                                key={item.id || `new-${index}`}
+                                className="flex gap-2"
                               >
+                                {/* {item} */}
+                                {/* Xử lý key cho item có id = 0 */}
                                 <Select
                                   showSearch
-                                  placeholder="Select a person"
+                                  placeholder={`Select a ${select}`}
                                   optionFilterProp="label"
                                   className="min-w-[200px]"
-                                  onChange={(value) => setSelect(value)}
+                                  onChange={(value) =>
+                                    handleSelect(index + 1, value)
+                                  }
                                   onSearch={onSearch}
-                                  options={[
-                                    {
-                                      value: "color",
-                                      label: "Màu sắc",
-
-                                      disabled: select1 === "color",
-                                    },
-                                    {
-                                      value: "size",
-                                      label: "Size",
-                                      disabled: select1 === "size",
-                                    },
-                                  ]}
+                                  options={
+                                    colors?.data?.map((colorItem) => ({
+                                      value: colorItem.id,
+                                      label: colorItem.name,
+                                      disabled: selectedvalue.includes(
+                                        colorItem.id
+                                      ),
+                                    })) || []
+                                  }
+                                  value={item || undefined}
                                 />
-                              </Form.Item>
-                            </div>
-
-                            <button
-                              className="text-[#ee4d2d] text-[1.4rem]"
-                              type="button"
-                              onClick={handleDeleteSelect}
-                            >
-                              X
-                            </button>
-                          </div>
-
-                          <div className="flex items-center gap-10">
-                            <div className="text-[1rem]">Tùy chọn</div>
-                            <div className="grid grid-cols-2 gap-4">
-                              {classifys.map((item, index) => (
-                                <div
-                                  key={item.id || `new-${index}`}
-                                  className={item.id}
-                                >
-                                  {" "}
-                                  {/* Xử lý key cho item có id = 0 */}
-                                  <Select
-                                    showSearch
-                                    placeholder={`Select a ${select}`}
-                                    optionFilterProp="label"
-                                    className="min-w-[200px]"
-                                    onChange={(value) =>
-                                      handleSelect(index + 1, value)
-                                    }
-                                    onSearch={onSearch}
-                                    options={
-                                      select === "color"
-                                        ? colors?.data?.map((colorItem) => ({
-                                            value: colorItem.id,
-                                            label: colorItem.name,
-                                            disabled: selectedvalue.includes(
-                                              colorItem.id
-                                            ),
-                                          })) || []
-                                        : select === "size"
-                                          ? sizes?.data?.map((sizeItem) => ({
-                                              value: sizeItem.id,
-                                              label: sizeItem.name,
-                                              disabled: selectedIds.includes(
-                                                sizeItem.id
-                                              ),
-                                            })) || []
-                                          : []
-                                    }
-                                    value={selectedvalue[index] || undefined}
-                                  />
-                                  {classifys.length > 1 && (
-                                    <button
-                                      onClick={() =>
-                                        handleDelete(index, item.id)
-                                      }
-                                    >
-                                      <i className="fa fa-trash text-[#ee4d2d] text-[17px]"></i>
-                                    </button>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {classify1 && (
-                        <div className="bg-[#f5f5f5] p-4 rounded-lg mb-10">
-                          <div className="flex items-center gap-4 justify-content-between mb-3">
-                            <div className="flex items-center gap-4">
-                              <div className="text-[1.04rem]">
-                                Phân loại {classify === false ? "1" : "2"}
+                                {classifys.length > 1 && (
+                                  <button onClick={() => handleDelete(item)}>
+                                    <i className="fa fa-trash text-[#ee4d2d] text-[17px]"></i>
+                                  </button>
+                                )}
                               </div>
-
-                              <Form.Item
-                                name="select2"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Vui lòng chọn một mục!",
-                                  },
-                                ]}
-                              >
-                                <Select
-                                  showSearch
-                                  placeholder="Select a person"
-                                  optionFilterProp="label"
-                                  className="min-w-[200px]"
-                                  onChange={(value) => setSelect1(value)}
-                                  onSearch={onSearch}
-                                  options={[
-                                    {
-                                      value: "color",
-                                      label: "Màu sắc",
-                                      disabled: select === "color",
-                                    },
-                                    {
-                                      value: "size",
-                                      label: "Size",
-                                      disabled: select === "size",
-                                    },
-                                  ]}
-                                />
-                              </Form.Item>
-                            </div>
-
-                            <button
-                              className="text-[#ee4d2d] text-[1.4rem]"
-                              type="button"
-                              onClick={handleDeleteSelect1}
-                            >
-                              X
-                            </button>
-                          </div>
-
-                          <div className="flex items-center gap-8">
-                            <div className="text-[1rem]">Tùy chọn</div>
-                            <div className="grid grid-cols-2 gap-4">
-                              {classifys1.map((item, index) => (
-                                <div key={index}>
-                                  <Select
-                                    showSearch
-                                    placeholder={`Select a ${select}`}
-                                    optionFilterProp="label"
-                                    className="min-w-[200px]"
-                                    onChange={(value) =>
-                                      handleSelect1(index + 1, value)
-                                    }
-                                    onSearch={onSearch}
-                                    options={
-                                      select1 === "color"
-                                        ? colors?.data?.map((colorItem) => ({
-                                            value: colorItem.id,
-                                            label: colorItem.name,
-                                            disabled: selectedvalue1.includes(
-                                              colorItem.id
-                                            ),
-                                          })) || []
-                                        : select1 === "size"
-                                          ? sizes?.data?.map((sizeItem) => ({
-                                              value: sizeItem.id,
-                                              label: sizeItem.name,
-                                              disabled: selectedIds1.includes(
-                                                sizeItem.id
-                                              ),
-                                            })) || []
-                                          : []
-                                    }
-                                    value={selectedvalue1[index] || undefined}
-                                  />
-                                  {classifys1.length > 1 && (
-                                    <button
-                                      type="button"
-                                      className="ml-3"
-                                      onClick={() => handleDelete1(index)}
-                                    >
-                                      <i className="fa fa-trash text-[#ee4d2d] text-[17px]"></i>
-                                    </button>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
+                            ))}
                           </div>
                         </div>
-                      )}
-                      {classify && classify1 === false && (
-                        <button
-                          className="-mt-3 mb-6 border-2 border-gray-400 px-3 text-[#ee4d2d]
-                   py-2 rounded-md border-dotted text-[0.99rem]"
-                          onClick={() => setClassify1(true)}
-                          type="button"
-                        >
-                          + Thêm nhóm phân loại 2
-                        </button>
-                      )}
+                      </div>
+                      {/* )} */}
+
+                      {/* {classify1 && ( */}
+                      <div className="bg-[#f5f5f5] p-4 rounded-lg mb-10">
+                        <div className="flex items-center gap-4 justify-content-between mb-3">
+                          <div className="flex  gap-4">
+                            <div className="text-[1.04rem]">Phân loại 2</div>
+
+                            <Form.Item
+                              name="select2"
+                              initialValue="size"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Vui lòng chọn một mục!",
+                                },
+                              ]}
+                            >
+                              <Select
+                                showSearch
+                                placeholder="Select a person"
+                                optionFilterProp="label"
+                                className="min-w-[200px] "
+                                onChange={(value) => setSelect1(value)}
+                                onSearch={onSearch}
+                                options={[
+                                  {
+                                    value: "size",
+                                    label: "Size",
+                                  },
+                                ]}
+                              />
+                            </Form.Item>
+                          </div>
+
+                          {/* <button
+                            className="text-[#ee4d2d] text-[1.4rem]"
+                            type="button"
+                            onClick={handleDeleteSelect1}
+                          >
+                            X
+                          </button> */}
+                        </div>
+
+                        <div className="flex gap-10">
+                          <div className="text-[1rem]">Tùy chọn</div>
+                          <div className="grid grid-cols-2 gap-4">
+                            {classifys1.map((item, index) => (
+                              <div key={index}>
+                                <Select
+                                  showSearch
+                                  placeholder={`Select a ${select}`}
+                                  optionFilterProp="label"
+                                  className="min-w-[200px]"
+                                  onChange={(value) =>
+                                    handleSelect1(index + 1, value)
+                                  }
+                                  onSearch={onSearch}
+                                  options={
+                                    sizes?.data?.map((sizeItem) => ({
+                                      value: sizeItem.id,
+                                      label: sizeItem.name,
+                                      disabled: selectedvalue1.includes(
+                                        sizeItem.id
+                                      ),
+                                    })) || []
+                                  }
+                                  value={item || undefined}
+                                />
+                                {classifys1.length > 1 && (
+                                  <button
+                                    type="button"
+                                    className="ml-3"
+                                    onClick={() => handleDelete1(item)}
+                                  >
+                                    <i className="fa fa-trash text-[#ee4d2d] text-[17px]"></i>
+                                  </button>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      {/* )} */}
                     </div>
                   </div>
                   {/* {classify === false && classify1 === false && (
@@ -1003,194 +949,188 @@ const AddProduct = () => {
                     </div>
                   )}
 
-                  {(classify1 || classify) && (
-                    <div className="grid grid-cols-12 gap-4 items-center mt-3">
-                      <div className="col-span-2 text-right"></div>
-                      <div className="col-span-10  text-[1rem]">
-                        <div className="flex bg-[#F5F5F5] ">
+                  <div className="grid grid-cols-12 gap-4 items-center mt-3">
+                    <div className="col-span-2 text-right"></div>
+                    <div className="col-span-10  text-[1rem]">
+                      <div className="flex bg-[#F5F5F5] ">
+                        <div
+                          className="min-w-[100px] border-[1px] p-3 border-[#EBEBEB] border-solid"
+                          style={{
+                            borderTopLeftRadius: "10px",
+                          }}
+                        >
+                          Color
+                        </div>
+                        {selectedvalue.length > 0 &&
+                          selectedvalue1.length > 0 && (
+                            <div
+                              className="flex-[1_0_101px] flex justify-center border-[1px] p-3 border-[#EBEBEB]
+                        border-solid"
+                            >
+                              Size
+                            </div>
+                          )}
+
+                        <div className="flex w-[100%] ">
                           <div
-                            className="min-w-[100px] border-[1px] p-3 border-[#EBEBEB] border-solid"
+                            className="flex-[1_0_202px] rounded-none flex justify-center border-y-[1px]
+                         p-3 rounded-s border-[#EBEBEB] border-solid"
+                          >
+                            Giá <span className="text-red-500">*</span>
+                          </div>
+                          <div
+                            className="flex-[1_0_202px] rounded-none flex justify-center border-y-[1px]
+                         p-3 rounded-s border-[#EBEBEB] border-solid"
+                          >
+                            Giá sale<span className="text-red-500">*</span>
+                          </div>
+                          <div
+                            className="flex-[1_0_202px] flex justify-center border-[1px]
+                         p-3 rounded-s border-[#EBEBEB] border-solid"
                             style={{
-                              borderTopLeftRadius: "10px",
+                              borderTopRightRadius: "10px",
                             }}
                           >
-                            {select || select1 ? (
-                              <div>{select || select1}</div>
-                            ) : (
-                              <div>Phân loại</div>
-                            )}
-                          </div>
-                          {selectedvalue.length > 0 &&
-                            selectedvalue1.length > 0 && (
-                              <div
-                                className="flex-[1_0_101px] flex justify-center border-[1px] p-3 border-[#EBEBEB]
-                        border-solid"
-                              >
-                                {select1 || select ? (
-                                  <div>{select1 || select}</div>
-                                ) : (
-                                  <div>Phân loại</div>
-                                )}
-                              </div>
-                            )}
-
-                          <div className="flex w-[100%] ">
-                            <div
-                              className="flex-[1_0_202px] rounded-none flex justify-center border-r-2 border-t-2 
-                         p-3 rounded-s border-[#EBEBEB] border-solid"
-                            >
-                              Giá <span className="text-red-500">*</span>
-                            </div>
-                            <div
-                              className="flex-[1_0_202px] rounded-none flex justify-center border-y-[1px]
-                         p-3 rounded-s border-[#EBEBEB] border-solid"
-                            >
-                              Price Sale <span className="text-red-500">*</span>
-                            </div>
-                            <div
-                              className="flex-[1_0_202px] flex justify-center border-[1px] border-y-[1px]
-                         p-3 rounded-s border-[#EBEBEB] border-solid"
-                              style={{
-                                borderTopRightRadius: "10px",
-                              }}
-                            >
-                              Kho hàng <span className="text-red-500">*</span>
-                            </div>
+                            Kho hàng <span className="text-red-500">*</span>
                           </div>
                         </div>
-                        {types
-                          .filter((item) => item.id !== 0) // Lọc ra các item có id khác 0
-                          .map((item, index) => (
-                            <div
-                              className="border-[#EBEBEB] border-solid border-[1px] last:rounded-b-xl"
-                              key={index}
-                            >
-                              <div className="flex items-center">
-                                <div className="min-w-[100px]  border-e-[1px]  p-3 ">
-                                  <div className="flex items-center gap-4">
-                                    <div>
-                                      {/* {selectedvalue[index] ||
-                                        selectedvalue1[index]} */}
-                                      {select === "color"
-                                        ? colors?.data?.find(
-                                            (item) =>
-                                              item.id === selectedvalue?.[index]
-                                          )?.name
-                                        : sizes?.data?.find(
-                                            (item) =>
-                                              item.id === selectedvalue?.[index]
-                                          )?.name}
-
-                                      {/* {colors?.data?.find(
-                                        (item) =>
-                                          item.id === selectedvalue[index]
-                                      )?.name ??
-                                        } */}
-                                    </div>
-                                  </div>
-                                </div>
-                                {select1 &&
-                                  select &&
-                                  selectedvalue.length > 0 &&
-                                  selectedvalue1.length > 0 && (
-                                    <div className="min-w-[100px] flex justify-center  border-e-[1px] ">
-                                      <div>
-                                        {selectedvalue1.map((item, index) => (
-                                          <div
-                                            className="type text-center "
-                                            key={index}
-                                          >
-                                            {select1 === "color"
-                                              ? colors?.data?.find(
-                                                  (item) =>
-                                                    item.id ===
-                                                    selectedvalue1?.[index]
-                                                )?.name
-                                              : sizes?.data?.find(
-                                                  (item) =>
-                                                    item.id ===
-                                                    selectedvalue1?.[index]
-                                                )?.name}
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  )}
-
-                                <div className="flex w-[100%] ">
-                                  <div
-                                    className="flex-[1_0_205px]  flex justify-center border-e-[1px]
-                         px-3 py-[2.5rem] rounded-s border-[#EBEBEB] border-solid"
-                                  >
-                                    <Form.Item
-                                      name={`price${index}`}
-                                      rules={[
-                                        {
-                                          required: true,
-                                          message: "Vui lọc nhập giá",
-                                        },
-                                        {
-                                          validator: (_, value) =>
-                                            value && value > 1000
-                                              ? Promise.resolve()
-                                              : Promise.reject(
-                                                  new Error(
-                                                    "Giá phải lớn hơn 1.000"
-                                                  )
-                                                ),
-                                        },
-                                      ]}
-                                    >
-                                      <Input
-                                        type="number"
-                                        size="large"
-                                        className="w-[100%] max-h-[40px]"
-                                        min={0}
-                                        // value={price}
-                                        // onChange={(e) => setPrice(e.target.value)}
-                                        placeholder="Giá"
-                                      />
-                                    </Form.Item>
-                                  </div>
-                                  <div
-                                    className="flex-[1_0_205px]  flex justify-center border-e-[1px]
-                         px-3 py-[2.5rem] rounded-s border-[#EBEBEB] border-solid"
-                                  >
-                                    <Form.Item name={`pricesale${index}`}>
-                                      <Input
-                                        type="number"
-                                        size="large"
-                                        className="w-[100%] max-h-[40px]"
-                                        min={0}
-                                        // value={price}
-                                        // onChange={(e) => setPrice(e.target.value)}
-                                        placeholder="Price Sale"
-                                      />
-                                    </Form.Item>
-                                  </div>
-                                  <div
-                                    className="flex-[1_0_205px]  flex justify-center border-e-[1px]
-                         px-3 py-[2.5rem] rounded-s border-[#EBEBEB] border-solid"
-                                  >
-                                    <Form.Item name={`quantity-${index}`}>
-                                      <Input
-                                        type="number"
-                                        size="large"
-                                        className="w-[100%] max-h-[40px]"
-                                        min={0}
-                                        // value={price}
-                                        // onChange={(e) => setPrice(e.target.value)}
-                                        placeholder="Kho hàng"
-                                      />
-                                    </Form.Item>
+                      </div>
+                      {selectedvalue
+                        .filter((item) => item !== 0)
+                        .map((item, outerIndex) => (
+                          <div
+                            className="border-[#EBEBEB] border-solid border-[1px] last:rounded-b-xl"
+                            key={outerIndex}
+                          >
+                            <div className="flex items-center">
+                              <div className="min-w-[100px] max-w-[100px] border-e-[1px] p-3 ">
+                                <div className="flex items-center gap-4">
+                                  <div>
+                                    {
+                                      colors?.data?.find(
+                                        (colorItem) => colorItem.id === item
+                                      )?.name
+                                    }
                                   </div>
                                 </div>
                               </div>
+                              {selectedvalue1.length > 0 &&
+                                selectedvalue1.filter((item) => item !== 0) && (
+                                  <div className="min-w-[100px] flex justify-center  border-e-[1px] ">
+                                    <div>
+                                      {selectedvalue1.map(
+                                        (item, innerIndex) => (
+                                          <div
+                                            className="type text-center"
+                                            key={innerIndex}
+                                          >
+                                            {
+                                              sizes?.data?.find(
+                                                (sizeItem) =>
+                                                  sizeItem.id === item
+                                              )?.name
+                                            }
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                              <div className="w-full flex-wrap gap-4">
+                                {selectedvalue1
+                                  .filter((item) => item !== 0) // Lọc các item không phải 0
+                                  .map((item, innerIndex) => {
+                                    return (
+                                      <div
+                                        key={innerIndex}
+                                        className="flex gap-2"
+                                      >
+                                        {/* Input: Giá */}
+                                        <div className="flex-[1_0_205px] flex justify-center border-e px-3 rounded-s border-[#EBEBEB] border-solid">
+                                          <Form.Item
+                                            name={`price-${outerIndex}-${innerIndex}`}
+                                            rules={[
+                                              {
+                                                required: true,
+                                                message: "Vui lòng nhập giá",
+                                              },
+                                              {
+                                                validator: (_, value) =>
+                                                  value && value > 1000
+                                                    ? Promise.resolve()
+                                                    : Promise.reject(
+                                                        new Error(
+                                                          "Giá phải lớn hơn 1.000"
+                                                        )
+                                                      ),
+                                              },
+                                            ]}
+                                          >
+                                            <Input
+                                              type="number"
+                                              size="large"
+                                              className="w-full max-h-[40px]"
+                                              min={0}
+                                              placeholder="Giá"
+                                            />
+                                          </Form.Item>
+                                        </div>
+
+                                        {/* Input: Giá sale */}
+                                        <div className="flex-[1_0_205px] flex justify-center border-e px-3 rounded-s border-[#EBEBEB] border-solid">
+                                          <Form.Item
+                                            name={`pricesale-${outerIndex}-${innerIndex}`}
+                                          >
+                                            <Input
+                                              type="number"
+                                              size="large"
+                                              className="w-full max-h-[40px]"
+                                              min={0}
+                                              placeholder="Price Sale"
+                                            />
+                                          </Form.Item>
+                                        </div>
+
+                                        {/* Input: Số lượng */}
+                                        <div className="flex-[1_0_205px] flex justify-center border-e px-3 rounded-s border-[#EBEBEB] border-solid">
+                                          <Form.Item
+                                            name={`quantity-${outerIndex}-${innerIndex}`}
+                                            rules={[
+                                              {
+                                                required: true,
+                                                message:
+                                                  "Vui lòng nhập số lượng",
+                                              },
+                                              {
+                                                validator: (_, value) =>
+                                                  value && value > 0
+                                                    ? Promise.resolve()
+                                                    : Promise.reject(
+                                                        new Error(
+                                                          "Số lượng phải lớn hơn 1"
+                                                        )
+                                                      ),
+                                              },
+                                            ]}
+                                          >
+                                            <Input
+                                              type="number"
+                                              size="large"
+                                              className="w-full max-h-[40px]"
+                                              min={0}
+                                              placeholder="Kho hàng"
+                                            />
+                                          </Form.Item>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                              </div>
                             </div>
-                          ))}
-                      </div>
+                          </div>
+                        ))}
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </section>

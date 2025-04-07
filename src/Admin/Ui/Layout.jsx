@@ -616,10 +616,10 @@ const Layout = () => {
                     >
                       {/* item*/}
                       <h6 className="dropdown-header">Welcome Anna!</h6>
-                      <a className="dropdown-item" href="pages-profile.html">
+                      <Link className="dropdown-item" to={"/admin/profile"}>
                         <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1" />
                         <span className="align-middle">Profile</span>
-                      </a>
+                      </Link>
                       <a className="dropdown-item" href="apps-chat.html">
                         <i className="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1" />
                         <span className="align-middle">Messages</span>

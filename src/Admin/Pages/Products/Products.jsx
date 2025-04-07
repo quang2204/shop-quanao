@@ -4,6 +4,7 @@ import { FormatDate, FormatDateTime, FormatPrice } from "../../../Format.jsx";
 import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
 import Emptys from "../../Ui/Emty.jsx";
+import { useProductVariants } from "../../../Hook/useDetailProduct.jsx";
 const Products = () => {
   const [id, setId] = useState("");
   const { pages } = useParams();
@@ -38,6 +39,7 @@ const Products = () => {
     console.log(current, pageSize);
     setPageProduct(current);
   };
+  console.log(products);
   if (isProducts) {
     return (
       <Spin
@@ -131,7 +133,7 @@ const Products = () => {
                             {<FormatDate date={item.created_at} />}
                           </td>
                           <td className="amount">
-                            {<FormatPrice price={item.variants_min_price} />}
+                            {<FormatPrice price={item.variants_min_price_sale} />}
                           </td>
                           <td>
                             <Image
@@ -163,13 +165,7 @@ const Products = () => {
                                   <i className="ri-eye-fill fs-16" />
                                 </Link>
                               </li>
-                              <li
-                                className="list-inline-item edit"
-                                data-bs-toggle="tooltip"
-                                data-bs-trigger="hover"
-                                data-bs-placement="top"
-                                title="Edit"
-                              >
+                              <li className="list-inline-item edit">
                                 <Link
                                   to={`/admin/uppdateproduct/${item.id}`}
                                   data-bs-toggle="modal"
@@ -238,9 +234,9 @@ const Products = () => {
                 </div> */}
                 <Pagination
                   showSizeChanger
-                  onChange={onShowSizeChange} 
-                  current={products.data.current_page} 
-                  total={products.data.total} 
+                  onChange={onShowSizeChange}
+                  current={products.data.current_page}
+                  total={products.data.total}
                   pageSize={products.data.per_page}
                   align="center"
                 />

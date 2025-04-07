@@ -27,7 +27,7 @@ const Profile = () => {
               <img
                 src={data.avatar}
                 alt="user-img"
-                className="img-thumbnail rounded-circle"
+                className="img-thumbnail rounded-full"
               />
             </div>
           </div>
@@ -62,57 +62,8 @@ const Profile = () => {
       <div className="row">
         <div className="col-lg-12">
           <div>
-            <div className="d-flex profile-wrapper">
-              {/* Nav tabs */}
-              <ul
-                className="nav nav-pills animation-nav profile-nav gap-2 gap-lg-3 flex-grow-1"
-                role="tablist"
-              >
-                <li className="nav-item">
-                  <a
-                    className="nav-link fs-14 active"
-                    data-bs-toggle="tab"
-                    href="#overview-tab"
-                    role="tab"
-                  >
-                    <i className="ri-airplay-fill d-inline-block d-md-none" />
-                    <span className="d-none d-md-inline-block">Overview</span>
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link fs-14"
-                    data-bs-toggle="tab"
-                    href="#activities"
-                    role="tab"
-                  >
-                    <i className="ri-list-unordered d-inline-block d-md-none" />
-                    <span className="d-none d-md-inline-block">Activities</span>
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link fs-14"
-                    data-bs-toggle="tab"
-                    href="#projects"
-                    role="tab"
-                  >
-                    <i className="ri-price-tag-line d-inline-block d-md-none" />
-                    <span className="d-none d-md-inline-block">Projects</span>
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link fs-14"
-                    data-bs-toggle="tab"
-                    href="#documents"
-                    role="tab"
-                  >
-                    <i className="ri-folder-4-line d-inline-block d-md-none" />
-                    <span className="d-none d-md-inline-block">Documents</span>
-                  </a>
-                </li>
-              </ul>
+            <div className="d-flex profile-wrapper justify-end">
+            
               <div className="flex-shrink-0">
                 <a
                   href="pages-profile-settings.html"

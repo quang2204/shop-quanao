@@ -57,9 +57,7 @@ const Order_Detail = () => {
                       <th scope="col" style={{ textAlign: "center" }}>
                         Quantity
                       </th>
-                      <th scope="col" style={{ textAlign: "center" }}>
-                        Rating
-                      </th>
+
                       <th scope="col" className="text-end">
                         Total Amount
                       </th>
@@ -86,7 +84,7 @@ const Order_Detail = () => {
                                   {item.product_variant.product.name.length > 20
                                     ? item.product_variant.product.name.slice(
                                         0,
-                                        20
+                                        40
                                       ) + "..."
                                     : item.product_variant.product.name}
                                 </a>
@@ -110,15 +108,6 @@ const Order_Detail = () => {
                           {<FormatPrice price={item.product_variant.price} />}
                         </td>
                         <td className="text-center">{item.quantity}</td>
-                        <td className="text-center">
-                          <div className="text-warning fs-15">
-                            <i className="ri-star-fill" />
-                            <i className="ri-star-fill" />
-                            <i className="ri-star-fill" />
-                            <i className="ri-star-fill" />
-                            <i className="ri-star-half-fill" />
-                          </div>
-                        </td>
                         <td className="fw-medium text-end">
                           {
                             <FormatPrice
@@ -140,24 +129,27 @@ const Order_Detail = () => {
                                 {<FormatPrice price={total} />}
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                Discount
-                                <span className="text-muted mx-1">
-                                  ({data[0].order.voucher.code})
-                                </span>
-                                :
-                              </td>
-                              <td className="text-end">
-                                {data.voucher === null ? (
-                                  0
-                                ) : (
-                                  <FormatPrice
-                                    price={data[0].order.voucher.discount}
-                                  />
-                                )}
-                              </td>
-                            </tr>
+                            {data[0]?.order?.voucher !== null ? (
+                              <tr>
+                                <td>
+                                  Discount
+                                  <span className="text-muted mx-1">
+                                    ({data[0]?.order?.voucher?.code})
+                                  </span>
+                                  :
+                                </td>
+                                <td className="text-end">
+                                  {data.voucher === null ? (
+                                    0
+                                  ) : (
+                                    <FormatPrice
+                                      price={data[0]?.order?.voucher?.discount}
+                                    />
+                                  )}
+                                </td>
+                              </tr>
+                            ) : undefined}
+
                             <tr>
                               <td>Shipping Charge :</td>
                               <td className="text-end">$65.00</td>
@@ -213,29 +205,27 @@ const Order_Detail = () => {
                 >
                   <div className="accordion-item border-0">
                     <div className="accordion-header" id="headingOne">
-                      <a
-                        className="accordion-button p-2 shadow-none"
-                        data-bs-toggle="collapse"
-                        href="#collapseOne"
-                        aria-expanded="true"
-                        aria-controls="collapseOne"
-                      >
+                      <div className="accordion-button p-2 shadow-none">
                         <div className="d-flex align-items-center">
                           <div className="flex-shrink-0 avatar-xs">
                             <div className="avatar-title bg-success rounded-circle">
                               <i className="ri-shopping-bag-line" />
                             </div>
                           </div>
-                          <div className="flex-grow-1 ms-3">
+                          <div className="flex-grow-1 ms-3 ">
                             <h6 className="fs-15 mb-0 fw-semibold">
                               Order Placed -
-                              <span className="fw-normal">
-                                Wed, 15 Dec 2021
+                              <span className="fw-normal ml-2">
+                                {
+                                  <FormatDate
+                                    date={data[0]?.order?.created_at}
+                                  />
+                                }
                               </span>
                             </h6>
                           </div>
                         </div>
-                      </a>
+                      </div>
                     </div>
                     <div
                       id="collapseOne"
