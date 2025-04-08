@@ -8,7 +8,7 @@ export const getProducts = async (page) => {
 export const getCategory = async (page) => {
   const res = await Axios.get(`api/admin/categories?page=${page}`);
   return res.data;
-};
+};//m
 export const deleteCategory = async (id) => {
   const res = await Axios.delete(`api/admin/categories/${id}`);
   return res.data;
