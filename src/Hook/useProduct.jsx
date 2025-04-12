@@ -11,13 +11,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
 import { use } from "react";
 
-export const useProduct = (pages) => {
+export const useProduct = (page, filters = {}) => {
   const { data: products, isLoading: isProducts } = useQuery({
-    queryKey: ["products", pages],
-    queryFn: () => getProducts(pages || 1),
+    queryKey: ["products", page, filters],
+    queryFn: () => getProducts(page || 1, filters),
   });
   return { products, isProducts };
 };
+
 export const useProducts = () => {
   const { data: products, isLoading: isProducts } = useQuery({
     queryKey: ["products"],

@@ -1,17 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Spin } from "antd";
-import { UseDetailOrder } from "../../../Hook/useOrder";
-import { FormatDate, FormatPrice } from "../../../Format";
+import { Modal, Spin } from "antd";
+import {
+  UseDetailOrder,
+  useStatusOrder,
+  useStatusOrderAdmin,
+} from "../../../Hook/useOrder";
+import { FormatDate, FormatDateTime, FormatPrice } from "../../../Format";
 import { useDetailUserId } from "../../../Hook/useDetailUser";
+import { useForm } from "react-hook-form";
 const Order_Detail = () => {
   const { id } = useParams();
-
+  const [isOpen, setIsOpen] = useState(false);
+  const { isLoading: isLoadingorder, mutate } = useStatusOrderAdmin(id);
   const { data, isLoading } = UseDetailOrder(id);
+  const [idOpen, setIdOpen] = useState("");
+  const [status, setStatus] = useState();
   const { data: user, isLoading: isLoadingUser } = useDetailUserId(
     data?.[0]?.order?.user_id
   );
-  console.log(data);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+  const onSubmitUpdate = () => {
+    mutate({ id: idOpen, data: status });
+    if (!isLoadingorder) {
+      setIdOpen("");
+      setIsOpen(false);
+    }
+  };
+  const handleCancel = (id) => {
+    setIdOpen("");
+    setIsOpen(false);
+  };
+  console.log(idOpen);
+  const handleOpen = (id) => {
+    setIdOpen(id[0].order.id);
+    console.log(id);
+    setStatus(id[0].order.status);
+    setIsOpen(true);
+  };
+  const getOrderStatus = (status) => {
+    const statusMapping = {
+      1: "Pending",
+      2: "Processing",
+      3: "Shipping",
+      4: "Delivered",
+      5: "Completed",
+      6: "Cancelled",
+    };
+
+    return statusMapping[status] || "Trạng thái không xác định";
+  };
   if (isLoading || isLoadingUser) {
     return (
       <Spin
@@ -23,7 +66,6 @@ const Order_Detail = () => {
   const total =
     Number(data?.[0]?.order?.total_amount || 0) +
     Number(data?.[0]?.order?.voucher?.discount || 0);
-
   return (
     <div>
       <div className="row mx-2">
@@ -77,8 +119,8 @@ const Order_Detail = () => {
                             </div>
                             <div className="flex-grow-1 ms-3">
                               <h5 className="fs-15">
-                                <a
-                                  href="apps-ecommerce-product-details.html"
+                                <Link
+                                  to={`/admin/product_detail/${item.product_variant.product.id}`}
                                   className="link-primary"
                                 >
                                   {item.product_variant.product.name.length > 20
@@ -87,7 +129,7 @@ const Order_Detail = () => {
                                         40
                                       ) + "..."
                                     : item.product_variant.product.name}
-                                </a>
+                                </Link>
                               </h5>
                               <p className="text-muted mb-0">
                                 Color:{" "}
@@ -105,13 +147,19 @@ const Order_Detail = () => {
                           </div>
                         </td>
                         <td className="text-center">
-                          {<FormatPrice price={item.product_variant.price} />}
+                          {
+                            <FormatPrice
+                              price={item.product_variant.price_sale}
+                            />
+                          }
                         </td>
                         <td className="text-center">{item.quantity}</td>
                         <td className="fw-medium text-end">
                           {
                             <FormatPrice
-                              price={item.product_variant.price * item.quantity}
+                              price={
+                                item.product_variant.price_sale * item.quantity
+                              }
                             />
                           }
                         </td>
@@ -152,15 +200,14 @@ const Order_Detail = () => {
 
                             <tr>
                               <td>Shipping Charge :</td>
-                              <td className="text-end">$65.00</td>
+                              <td className="text-end">30.000 đ</td>
                             </tr>
                             <tr className="border-top border-top-dashed">
                               <th scope="row">Total :</th>
                               <th className="text-end">
-                                {" "}
                                 {
                                   <FormatPrice
-                                    price={data[0].order.total_amount}
+                                    price={data[0].order.total_amount + 30000}
                                   />
                                 }
                               </th>
@@ -179,22 +226,25 @@ const Order_Detail = () => {
             <div className="card-header">
               <div className="d-sm-flex align-items-center">
                 <h5 className="card-title flex-grow-1 mb-0">Order Status</h5>
-                <div className="flex mt-2 mt-sm-0 gap-2">
-                  <Link
-                    className="px-3 py-1 bg-[#dff0fa] hover:text-white hover:bg-blue-500 cursor-pointer rounded-md btn-sm mt-2 mt-sm-0"
-                    style={{ color: "white !important" }}
-                  >
-                    <i className="ri-map-pin-line align-middle me-1" />
-                    Change Address
-                  </Link>
-                  <Link
-                    className="px-3 py-1 bg-[#fadbd5] hover:text-white  hover:bg-red-500 cursor-pointer rounded-md btn-sm mt-2 mt-sm-0"
-                    style={{ color: "white !important" }}
-                  >
-                    <i className="mdi mdi-archive-remove-outline align-middle me-1" />
-                    Cancel Order
-                  </Link>
-                </div>
+                {data[0].order.status !== 5 && (
+                  <div className="flex mt-2 mt-sm-0 gap-2">
+                    <div
+                      className="px-3 py-1 bg-[#dff0fa] hover:text-white hover:bg-blue-500 cursor-pointer rounded-md btn-sm mt-2 mt-sm-0"
+                      style={{ color: "white !important" }}
+                      onClick={() => handleOpen(data)}
+                    >
+                      <i className="ri-map-pin-line align-middle me-1" />
+                      Order Status
+                    </div>
+                    <div
+                      className="px-3 py-1 bg-[#fadbd5] hover:text-white  hover:bg-red-500 cursor-pointer rounded-md btn-sm mt-2 mt-sm-0"
+                      style={{ color: "white !important" }}
+                    >
+                      <i className="mdi mdi-archive-remove-outline align-middle me-1" />
+                      Cancel Order
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             <div className="card-body">
@@ -213,12 +263,17 @@ const Order_Detail = () => {
                             </div>
                           </div>
                           <div className="flex-grow-1 ms-3 ">
-                            <h6 className="fs-15 mb-0 fw-semibold">
-                              Order Placed -
-                              <span className="fw-normal ml-2">
+                            <h6 className="fs-15 mb-0 fw-semibold flex ">
+                              {getOrderStatus(data[0]?.order?.status)}
+                              <span className="fw-normal ml-2 flex gap-1">
                                 {
                                   <FormatDate
-                                    date={data[0]?.order?.created_at}
+                                    date={data[0]?.order?.updated_at}
+                                  />
+                                }
+                                {
+                                  <FormatDateTime
+                                    dateString={data[0]?.order?.updated_at}
                                   />
                                 }
                               </span>
@@ -226,162 +281,6 @@ const Order_Detail = () => {
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div
-                      id="collapseOne"
-                      className="accordion-collapse collapse show"
-                      aria-labelledby="headingOne"
-                      data-bs-parent="#accordionExample"
-                    >
-                      <div className="accordion-body ms-2 ps-5 pt-0">
-                        <h6 className="mb-1">An order has been placed.</h6>
-                        <p className="text-muted">Wed, 15 Dec 2021 - 05:34PM</p>
-                        <h6 className="mb-1">
-                          Seller has processed your order.
-                        </h6>
-                        <p className="text-muted mb-0">
-                          Thu, 16 Dec 2021 - 5:48AM
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="accordion-item border-0">
-                    <div className="accordion-header" id="headingTwo">
-                      <a
-                        className="accordion-button p-2 shadow-none"
-                        data-bs-toggle="collapse"
-                        href="#collapseTwo"
-                        aria-expanded="false"
-                        aria-controls="collapseTwo"
-                      >
-                        <div className="d-flex align-items-center">
-                          <div className="flex-shrink-0 avatar-xs">
-                            <div className="avatar-title bg-success rounded-circle">
-                              <i className="mdi mdi-gift-outline" />
-                            </div>
-                          </div>
-                          <div className="flex-grow-1 ms-3">
-                            <h6 className="fs-15 mb-1 fw-semibold">
-                              Packed -
-                              <span className="fw-normal">
-                                Thu, 16 Dec 2021
-                              </span>
-                            </h6>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                    <div
-                      id="collapseTwo"
-                      className="accordion-collapse collapse show"
-                      aria-labelledby="headingTwo"
-                      data-bs-parent="#accordionExample"
-                    >
-                      <div className="accordion-body ms-2 ps-5 pt-0">
-                        <h6 className="mb-1">
-                          Your Item has been picked up by courier partner
-                        </h6>
-                        <p className="text-muted mb-0">
-                          Fri, 17 Dec 2021 - 9:45AM
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="accordion-item border-0">
-                    <div className="accordion-header" id="headingThree">
-                      <a
-                        className="accordion-button p-2 shadow-none"
-                        data-bs-toggle="collapse"
-                        href="#collapseThree"
-                        aria-expanded="false"
-                        aria-controls="collapseThree"
-                      >
-                        <div className="d-flex align-items-center">
-                          <div className="flex-shrink-0 avatar-xs">
-                            <div className="avatar-title bg-success rounded-circle">
-                              <i className="ri-truck-line" />
-                            </div>
-                          </div>
-                          <div className="flex-grow-1 ms-3">
-                            <h6 className="fs-15 mb-1 fw-semibold">
-                              Shipping -
-                              <span className="fw-normal">
-                                Thu, 16 Dec 2021
-                              </span>
-                            </h6>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                    <div
-                      id="collapseThree"
-                      className="accordion-collapse collapse show"
-                    >
-                      <div className="accordion-body ms-2 ps-5 pt-0">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          class="bi bi-truck"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5zm1.294 7.456A2 2 0 0 1 4.732 11h5.536a2 2 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456M12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2" />
-                        </svg>
-                        <h6 className="fs-14">
-                          RQK Logistics - MFDS1400457854
-                        </h6>
-                        <h6 className="mb-1">Your item has been shipped.</h6>
-                        <p className="text-muted mb-0">
-                          Sat, 18 Dec 2021 - 4.54PM
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="accordion-item border-0">
-                    <div className="accordion-header" id="headingFour">
-                      <a
-                        className="accordion-button p-2 shadow-none"
-                        data-bs-toggle="collapse"
-                        href="#collapseFour"
-                        aria-expanded="false"
-                      >
-                        <div className="d-flex align-items-center">
-                          <div className="flex-shrink-0 avatar-xs">
-                            <div className="avatar-title bg-light text-success rounded-circle">
-                              <i className="ri-takeaway-fill" />
-                            </div>
-                          </div>
-                          <div className="flex-grow-1 ms-3">
-                            <h6 className="fs-14 mb-0 fw-semibold">
-                              Out For Delivery
-                            </h6>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                  </div>
-                  <div className="accordion-item border-0">
-                    <div className="accordion-header" id="headingFive">
-                      <a
-                        className="accordion-button p-2 shadow-none"
-                        data-bs-toggle="collapse"
-                        href="#collapseFile"
-                        aria-expanded="false"
-                      >
-                        <div className="d-flex align-items-center">
-                          <div className="flex-shrink-0 avatar-xs">
-                            <div className="avatar-title bg-light text-success rounded-circle">
-                              <i className="mdi mdi-package-variant" />
-                            </div>
-                          </div>
-                          <div className="flex-grow-1 ms-3">
-                            <h6 className="fs-14 mb-0 fw-semibold">
-                              Delivered
-                            </h6>
-                          </div>
-                        </div>
-                      </a>
                     </div>
                   </div>
                 </div>
@@ -438,61 +337,41 @@ const Order_Detail = () => {
               </ul>
             </div>
           </div>
-          {/*end card*/}
-          <div className="card">
-            <div className="card-header">
-              <h5 className="card-title mb-0">
-                <i className="ri-secure-payment-line align-bottom me-1 text-muted" />
-                Payment Details
-              </h5>
-            </div>
-            <div className="card-body">
-              <div className="d-flex align-items-center mb-2">
-                <div className="flex-shrink-0">
-                  <p className="text-muted mb-0">Transactions:</p>
-                </div>
-                <div className="flex-grow-1 ms-2">
-                  <h6 className="mb-0">#VLZ124561278124</h6>
-                </div>
-              </div>
-              <div className="d-flex align-items-center mb-2">
-                <div className="flex-shrink-0">
-                  <p className="text-muted mb-0">Payment Method:</p>
-                </div>
-                <div className="flex-grow-1 ms-2">
-                  <h6 className="mb-0">Debit Card</h6>
-                </div>
-              </div>
-              <div className="d-flex align-items-center mb-2">
-                <div className="flex-shrink-0">
-                  <p className="text-muted mb-0">Card Holder Name:</p>
-                </div>
-                <div className="flex-grow-1 ms-2">
-                  <h6 className="mb-0">Joseph Parker</h6>
-                </div>
-              </div>
-              <div className="d-flex align-items-center mb-2">
-                <div className="flex-shrink-0">
-                  <p className="text-muted mb-0">Card Number:</p>
-                </div>
-                <div className="flex-grow-1 ms-2">
-                  <h6 className="mb-0">xxxx xxxx xxxx 2456</h6>
-                </div>
-              </div>
-              <div className="d-flex align-items-center">
-                <div className="flex-shrink-0">
-                  <p className="text-muted mb-0">Total Amount:</p>
-                </div>
-                <div className="flex-grow-1 ms-2">
-                  <h6 className="mb-0">$415.96</h6>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/*end card*/}
         </div>
         {/*end col*/}
       </div>
+      <Modal
+        open={isOpen}
+        onOk={handleSubmit(onSubmitUpdate)}
+        onCancel={handleCancel}
+        title="Order status"
+        width={800}
+        // className="modal fade zoomIn"
+      >
+        <>
+          <div className="radio-inputs-order my-6">
+            {[
+              { label: "Chờ xử lý", value: 1 },
+              { label: "Đang xử lý", value: 2 },
+              { label: "Đang vận chuyển", value: 3 },
+              { label: "Đã giao hàng", value: 4 },
+              { label: "Hoàn thành", value: 5 },
+              { label: "Đã hủy", value: 6 },
+            ].map((item) => (
+              <label className="radio" key={item.value}>
+                <input
+                  type="radio"
+                  name="radio"
+                  value={item.value}
+                  checked={status === item.value}
+                  onChange={() => setStatus(item.value)}
+                />
+                <span className="name">{item.label}</span>
+              </label>
+            ))}
+          </div>
+        </>
+      </Modal>
     </div>
   );
 };

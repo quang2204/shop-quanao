@@ -14,7 +14,7 @@ import { message } from "antd";
 
 const UseDetailOrder = (id) => {
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ["order", id],
+    queryKey: ["order_id", id],
     queryFn: () => detailOrder(id),
     enabled: !!id,
     staleTime: 0, // Đảm bảo luôn fetch dữ liệu mới
@@ -33,7 +33,6 @@ const useDetailOrderByUserId = () => {
   const { data: auth } = useAuth();
 
   const userId = auth?.id;
-
   const { data, isLoading } = useQuery({
     queryKey: ["orderbyuserid", userId],
     queryFn: () => (userId ? getOrderByUserid(userId) : Promise.resolve(null)),
@@ -69,6 +68,34 @@ const useStatusOrder = (page) => {
   });
   return { mutate, isLoading };
 };
+const useStatusOrderCline = (id_user) => {
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useMutation({
+    mutationFn: ({ id, data }) => udateStatusOrder(id, data),
+    onSuccess: () => {
+      message.success("Cập nhật trạng thái thành công");
+      queryClient.invalidateQueries({ queryKey: ["orderbyuserid", id_user] });
+    },
+    onError: (error) => {
+      message.error(error.response.data.message);
+    },
+  });
+  return { mutate, isLoading };
+};
+const useStatusOrderAdmin= (id) => {
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useMutation({
+    mutationFn: ({ id, data }) => udateStatusOrder(id, data),
+    onSuccess: () => {
+      message.success("Cập nhật trạng thái thành công");
+      queryClient.invalidateQueries({ queryKey: ["order_id", id] });
+    },
+    onError: (error) => {
+      message.error(error.response.data.message);
+    },
+  });
+  return { mutate, isLoading };
+};
 const useOrderUpdate = () => {
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useMutation({
@@ -82,4 +109,12 @@ const useOrderUpdate = () => {
   });
   return { mutate, isLoading };
 };
-export { UseDetailOrder, useOrder, useDetailOrderByUserId, useStatusOrder,useOrderUpdate };
+export {
+  UseDetailOrder,
+  useOrder,
+  useDetailOrderByUserId,
+  useStatusOrder,
+  useOrderUpdate,
+  useStatusOrderCline,
+  useStatusOrderAdmin
+};

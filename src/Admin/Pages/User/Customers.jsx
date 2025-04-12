@@ -411,7 +411,7 @@ const Customers = () => {
                         >
                           Add Customer
                         </button>
-                        {/* <button type="button" class="btn btn-success" id="edit-btn">Update</button> */}
+                        {/* <button type="button" className="btn btn-success" id="edit-btn">Update</button> */}
                       </div>
                     </div>
                   </form>

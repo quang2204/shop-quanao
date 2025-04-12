@@ -20,11 +20,11 @@ const Layout = () => {
     };
   }, []);
   const { pathname } = useLocation();
+
   const capitalizeFirstLetter = (str) =>
     str ? str.charAt(0).toUpperCase() + str.slice(1) : "Dashboards";
 
   const thirdPathSegment = capitalizeFirstLetter(pathname.split("/")[2]);
-  console.log(thirdPathSegment);
   const { data, isLoading } = useAuth();
   if (isLoading) {
     return (
@@ -755,7 +755,7 @@ const Layout = () => {
                   </li>
                   <li className="nav-item">
                     <Link
-                      to="dashboards"
+                      to=""
                       className={`nav-link menu-link ${thirdPathSegment === "Dashboards" ? "active" : ""}`}
                     >
                       <i className="ri-dashboard-2-line" />
@@ -830,10 +830,6 @@ const Layout = () => {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link
-                      to="vouchers"
-                      className={`nav-link menu-link ${thirdPathSegment == "Vouchers" ? "active" : ""}`}
-                    />
                     <Link to="sizes" className="nav-link menu-link">
                       <i className="ri-layout-3-line" />
                       <span data-key="t-layouts">Sizes</span>
@@ -847,7 +843,7 @@ const Layout = () => {
                   </li>
                   {/* <li className="nav-item">
                     <Link to="Comment" className={`nav-link menu-link ${thirdPathSegment=="Order"?"active":""}`}>
-                      <i class="fa fa-comment"></i>
+                      <i className="fa fa-comment"></i>
                       <span data-key="t-layouts">Comments</span>
                     </Link>
                   </li> */}
@@ -856,7 +852,7 @@ const Layout = () => {
                       to="customers"
                       className={`nav-link menu-link ${thirdPathSegment == "Customers" ? "active" : ""}`}
                     >
-                      <i class="fa fa-user"></i>
+                      <i className="fa fa-user"></i>
                       <span data-key="t-layouts">User</span>
                     </Link>
                   </li>
@@ -938,36 +934,32 @@ const Layout = () => {
           {/* Start right Content here */}
           {/*====== */}
           <div className="main-content overflow-hidden">
-            <div className="page-content">
+            <div className="page-content bg-[#f8fcff] min-h-[100vh]">
               <div className="container-fluid">
                 {/* start page title */}
                 <div className="row">
-                  <div className="col-12">
-                    <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-                      <h4 className="mb-sm-0">{thirdPathSegment}</h4>
-                      <div className="page-title-right">
-                        <ol className="breadcrumb m-0">
-                          <li className="breadcrumb-item">
-                            <Link>Admin</Link>
-                          </li>
-                          <li className="breadcrumb-item active">
-                            {thirdPathSegment}
-                          </li>
-                        </ol>
+                  {thirdPathSegment !== "Dashboards" && (
+                    <div className="col-12">
+                      <div className="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 className="mb-sm-0">{thirdPathSegment}</h4>
+                        <div className="page-title-right">
+                          <ol className="breadcrumb m-0">
+                            <li className="breadcrumb-item">
+                              <Link>Admin</Link>
+                            </li>
+                            <li className="breadcrumb-item active">
+                              {thirdPathSegment}
+                            </li>
+                          </ol>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
-                {/* end page title */}
-                {/* end row */}
+                <Outlet></Outlet>
               </div>
-              {/* container-fluid */}
             </div>
-
-            <Outlet></Outlet>
-            {/* End Page-content */}
           </div>
-          {/* end main content*/}
         </div>
       </>
     </div>

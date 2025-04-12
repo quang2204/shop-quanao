@@ -199,10 +199,10 @@ const Categories = () => {
                             </li>
                             <li className="list-inline-item">
                               <div
-                                class="text-danger d-inline-block remove-item-btn"
+                                className="text-danger d-inline-block remove-item-btn"
                                 onClick={() => showModal(item.id)}
                               >
-                                <i class="ri-delete-bin-5-fill fs-16"></i>
+                                <i className="ri-delete-bin-5-fill fs-16"></i>
                               </div>
                             </li>
                           </ul>

@@ -149,7 +149,6 @@ const ShopingCart = () => {
       quantity: finalQuantity,
     };
 
-
     mutate({ data: { quantity: newQuantity }, id: check.id });
 
     // Cập nhật lại giá trị trong state
@@ -356,7 +355,11 @@ const ShopingCart = () => {
                   </div>
                   <div className="size-209 p-t-1 text-right">
                     <span className="mtext-110 cl2 xoa">
-                      <FormatPrice price={voucher ? total - voucher : total} />
+                      <FormatPrice
+                        price={
+                          voucher ? total - voucher + 30000 : total + 30000
+                        }
+                      />
                     </span>
                   </div>
                 </div>
@@ -364,7 +367,9 @@ const ShopingCart = () => {
                   onClick={() =>
                     navigate("/pay", {
                       state: {
-                        totalPrice: voucher ? total - voucher : total,
+                        totalPrice: voucher
+                          ? total - voucher + 30000
+                          : total + 30000,
                         voucher: voucherid,
                         voucherToal: voucher,
                       },

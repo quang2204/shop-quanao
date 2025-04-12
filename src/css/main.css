@@ -3276,9 +3276,9 @@ input.num-product::-webkit-inner-spin-button {
 }
 
 .hov-btn4:hover {
-  border: 1px solid;
-  background-color: white;
-  color: black;
+  border: 1px solid red !important;
+  background-color: #fff !important;
+  color: red;
 }
 
 .hov-btn5 {
@@ -4758,4 +4758,67 @@ button {
   .custom-modal .ant-modal {
     padding: 10px !important;
   }
+}
+
+/* From Uiverse.io by krlozCJ */
+.search {
+  position: relative;
+  --size-button: 40px;
+  color: white;
+}
+
+.search-input {
+  padding-left: var(--size-button);
+  height: var(--size-button);
+  font-size: 15px;
+  border: none;
+  color: #fff;
+  outline: none;
+  width: var(--size-button);
+  transition: all ease 0.3s;
+  background-color: #1f1f1f;
+  box-shadow: 2px 2px 6px rgba(255, 255, 255, 0.05),
+    -2px -2px 6px rgba(255, 255, 255, 0.05),
+    inset 0 0 0 transparent;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.search-input:focus,
+.search-input:not(:placeholder-shown) {
+  width: 200px;
+  cursor: text;
+  box-shadow: 0 0 0 transparent,
+    0 0 0 transparent,
+    inset 2px 2px 6px rgba(255, 255, 255, 0.15),
+    inset -2px -2px 6px rgba(255, 255, 255, 0.05);
+}
+
+.search-input:focus+.icon,
+.search-input:not(:placeholder-shown)+.icon {
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.search .icon {
+  position: absolute;
+  width: var(--size-button);
+  height: var(--size-button);
+  top: 0;
+  left: 0;
+  padding: 8px;
+  pointer-events: none;
+  color: #ccc;
+}
+
+.search .icon svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+}
+
+.hov-btn4 {
+  background-color: red !important;
+  color: white;
+  width: 150px;
 }

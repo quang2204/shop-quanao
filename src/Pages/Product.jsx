@@ -1,25 +1,51 @@
 import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { useCategory } from "../Hook/useCategory.jsx";
 import { Empty, Spin } from "antd";
 import { useCategoryProducts, useProduct } from "../Hook/useProduct.jsx";
 import { FormatPrice } from "../Format.jsx";
+import Emptys from "../Admin/Ui/Emty.jsx";
 const Product = () => {
   const navigate = useNavigate();
   const { caterory, pages } = useParams();
   const param = pages ? pages : 1;
-
+  const [searchParams] = useSearchParams();
+  const categoryId = searchParams.get("category_id");
+  const price = searchParams.get("price");
+  const sort = searchParams.get("sort_price");
+  const search = searchParams.get("search");
   const { category, isCategory } = useCategory();
-  const { products, isProducts } = useProduct(param);
+  const { isProducts, products } = useProduct(param, {
+    price: price,
+    category_id: categoryId,
+    sort: sort,
+    search: search,
+  });
   const { categoryproducts, iscategoryProducts } = useCategoryProducts();
-  const data = caterory ? categoryproducts : products?.data;
-  const isLoading = caterory ? iscategoryProducts : isProducts;
+  const data = products?.data;
+
   const [filter, setFilter] = useState(false);
   const page = Array.from(
     { length: products?.data.last_page },
     (_, i) => i + 1
   );
-  if (isCategory || isLoading) {
+
+  // const { search } = useLocation();
+  // const searchParam = new URLSearchParams(search);
+
+  // const makeSortLink = (sortValue) => {
+  //   const updatedParams = new URLSearchParams(searchParams.toString());
+  //   updatedParams.set("sort", sortValue);
+  //   return `/product?${updatedParams.toString()}`;
+  // };
+
+  if (isCategory || isProducts) {
     return (
       <Spin
         size="large"
@@ -30,7 +56,7 @@ const Product = () => {
   const clickfilter = () => {
     setFilter(!filter);
   };
-  console.log(products?.data);
+  console.log(categoryId);
   return (
     <div className="bg0 m-t-23 p-b-100">
       <div className="container " style={{ marginTop: "100px" }}>
@@ -38,7 +64,7 @@ const Product = () => {
           <div className="flex-w flex-l-m filter-tope-group m-tb-10">
             <button
               className={`stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 ${
-                caterory ? "" : "how-active1 "
+                categoryId ? "" : "how-active1 "
               }`}
               onClick={() => navigate("/product")}
             >
@@ -46,10 +72,10 @@ const Product = () => {
             </button>
             {category &&
               category.data.map((item, index) => (
-                <Link to={`/product/category/${item.id}`} key={index}>
+                <Link to={`/product?category_id=${item.id}`} key={index}>
                   <button
                     className={`stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 ${
-                      caterory == item.id && "how-active1"
+                      categoryId == item.id && "how-active1"
                     }`}
                   >
                     {item.name}
@@ -100,22 +126,21 @@ const Product = () => {
                     </a>
                   </li>
                   <li className="p-b-6">
-                    <a
-                      className="filter-link stext-106 trans-04 filter-link-active"
-                      href="#"
+                    <Link
+                      className="filter-link stext-106 trans-04"
+                      to="?sort_price=1"
                     >
-                      Newness
-                    </a>
-                  </li>
-                  <li className="p-b-6">
-                    <a className="filter-link stext-106 trans-04" href="#">
                       Price: Low to High
-                    </a>
+                    </Link>
                   </li>
+
                   <li className="p-b-6">
-                    <a className="filter-link stext-106 trans-04" href="#">
+                    <Link
+                      className="filter-link stext-106 trans-04"
+                      to="?sort_price"
+                    >
                       Price: High to Low
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -131,158 +156,62 @@ const Product = () => {
                     </a>
                   </li>
                   <li className="p-b-6">
-                    <a className="filter-link stext-106 trans-04" href="#">
-                      $0.00 - $50.00
-                    </a>
+                    <Link
+                      className="filter-link stext-106 trans-04"
+                      to="/product?price=10000-200000"
+                    >
+                      10.000 đ - 200.000 đ
+                    </Link>
                   </li>
                   <li className="p-b-6">
-                    <a className="filter-link stext-106 trans-04" href="#">
-                      $50.00 - $100.00
-                    </a>
+                    <Link
+                      className="filter-link stext-106 trans-04"
+                      to="/product?price=100.000-200.000"
+                    >
+                      100.000 đ - 200.000 đ
+                    </Link>
                   </li>
                   <li className="p-b-6">
-                    <a className="filter-link stext-106 trans-04" href="#">
-                      $100.00 - $150.00
-                    </a>
+                    <Link
+                      className="filter-link stext-106 trans-04"
+                      to="/product?price=200.000-300.000"
+                    >
+                      200.000 đ - 300.000 đ
+                    </Link>
                   </li>
                   <li className="p-b-6">
-                    <a className="filter-link stext-106 trans-04" href="#">
-                      $150.00 - $200.00
-                    </a>
+                    <Link
+                      className="filter-link stext-106 trans-04"
+                      to="/product?price=300000-400000"
+                    >
+                      300.000 đ - 400.000 đ
+                    </Link>
                   </li>
+
                   <li className="p-b-6">
-                    <a className="filter-link stext-106 trans-04" href="#">
-                      $200.00+
-                    </a>
+                    <Link
+                      className="filter-link stext-106 trans-04"
+                      to="/product?price=400000-500000"
+                    >
+                      400.000 đ - 500.000 đ
+                    </Link>
+                  </li>
+
+                  <li className="p-b-6">
+                    <Link
+                      className="filter-link stext-106 trans-04"
+                      to="/product?price=500000-999999999"
+                    >
+                      500.000 đ +
+                    </Link>
                   </li>
                 </ul>
-              </div>
-              <div className="filter-col3 p-r-15 p-b-27">
-                <div className="mtext-102 cl2 p-b-15">Color</div>
-                <ul>
-                  <li className="p-b-6">
-                    <span
-                      className="fs-15 lh-12 m-r-6"
-                      style={{
-                        color: "#222",
-                      }}
-                    >
-                      <i className="zmdi zmdi-circle" />
-                    </span>
-                    <a className="filter-link stext-106 trans-04" href="#">
-                      Black
-                    </a>
-                  </li>
-                  <li className="p-b-6">
-                    <span
-                      className="fs-15 lh-12 m-r-6"
-                      style={{
-                        color: "#4272d7",
-                      }}
-                    >
-                      <i className="zmdi zmdi-circle" />
-                    </span>
-                    <a
-                      className="filter-link stext-106 trans-04 filter-link-active"
-                      href="#"
-                    >
-                      Blue
-                    </a>
-                  </li>
-                  <li className="p-b-6">
-                    <span
-                      className="fs-15 lh-12 m-r-6"
-                      style={{
-                        color: "#b3b3b3",
-                      }}
-                    >
-                      <i className="zmdi zmdi-circle" />
-                    </span>
-                    <a className="filter-link stext-106 trans-04" href="#">
-                      Grey
-                    </a>
-                  </li>
-                  <li className="p-b-6">
-                    <span
-                      className="fs-15 lh-12 m-r-6"
-                      style={{
-                        color: "#00ad5f",
-                      }}
-                    >
-                      <i className="zmdi zmdi-circle" />
-                    </span>
-                    <a className="filter-link stext-106 trans-04" href="#">
-                      Green
-                    </a>
-                  </li>
-                  <li className="p-b-6">
-                    <span
-                      className="fs-15 lh-12 m-r-6"
-                      style={{
-                        color: "#fa4251",
-                      }}
-                    >
-                      <i className="zmdi zmdi-circle" />
-                    </span>
-                    <a className="filter-link stext-106 trans-04" href="#">
-                      Red
-                    </a>
-                  </li>
-                  <li className="p-b-6">
-                    <span
-                      className="fs-15 lh-12 m-r-6"
-                      style={{
-                        color: "#aaa",
-                      }}
-                    >
-                      <i className="zmdi zmdi-circle-o" />
-                    </span>
-                    <a className="filter-link stext-106 trans-04" href="#">
-                      White
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div className="filter-col4 p-b-27">
-                <div className="mtext-102 cl2 p-b-15">Tags</div>
-                <div className="flex-w p-t-4 m-r--5">
-                  <a
-                    className="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5"
-                    href="#"
-                  >
-                    Fashion
-                  </a>
-                  <a
-                    className="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5"
-                    href="#"
-                  >
-                    Lifestyle
-                  </a>
-                  <a
-                    className="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5"
-                    href="#"
-                  >
-                    Denim
-                  </a>
-                  <a
-                    className="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5"
-                    href="#"
-                  >
-                    Streetstyle
-                  </a>
-                  <a
-                    className="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5"
-                    href="#"
-                  >
-                    Crafts
-                  </a>
-                </div>
               </div>
             </div>
           </div>
         </div>
         <div className="row isotope-grid">
-          {data ? (
+          {data.data.length > 0 ? (
             data.data.map((item, index) => (
               <div
                 className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women"

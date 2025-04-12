@@ -1,15 +1,26 @@
 import { useDeleteProduct, useProduct } from "../../../Hook/useProduct.jsx";
-import { Button, Image, Modal, Pagination, Spin, Table } from "antd";
+import { Image, Modal, Pagination, Spin } from "antd";
 import { FormatDate, FormatDateTime, FormatPrice } from "../../../Format.jsx";
-import { Link, useParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { useState } from "react";
 import Emptys from "../../Ui/Emty.jsx";
-import { useProductVariants } from "../../../Hook/useDetailProduct.jsx";
 const Products = () => {
   const [id, setId] = useState("");
-  const { pages } = useParams();
+  const [sorttype, setSorttype] = useState(1);
   const [pageProduct, setPageProduct] = useState(1);
-  const { isProducts, products } = useProduct(pageProduct);
+  const [searchParam] = useSearchParams();
+  const navigate = useNavigate();
+  const search = searchParam.get("search");
+  const sort = searchParam.get("sort");
+  const { isProducts, products } = useProduct(pageProduct, {
+    sort,
+    search,
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idDelete, setIdDelete] = useState("");
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
@@ -17,10 +28,6 @@ const Products = () => {
     // setOpen(false);
     setId("");
   });
-
-  const deleteProduct = () => {
-    mutate(id);
-  };
   const showModal = (id) => {
     setIdDelete(id);
     setIsModalOpen(true);
@@ -28,18 +35,35 @@ const Products = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  const handleCancelAdd = () => {
-    setIsModalOpenAdd(false);
-  };
   const handleOk = () => {
     mutate(idDelete);
     setIsModalOpen(false);
   };
   const onShowSizeChange = (current, pageSize) => {
-    console.log(current, pageSize);
     setPageProduct(current);
   };
-  console.log(products);
+  const handleSearch = (e) => {
+    if (e.key === "Enter") {
+      const value = e.target.value.trim();
+      const updateValue = new URLSearchParams(searchParam.toString());
+      updateValue.set("search", value);
+      navigate(`?${updateValue.toString()}`);
+    }
+  };
+  const handleSort = () => {
+    const updatedParams = new URLSearchParams(searchParam.toString());
+    updatedParams.delete("sort");
+    if (sorttype === 1) {
+      setSorttype(2);
+      updatedParams.set("sort", "1");
+    } else {
+      setSorttype(1);
+      updatedParams.set("sort_price", "");
+    }
+
+    navigate(`?${updatedParams.toString()}`);
+  };
+
   if (isProducts) {
     return (
       <Spin
@@ -55,7 +79,7 @@ const Products = () => {
           <div className="card" id="orderList">
             <div className="card-header border-0 bg-none">
               <div className="row align-items-center gy-3">
-                <div className="col-sm">
+                <div className="col-sm pl-2">
                   <form>
                     <div className="row g-3">
                       <div className="col-xxl-5 col-sm-5">
@@ -64,6 +88,7 @@ const Products = () => {
                             type="text"
                             className="form-control search"
                             placeholder="Search for product ..."
+                            onKeyDown={(e) => handleSearch(e)}
                           />
                           <i className="ri-search-line search-icon" />
                         </div>
@@ -100,16 +125,17 @@ const Products = () => {
                     className="table table-nowrap align-middle"
                     id="orderTable"
                   >
-                    <thead className="text-muted table-light">
-                      <tr className="text-uppercase">
-                        <th data-sort="id">#</th>
-
-                        <th data-sort="customer_name">Name</th>
-                        <th data-sort="date">Product Date</th>
-                        <th data-sort="amount">Amount</th>
-                        <th data-sort="payment">Image</th>
-                        <th data-sort="status">Status</th>
-                        <th data-sort="city">Action</th>
+                    <thead className="text-muted table-light bg-white">
+                      <tr className="text-uppercase ">
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Product Date</th>
+                        <th className="sort" onClick={() => handleSort()}>
+                          Price
+                        </th>
+                        <th>Image</th>
+                        <th>Status</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody className="list form-check-all">
@@ -120,7 +146,7 @@ const Products = () => {
                           </td>
                           <td className="customer_name">
                             <Link
-                              to={`/admin/detailproduct/${item.id}`}
+                              to={`/admin/product_detail/${item.id}`}
                               className="fw-medium "
                             >
                               {item.name.length > 30
@@ -133,7 +159,11 @@ const Products = () => {
                             {<FormatDate date={item.created_at} />}
                           </td>
                           <td className="amount">
-                            {<FormatPrice price={item.variants_min_price_sale} />}
+                            {
+                              <FormatPrice
+                                price={item.variants_min_price_sale}
+                              />
+                            }
                           </td>
                           <td>
                             <Image
@@ -176,10 +206,10 @@ const Products = () => {
                               </li>
                               <li className="list-inline-item">
                                 <div
-                                  class="text-danger d-inline-block remove-item-btn"
+                                  className="text-danger d-inline-block remove-item-btn"
                                   onClick={() => showModal(item.id)}
                                 >
-                                  <i class="ri-delete-bin-5-fill fs-16"></i>
+                                  <i className="ri-delete-bin-5-fill fs-16"></i>
                                 </div>
                               </li>
                             </ul>
@@ -430,7 +460,7 @@ const Products = () => {
                           >
                             Add Order
                           </button>
-                          {/* <button type="button" class="btn btn-success" id="edit-btn">Update</button> */}
+                          {/* <button type="button" className="btn btn-success" id="edit-btn">Update</button> */}
                         </div>
                       </div>
                     </form>

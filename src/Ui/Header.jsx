@@ -14,19 +14,24 @@ const Header = () => {
   // const { data } = useCart();
   const { cartItem } = useCartItem();
   const quantity = cartItem?.map((a) => a.quantity);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const sum = quantity?.reduce((acc, curr) => acc + curr, 0);
-    const { mutate } = useMutation(logout, {
-      onSuccess: () => {
-        message.success("Đăng xuất thành công");
-        localStorage.removeItem("auth_token");
-        navigate('signin')
-        setShow(false);
-      },
-      onError: () => {
-        message.error("Đăng xuất thất bại");
-      },
-    });
+  const { mutate } = useMutation(logout, {
+    onSuccess: () => {
+      message.success("Đăng xuất thành công");
+      localStorage.removeItem("auth_token");
+      navigate("signin");
+      setShow(false);
+    },
+    onError: () => {
+      message.error("Đăng xuất thất bại");
+    },
+  });
+  const onChangeSearch = (e) => {
+    if (e.key === "Enter") {
+      navigate(`/product?search=${e.target.value}`);
+    }
+  };
   return (
     <>
       <header>
@@ -80,10 +85,44 @@ const Header = () => {
                   </li>
                 </ul>
               </div>
-              <div className="wrap-icon-header flex-w flex-r-m items-center">
-                <div className="icon-header-item text-white hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-                  <i className="zmdi zmdi-search"></i>
-                </div>
+              <div className="wrap-icon-header flex-w flex-r-m items-center gap-2">
+                <>
+                  <div className="search">
+                    <input
+                      type="text"
+                      name="text"
+                      className="search-input"
+                      required
+                      placeholder="Type to search..."
+                      onKeyDown={(e) => onChangeSearch(e)}
+                    />
+                    <div className="icon">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="ionicon"
+                        viewBox="0 0 512 512"
+                      >
+                        <title>Search</title>
+                        <path
+                          d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeMiterlimit="10"
+                          strokeWidth="32"
+                        />
+                        <path
+                          fill="none"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeMiterlimit="10"
+                          strokeWidth="32"
+                          d="M338.29 338.29L448 448"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </>
+
                 {user ? (
                   <>
                     <NavLink to="/cart">

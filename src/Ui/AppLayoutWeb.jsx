@@ -9,6 +9,7 @@ const AppLayout = () => {
   return (
     <>
       <Header />
+      
       <Outlet />
       <Footer />
       <FloatButton.BackTop />

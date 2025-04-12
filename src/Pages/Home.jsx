@@ -6,6 +6,7 @@ import { FormatPrice } from "../Format";
 import { useProductVariant } from "../Hook/useDetailProduct";
 import { motion } from "framer-motion";
 import { useBanners } from "../Hook/useBanner";
+import ChatApp from "../Ui/Chatbot";
 const Home = () => {
   const slide = [
     {
@@ -190,7 +191,7 @@ const Home = () => {
         </div>
       </div>
 
-      <section className="bg0 p-t-23 p-b-140">
+      <section className="bg0 p-t-23 pb-10">
         <div className="container">
           <div className="p-b-10">
             <h3 className="ltext-103 cl5">Product Overview</h3>
@@ -224,7 +225,11 @@ const Home = () => {
                             {item.name}
                           </Link>
                           <span className="stext-107 cl3">
-                            {<FormatPrice price={item.variants_min_price_sale} />}
+                            {
+                              <FormatPrice
+                                price={item.variants_min_price_sale}
+                              />
+                            }
                           </span>
                         </div>
                       </div>
@@ -237,6 +242,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+      {/* <ChatApp/> */}
     </>
   );
 };

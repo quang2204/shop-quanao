@@ -32,11 +32,9 @@ import Detail_Product from "../Admin/Pages/Products/Detail.jsx";
 import Customers from "../Admin/Pages/User/Customers.jsx";
 import TwoStep from "../Admin/Pages/User/TwoStep.jsx";
 
-
 import Order_Detail from "../Admin/Pages/Orders/Order_Detail.jsx";
 import Profile from "../Admin/Pages/Profile.jsx";
 import Login from "../Admin/Pages/Login.jsx";
-import ResetPassword from "../Admin/Pages/Reset.jsx";
 import SignIn from "../Admin/Pages/SignIn.jsx";
 import Orders from "../Admin/Pages/Orders/Orders.jsx";
 import Categories from "../Admin/Pages/Categories/Categories.jsx";
@@ -47,6 +45,9 @@ import FullScreenButton from "../Admin/Ui/FullScreen.jsx";
 import Banner from "../Admin/Pages/Banners/Banners.jsx";
 import Sizes from "../Admin/Pages/Sizes/Sizes.jsx";
 import UpdateProduct from "../Admin/Pages/Products/UpdateProduct.jsx";
+import Email_Password from "../Pages/Email_Password.jsx";
+import ConfirmResetEmail from "../Pages/ConfirmResetEmail.jsx";
+import ResetPassword from "../Pages/ResetPassword.jsx";
 
 const Router = () => {
   ScrollToTop();
@@ -72,7 +73,11 @@ const Router = () => {
         <Route path="order" element={<Order />} />
         <Route path="order/:status" element={<Order />} />
         <Route path="portfolio" element={<Portfolio />} />
+        <Route path="emailpassword" element={<Email_Password />} />
+        <Route path="confirmemail" element={<ConfirmResetEmail />} />
+        <Route path="resetmemail" element={<ResetPassword />} />
         <Route path="verify/password" element={<UpdatePassWord />} />
+        <Route path="twostep" element={<TwoStep />} />
       </Route>
 
       {/* Admin Routes */}
@@ -102,7 +107,6 @@ const Router = () => {
         <Route path="order_detail/:id" element={<Order_Detail />} />
         <Route path="profile" element={<Profile />} />
         <Route path="login" element={<Login />} />
-        <Route path="reset" element={<ResetPassword />} />
         <Route path="colors" element={<ColorList />} />
         <Route path="vouchers" element={<VoucherList />} />
         <Route path="fullscreen" element={<FullScreenButton />} />
@@ -110,7 +114,6 @@ const Router = () => {
       </Route>
 
       {/* Other Routes */}
-      <Route path="twostep" element={<TwoStep />} />
       <Route path="logout" element={<Logout />} />
       <Route path="*" element={<Error />} />
     </Routes>

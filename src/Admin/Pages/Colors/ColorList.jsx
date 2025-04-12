@@ -184,10 +184,10 @@ const Color = () => {
                             </li>
                             <li className="list-inline-item">
                               <div
-                                class="text-danger d-inline-block remove-item-btn"
+                                className="text-danger d-inline-block remove-item-btn"
                                 onClick={() => showModal(item.id)}
                               >
-                                <i class="ri-delete-bin-5-fill fs-16"></i>
+                                <i className="ri-delete-bin-5-fill fs-16"></i>
                               </div>
                             </li>
                           </ul>
@@ -292,7 +292,6 @@ const Color = () => {
                 <div className="text-red-500 mb-1">
                   {errors.name && "Please enter a customer name."}
                 </div>
-
               </div>
             </form>
           </div>

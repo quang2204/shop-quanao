@@ -1,8 +1,15 @@
 import { useMutation } from "react-query";
 import Axios from "./Axios";
 import useAuth from "../Hook/useAuth";
-export const getProducts = async (page) => {
-  const res = await Axios.get(`api/admin/products?page=${page}`);
+export const getProducts = async (page, filters = {}) => {
+  const params = new URLSearchParams();
+  params.append("page", page);
+  // Add filters if they exist
+  if (filters.price) params.append("price", filters.price);
+  if (filters.category_id) params.append("category_id", filters.category_id);
+  if (filters.sort) params.append("sort_price", filters.sort);
+  if (filters.search) params.append("search", filters.search);
+  const res = await Axios.get(`api/admin/products?${params.toString()}`);
   return res.data;
 };
 export const getCategory = async (page) => {
@@ -186,7 +193,6 @@ export const addOrder = async (data) => {
   return res.data;
 };
 export const udateStatusOrder = async (id, data) => {
-  console.log(data);
   const res = await Axios.post(`api/admin/orders/status/${id}`, {
     status: data,
   });
@@ -210,6 +216,7 @@ export const getOrderbystatus = async (status, userId) => {
 };
 export const getOrderByUserid = async (userId) => {
   const res = await Axios.get(`api/admin/orders/byuser/${userId}`);
+  console.log(res);
   return res.data;
 };
 export const updateUser = async (data, id) => {
@@ -297,7 +304,7 @@ export const getBanners = async (page = 1) => {
   return res.data;
 };
 
-//banners 
+//banners
 export const getBannerDetail = async (id) => {
   const res = await Axios.get(`/api/admin/banners/${id}`);
   return res.data;
@@ -330,7 +337,7 @@ export const updateBanner = async (id, formData) => {
 export const deleteBanner = async (id) => {
   await Axios.delete(`/api/admin/banners/${id}`);
 };
-//sizes 
+//sizes
 export const getSize = async () => {
   const res = await Axios.get(`api/admin/sizes`);
   return res.data;
@@ -360,10 +367,36 @@ export const useLoginGoogle = () => {
   return { loginWithGoogle };
 };
 export const orderMomo = async (data) => {
-  const res = await Axios.post(`api/momo/create-payment`,data);
+  const res = await Axios.post(`api/momo/create-payment`, data);
   return res.data;
 };
-export const orderUpdate=async (id,data)=>{
-  const res = await Axios.put(`api/admin/orders/${id}`,data);
+export const orderUpdate = async (id, data) => {
+  const res = await Axios.put(`api/admin/orders/${id}`, data);
   return res.data;
-}
+};
+export const dashboard = async (startDate, endDate, additionalParams = {}) => {
+  try {
+    const params = new URLSearchParams();
+    if (startDate) params.append("from_date", startDate);
+    if (endDate) params.append("to_date", endDate);
+
+    const res = await Axios.get(`api/admin/dashboard?${params.toString()}`);
+    return res.data;
+  } catch (error) {
+    // Xử lý lỗi tốt hơn
+    console.error("Error fetching dashboard data:", error);
+    throw error; // Ném lỗi để component có thể bắt và xử lý
+  }
+};
+export const emailPassword = async (data) => {
+  const res = await Axios.post("api/forgot", data);
+  return res.data;
+};
+export const verifytoken = async (data) => {
+  const res = await Axios.post("api/verify-token", data);
+  return res.data;
+};
+export const resetpassword = async (data) => {
+  const res = await Axios.post("api/reset-password", data);
+  return res.data;
+};

@@ -80,6 +80,20 @@ const Bill = () => {
                   {item.product_variant.product.name.slice(0, 30) + "..."} X{" "}
                   {item.quantity}
                   <br />
+                  <div className="flex gap-2">
+                    <div>
+                      Color:{" "}
+                      <span className="text-gray-500">
+                        {item.product_variant.color.name}
+                      </span>{" "}
+                    </div>
+                    <div>
+                      Size:{" "}
+                      <span className="text-gray-500">
+                        {item.product_variant.size.name}
+                      </span>{" "}
+                    </div>
+                  </div>
                 </th>
                 <td className="text-right">
                   {

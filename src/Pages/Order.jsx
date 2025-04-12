@@ -1,19 +1,39 @@
 import { Link, useParams } from "react-router-dom";
-import { Spin, Empty } from "antd";
+import { Spin, Empty, message } from "antd";
 import { FormatPrice } from "../Format.jsx";
 import UseOrderByStatus from "../Hook/useOrderByStatus.jsx";
-import { useDetailOrderByUserId } from "../Hook/useOrder.jsx";
-import {UseDetailUser} from "../Hook/useDetailUser.jsx";
+import {
+  useDetailOrderByUserId,
+  useStatusOrder,
+  useStatusOrderCline,
+} from "../Hook/useOrder.jsx";
+import { UseDetailUser } from "../Hook/useDetailUser.jsx";
 
 const Order = () => {
   // const { data: user, isLoading } = useAuth();
   const { data, isLoading } = UseDetailUser();
   const { status } = useParams();
   const { data: order, isLoading: isLoadingOrder } = useDetailOrderByUserId();
-  // console.log(order);
-  const { orderbyStatus, isLoadingOrderbyStatus } = UseOrderByStatus();
+
+  const { isLoading: isLoadingorder, mutate } = useStatusOrderCline(
+    order?.[0]?.order?.user_id
+  );
   // const data = status ? orderbyStatus : order;
   // const isLoading = status ? isLoadingOrderbyStatus : isLoadingOrder;
+  const getOrderStatus = (status) => {
+    const statusMapping = {
+      1: "Chờ xử lý",
+      2: "Đang xử lý",
+      3: "Đang vận chuyển",
+      4: "Đã giao hàng",
+      5: "Hoàn thành",
+      6: "Đã hủy",
+    };
+    return statusMapping[status] || "Trạng thái không xác định";
+  };
+  const handleorderstatus = (id, status) => {
+    mutate({ id: id, data: status });
+  };
   if (isLoading || isLoadingOrder) {
     return (
       <Spin
@@ -25,7 +45,7 @@ const Order = () => {
   return (
     <div className="container m-t-150 p-b-60 d-flex justify-content-between flex-wrap">
       <div>
-      <div className="d-flex  m-b-30  p-b-10" style={{ gap: 15 }}>
+        <div className="d-flex  m-b-30  p-b-10" style={{ gap: 15 }}>
           <img
             src={data?.avatar}
             alt=""
@@ -85,7 +105,7 @@ const Order = () => {
       <div>
         <div
           className={` bor2 px-3 d-flex align-items-center justify-content-between m-b-40
-          ${order.length === 0 && "lg:w-[900px]"}`}
+          ${order?.length === 0 && "lg:w-[900px]"}`}
           style={{
             boxShadow: "-1px 0px 3px 0px #b0b0b0",
             position: "sticky",
@@ -143,7 +163,7 @@ const Order = () => {
               <div>
                 {/* Trạng thái đơn hàng */}
                 <div className="bor12 p-t-20 text-right p-b-20 text-danger text-xl">
-                  {item.status === "1" ? "Đã thanh toán" : "Chờ xác nhận"}
+                  {getOrderStatus(item.order.status)}
                 </div>
                 <Link to={`/bill/${item.order.id}`}>
                   {item?.products?.map((item) => (
@@ -162,8 +182,8 @@ const Order = () => {
                             {item.product_variant.product.name}
                           </h5>
                           <p>
-                            Phân loại hàng: Size:{" "}
-                            {item.product_variant.size.name}, Color:
+                            Phân loại hàng: <br />
+                            Size: {item.product_variant.size.name}, Color:{" "}
                             {item.product_variant.color.name}
                           </p>
                           <strong>x {item.quantity}</strong>
@@ -174,41 +194,79 @@ const Order = () => {
                           style={{ color: "red" }}
                           className="fs-20 m-b-20 m-l-80"
                         >
-                          <FormatPrice price={item.product_variant.price} />
+                          <FormatPrice
+                            price={item.product_variant.price_sale}
+                          />
                         </p>
                       </div>
                     </div>
                   ))}
                 </Link>
                 {/* Tổng tiền */}
+                <div className="d-flex justify-content-end align-items-center mt-4">
+                  <h6 className="text-right  ">Ship:</h6>
+                  <div
+                    className="text-[1.7rem] p-l-10"
+                    style={{ color: "red" }}
+                  >
+                    30.000 đ
+                  </div>
+                </div>
                 <div className="d-flex justify-content-end align-items-center">
                   <h6 className="text-right m-t-30 m-b-30">Thành Tiền:</h6>
-                  <div className="fs-28 p-l-10" style={{ color: "red" }}>
+                  <div
+                    className="text-[1.7rem] p-l-10"
+                    style={{ color: "red" }}
+                  >
                     <FormatPrice price={item.order.total_amount} />
                   </div>
                 </div>
 
                 {/* Nút hành động */}
-                <div className="d-flex justify-content-end items-center gap-3">
+                <div className="d-flex justify-content-end align-items-center gap-3">
+                  {(item.order.status === 1 || item.order.status === 2) && (
+                    <button
+                      className="btn mt-1 m-b-30 hov-btn4"
+                      style={{
+                        backgroundColor: "red",
+                        padding: "7px 10px",
+                        maxWidth: 130,
+                        height: 40,
+                        color: "white",
+                        fontSize: "16px",
+                      }}
+                      type="button"
+                      onClick={() => handleorderstatus(item.order.id, 6)}
+                    >
+                      Hủy đơn hàng
+                    </button>
+                  )}
+
+                  {item.order.status === 4 && (
+                    <button
+                      className="btn mt-1 m-b-30 hov-btn4"
+                      style={{
+                        backgroundColor: "red",
+                        padding: "7px 10px",
+                        maxWidth: 130,
+                        height: 40,
+                        color: "white",
+                        fontSize: "16px",
+                      }}
+                      onClick={() => handleorderstatus(item.order.id, 5)}
+                      type="button"
+                    >
+                      Đã nhận hàng
+                    </button>
+                  )}
+
                   <button
                     className="btn mt-1 m-b-30 hov-btn4"
                     style={{
-                      backgroundColor: "red",
                       padding: "7px 10px",
                       maxWidth: 130,
                       height: 40,
-                      color: "white",
-                    }}
-                    type="button"
-                  >
-                    Hủy đơn hàng
-                  </button>
-                  <button
-                    className="btn mt-1 m-b-30 hov-btn4"
-                    style={{
-                      padding: "7px 10px",
-                      maxWidth: 130,
-                      height: 40,
+                      fontSize: "16px",
                     }}
                     type="button"
                   >

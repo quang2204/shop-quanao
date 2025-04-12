@@ -14,7 +14,7 @@ const Signin = () => {
     email: z
       .string()
       .min(1, "Email is required")
-      .email("Must be a valid email address"),
+      .email("Must be a valid email "),
     password: z
       .string()
       .min(1, "Password is required")
@@ -108,7 +108,7 @@ const Signin = () => {
             <input type="checkbox" />
             <label className="m-t-5">Nhớ mật khẩu </label>
           </div>
-          <Link to={""}>
+          <Link to={"/emailpassword"}>
             <span className="span">Quên mật khẩu</span>
           </Link>
         </div>
