@@ -1,11 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
-import { getColors, deleteColor, forceDeleteColor, getColorDetail, updateColor, createColor } from "../Apis/Api";
+import {
+  getColors,
+  deleteColor,
+  forceDeleteColor,
+  getColorDetail,
+  updateColor,
+  createColor,
+} from "../Apis/Api";
 
 export const useColors = (page) => {
   const { data: colors, isLoading } = useQuery({
-    queryKey: ["colors"],
+    queryKey: ["colors", page],
     queryFn: () => getColors(page || 1),
   });
   return { colors, isLoading };
@@ -49,7 +56,7 @@ export const useUpdateColor = () => {
       message.success("Cập nhật màu sắc thành công");
     },
     onError: (error) => {
-      console.error('Error updating color:', error); // Thêm dòng này để kiểm tra lỗi
+      console.error("Error updating color:", error); // Thêm dòng này để kiểm tra lỗi
       message.error("Cập nhật màu sắc thất bại");
     },
   });

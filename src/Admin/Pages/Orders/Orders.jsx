@@ -53,11 +53,8 @@ const Orders = () => {
     return statusMapping[status] || "Trạng thái không xác định";
   };
   const onShowSizeChange = (current, pageSize) => {
-    // setPageProduct(current);
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("page", current);
-    // searchParams.set("limit", pageSize);
-
     navigate(`${location.pathname}?${searchParams.toString()}`);
   };
   const getOrderStatusColor = (status) => {

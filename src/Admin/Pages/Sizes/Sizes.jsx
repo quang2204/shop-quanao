@@ -1,24 +1,36 @@
 import React, { useState } from "react";
-import { useSize, useCreateSize, useUpdateSize, useDeleteSize } from "../../../Hook/useSize";
-import { Link } from "react-router-dom";
+import {
+  useSize,
+  useCreateSize,
+  useUpdateSize,
+  useDeleteSize,
+} from "../../../Hook/useSize";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Modal, Spin, Pagination, message } from "antd";
 import { useForm } from "react-hook-form";
 
 const Sizes = () => {
-  const [currentPage, setCurrentPage] = useState(1); // Quản lý trang hiện tại
-  const { size, isSize } = useSize(currentPage); // Lấy dữ liệu size từ hook
+  const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const page = parseInt(searchParams.get("page")) || 1; // Quản lý trang hiện tại
+  const { size, isSize } = useSize(page); // Lấy dữ liệu size từ hook
   const { mutate: createSize } = useCreateSize();
   const { mutate: updateSize } = useUpdateSize();
   const { mutate: deleteSize } = useDeleteSize();
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
   const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
-    const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
+  const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
   const [currentSizeDetail, setCurrentSizeDetail] = useState(null);
   const [currentSize, setCurrentSize] = useState(null);
   const [idDelete, setIdDelete] = useState("");
-
+  const onShowSizeChange = (current, pageSize) => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", current);
+    navigate(`${location.pathname}?${searchParams.toString()}`);
+  };
   const {
     register,
     handleSubmit,
@@ -122,7 +134,10 @@ const Sizes = () => {
           </div>
           <div className="card-body pt-0">
             <div className="table-responsive table-card mb-1">
-              <table className="table table-nowrap align-middle" id="orderTable">
+              <table
+                className="table table-nowrap align-middle"
+                id="orderTable"
+              >
                 <thead className="text-muted table-light">
                   <tr className="text-uppercase">
                     <th>#</th>
@@ -168,37 +183,42 @@ const Sizes = () => {
                 </tbody>
               </table>
               <div className="noresult" style={{ display: "none" }}>
-                  <div className="text-center">
-                    <lord-icon
-                      src="https://cdn.lordicon.com/msoeawqm.json"
-                      trigger="loop"
-                      colors="primary:#405189,secondary:#0ab39c"
-                      style={{ width: 75, height: 75 }}
-                    />
-                    <h5 className="mt-2">Sorry! No Result Found</h5>
-                    <p className="text-muted">
-                      We've searched more than 150+ Orders We did not find any
-                      orders for you search.
-                    </p>
-                  </div>
+                <div className="text-center">
+                  <lord-icon
+                    src="https://cdn.lordicon.com/msoeawqm.json"
+                    trigger="loop"
+                    colors="primary:#405189,secondary:#0ab39c"
+                    style={{ width: 75, height: 75 }}
+                  />
+                  <h5 className="mt-2">Sorry! No Result Found</h5>
+                  <p className="text-muted">
+                    We've searched more than 150+ Orders We did not find any
+                    orders for you search.
+                  </p>
                 </div>
+              </div>
             </div>
           </div>
-          <div className="d-flex justify-content-end">
-                
-                <Pagination
-                  current={currentPage}
-                  onChange={(page) => setCurrentPage(page)} // Cập nhật trang hiện tại
-                  total={size?.total || 0} // Tổng số bản ghi
-                  pageSize={size?.per_page || 10} // Số bản ghi trên mỗi trang
-                  className="mt-3"
-                />
-              </div>
+          <div className="d-flex justify-center mb-4">
+            <Pagination
+              showSizeChanger
+              onChange={onShowSizeChange}
+              current={size.current_page}
+              total={size.total}
+              pageSize={size.per_page}
+              align="center"
+            />
+          </div>
         </div>
       </div>
 
       {/* Modal Delete */}
-      <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel} title="Delete Size">
+      <Modal
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        title="Delete Size"
+      >
         <h4>Are you sure?</h4>
         <p>Do you want to delete this size permanently?</p>
       </Modal>

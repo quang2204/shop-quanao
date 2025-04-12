@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Modal, Pagination, Spin, message } from "antd";
 import { useForm } from "react-hook-form";
 import {
@@ -10,9 +10,11 @@ import {
 } from "../../../Hook/useColor";
 
 const Color = () => {
-  const [pageProduct, setPageProduct] = useState(1);
-
-  const { colors, isLoading } = useColors(pageProduct);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const page = parseInt(searchParams.get("page")) || 1;
+  const { colors, isLoading } = useColors(page);
   const { mutate: updateColor } = useUpdateColor();
   const { mutate: addColor } = useAddColor();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,7 +24,6 @@ const Color = () => {
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
   const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
   const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
-
   const showModal = (id) => {
     setIdDelete(id);
     setIsModalOpen(true);
@@ -95,7 +96,9 @@ const Color = () => {
     );
   }
   const onShowSizeChange = (current, pageSize) => {
-    setPageProduct(current);
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", current);
+    navigate(`${location.pathname}?${searchParams.toString()}`);
   };
   return (
     <div className="row mx-2">
@@ -212,17 +215,6 @@ const Color = () => {
                   </div>
                 </div>
               </div>
-              {/* <div className="d-flex justify-content-end">
-                <div className="pagination-wrap hstack gap-2">
-                  <a className="page-item pagination-prev disabled" href="#">
-                    Previous
-                  </a>
-                  <ul className="pagination listjs-pagination mb-0" />
-                  <a className="page-item pagination-next" href="#">
-                    Next
-                  </a>
-                </div>
-              </div> */}
               <Pagination
                 showSizeChanger
                 onChange={onShowSizeChange}

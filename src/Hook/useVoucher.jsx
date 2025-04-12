@@ -1,16 +1,23 @@
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
-import { getVouchers, deleteVoucher, forceDeleteVoucher, getVoucherDetail, updateVoucher, createVoucher } from "../Apis/Api";
+import {
+  getVouchers,
+  deleteVoucher,
+  forceDeleteVoucher,
+  getVoucherDetail,
+  updateVoucher,
+  createVoucher,
+} from "../Apis/Api";
 
 export const useVouchers = (page) => {
-    const { data: vouchers, isLoading } = useQuery({
-      queryKey: ["vouchers"],
-      queryFn: () => getVouchers(page || 1),
-    });
-  
-    return { vouchers, isLoading };
-  };
+  const { data: vouchers, isLoading } = useQuery({
+    queryKey: ["vouchers", page],
+    queryFn: () => getVouchers(page || 1),
+  });
+
+  return { vouchers, isLoading };
+};
 
 export const useVoucherDetail = (id) => {
   const { data: voucher, isLoading } = useQuery({

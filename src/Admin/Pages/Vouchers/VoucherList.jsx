@@ -8,9 +8,13 @@ import {
   useUpdateVoucher,
 } from "../../../Hook/useVoucher";
 import { FormatDate, FormatPrice } from "../../../Format";
+import { useLocation, useNavigate } from "react-router-dom";
 const VoucherList = () => {
-  const [pageProduct, setPageProduct] = useState(1);
-  const { vouchers, isLoading } = useVouchers();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const page = parseInt(searchParams.get("page")) || 1;
+  const { vouchers, isLoading } = useVouchers(page);
   const { mutate: addVoucher } = useAddVoucher();
   const { mutate: deleteVoucher } = useDeleteVoucher();
   const { mutate: updateVoucher } = useUpdateVoucher();
@@ -89,7 +93,9 @@ const VoucherList = () => {
     setIsModalOpenAdd(true);
   };
   const onShowSizeChange = (current, pageSize) => {
-    setPageProduct(current);
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", current);
+    navigate(`${location.pathname}?${searchParams.toString()}`);
   };
   const {
     register,
