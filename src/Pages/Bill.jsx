@@ -1,19 +1,34 @@
-import { Link } from "react-router-dom";
-import {UseDetailOrder} from "../Hook/useOrder.jsx";
+import { Link, useParams } from "react-router-dom";
+import { UseDetailOrder } from "../Hook/useOrder.jsx";
 import { Spin } from "antd";
-import { FormatPrice } from "../Format.jsx";
+import { FormatDate, FormatDateTime, FormatPrice } from "../Format.jsx";
 
 const Bill = () => {
-  const { data, isLoading } = UseDetailOrder();
-  if (isLoading) {
+  const { id } = useParams();
+
+  const { data, isLoading } = UseDetailOrder(id);
+  if (isLoading || !data || (Array.isArray(data) && data.length === 0)) {
     return (
       <Spin
         size="large"
-        className="h-[50vh] mt-[100px] flex items-center justify-center w-full "
+        className="h-[50vh] mt-[100px] flex items-center justify-center w-full"
       />
     );
   }
+  const getOrderStatus = (status) => {
+    const statusMapping = {
+      1: "Chờ xử lý",
+      2: "Đang xử lý",
+      3: "Đang vận chuyển",
+      4: "Đã giao hàng",
+      5: "Hoàn thành",
+      6: "Đã hủy",
+      7: "Trả hàng",
+      8: "Hoàn tiền",
+    };
 
+    return statusMapping[status] || "Trạng thái không xác định";
+  };
   return (
     <div
       className="m-t-140 container d-flex justify-content-around rows px-3"
@@ -33,22 +48,27 @@ const Bill = () => {
             </tr>
           </thead>
           <tbody>
-            {data?.products.map((item) => (
-              <tr key={item._id}>
+            {data?.map((item) => (
+              <tr key={item.id}>
                 <th scope="row">
-                  {item.productId.name.slice(0, 30) + "..."} X {item.quantity}
+                  {item.product_variant.product.name.slice(0, 30) + "..."} X{" "}
+                  {item.quantity}
                   <br />
                 </th>
                 <td className="text-right">
-                  {<FormatPrice price={item.productId.price * item.quantity} />}
+                  {
+                    <FormatPrice
+                      price={item.product_variant.price * item.quantity}
+                    />
+                  }
                 </td>
               </tr>
             ))}
-            {data?.voucher?.discount && (
+            {data[0]?.order?.voucher?.discount && (
               <tr>
                 <th scope="row">Voucher :</th>
                 <td className="text-right">
-                  - {<FormatPrice price={data?.voucher?.discount} />}
+                  - {<FormatPrice price={data[0].order.voucher.discount} />}
                 </td>
               </tr>
             )}
@@ -59,13 +79,17 @@ const Bill = () => {
             </tr>
             <tr>
               <th scope="row">Phương thức thanh toán : </th>
-              <td className="text-right">{data?.payment}</td>
+              {data[0]?.order.payment_method && (
+                <td className="text-right">{data[0].order.payment_method}</td>
+              )}
             </tr>
             <tr>
               <th scope="row">Tổng cộng : </th>
-              <td className="text-right">
-                <FormatPrice price={data.totalPrice} />
-              </td>
+              {data[0]?.order?.total_amount && (
+                <td className="text-right">
+                  <FormatPrice price={data[0].order.total_amount} />
+                </td>
+              )}
             </tr>
           </tbody>
         </table>
@@ -75,30 +99,53 @@ const Bill = () => {
           </button>
         </Link>
       </div>
-      <div className="bor4 p-l-40 p-r-110 h-25 ct">
+      <div className="bor4 p-l-40 p-r-110 h-25 ct mb-4">
         <h4 className="m-t-20 m-b-20 text-[1.5rem]">Cảm ơn bạn đã mua hàng</h4>
         <ul className="dh ">
           <li>
-            Mã đơn hàng :<strong> DH {data.madh} </strong>
+            Mã đơn hàng :
+            <strong style={{ textTransform: "uppercase" }} className="ml-1">
+              {data[0]?.order.order_code && data[0]?.order.order_code}
+            </strong>
           </li>
           <li>
             Ngày :
-            <strong>
-              {" "}
-              {new Date(data.orderDate).toLocaleDateString("vi-VN")}{" "}
+            <strong className="ml-1">
+              {data[0]?.order.created_at && (
+                <span>
+                  <span className="mr-1">
+                    <FormatDate date={data[0]?.order.created_at} />
+                  </span>
+                  <FormatDateTime dateString={data[0]?.order.created_at} />
+                </span>
+              )}
             </strong>
           </li>
           <li>
             Tổng cộng :
-            <strong>
-              <FormatPrice price={data.totalPrice} />
+            <strong className="ml-1">
+              {data[0]?.order.total_amount && (
+                <FormatPrice price={data[0].order.total_amount} />
+              )}
             </strong>
           </li>
           <li>
-            Phương thức thanh toán : <strong>{data?.payment} </strong>
+            Phương thức thanh toán :{" "}
+            <strong style={{ textTransform: "uppercase" }}>
+              {data[0]?.order.payment_method && data[0]?.order.payment_method}
+            </strong>
           </li>
           <li>
-            Trạng thái đơn hàng : <strong>{data?.status}</strong>
+            Trạng thái đơn hàng :{" "}
+            <strong style={{ textTransform: "uppercase" }}>
+              {data[0]?.order.status && getOrderStatus(data[0]?.order.status)}
+            </strong>
+          </li>
+          <li>
+            Trạng thái thanh toán :
+            <strong style={{ textTransform: "uppercase" }} className="ml-1">
+              {data[0]?.order.payment_status && data[0]?.order.payment_status}
+            </strong>
           </li>
         </ul>
       </div>

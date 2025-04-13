@@ -1,20 +1,19 @@
-
-import { useMutation, useQueryClient } from 'react-query';
-import { updateUser } from '../Apis/Api';
-import { message } from 'antd';
+import { useMutation, useQueryClient } from "react-query";
+import { updateUser } from "../Apis/Api";
+import { message } from "antd";
+import useAuth from "./useAuth";
 
 const useUpdateUser = () => {
-    const queryClient = useQueryClient();
-    const users = JSON.parse(localStorage.getItem("user") || "null");
-
-    const { mutate, isLoading: isLoadingUser } = useMutation({
-        mutationFn: (data) => updateUser(data, users._id),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["user", users._id] });
-            message.success("Thành công");
-        }
-    })
-    return { mutate, isLoadingUser };
+  const queryClient = useQueryClient();
+  const { data: user } = useAuth();
+  const { mutate, isLoading: isLoadingUser } = useMutation({
+    mutationFn: (data) => updateUser(data, user.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user", user.id] });
+      message.success("Thành công");
+    },
+  });
+  return { mutate, isLoadingUser };
 };
 
 export default useUpdateUser;

@@ -6,7 +6,34 @@ import { FormatDate, FormatDateTime, FormatPrice } from "../../../Format";
 
 const Orders = () => {
   const { data, isLoading } = useOrder();
-  console.log(data);
+  const getOrderStatus = (status) => {
+    const statusMapping = {
+      1: "Chờ xử lý",
+      2: "Đang xử lý",
+      3: "Đang vận chuyển",
+      4: "Đã giao hàng",
+      5: "Hoàn thành",
+      6: "Đã hủy",
+      7: "Trả hàng",
+      8: "Hoàn tiền",
+    };
+
+    return statusMapping[status] || "Trạng thái không xác định";
+  };
+  const getOrderStatusColor = (status) => {
+    const statusMapping = {
+      1: "#FFC107",
+      2: "#FF9800",
+      3: "#2196F3",
+      4: "#4CAF50",
+      5: "#2E7D32",
+      6: "#9E9E9E",
+      7: "#9C27B0",
+      8: "#F44336",
+    };
+
+    return statusMapping[status] || "Trạng thái không xác định";
+  };
   if (isLoading) {
     return (
       <Spin
@@ -219,7 +246,7 @@ const Orders = () => {
                       <th className="sort" data-sort="amount">
                         Amount
                       </th>
-                      <th className="sort" data-sort="payment">
+                      <th className="sort text-center" data-sort="payment">
                         Payment Method
                       </th>
                       <th className="sort" data-sort="status">
@@ -231,74 +258,80 @@ const Orders = () => {
                     </tr>
                   </thead>
                   <tbody className="list form-check-all">
-                  {data?.data.map((order) => (
+                    {data?.data.map((order) => (
                       <tr>
-                      <th scope="row">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            name="checkAll"
-                          />
-                        </div>
-                      </th>
-                      <td className="id">
-                        <a
-                          href="apps-ecommerce-order-details.html"
-                          className="fw-medium link-primary"
-                        >
-                         {order.order_code}
-                        </a>
-                      </td>
-                      <td className="customer_name">{order.user_name}</td>
+                        <th scope="row">
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              name="checkAll"
+                            />
+                          </div>
+                        </th>
+                        <td className="id">
+                          <a
+                            href="apps-ecommerce-order-details.html"
+                            className="fw-medium link-primary"
+                          >
+                            {order.order_code}
+                          </a>
+                        </td>
+                        <td className="customer_name">{order.user_name}</td>
 
-                      <td className="date">
-                       {<FormatDate date={order.created_at} />}
-                        <small className="text-muted">{<FormatDateTime dateString={order.created_at}/>}</small>
-                      </td>
-                      <td className="amount">{<FormatPrice price={order.total_amount} />}</td>
-                      <td className="payment text-center">{order.payment_method}</td>
-                      <td className="status">
-                        <span className="badge bg-warning-subtle text-warning text-uppercase">
-                          {order.status}
-                        </span>
-                      </td>
-                      <td>
-                        <ul className="list-inline hstack gap-2 mb-0">
-                          <li
-                            className="list-inline-item"
-                            data-bs-toggle="tooltip"
-                            data-bs-trigger="hover"
-                            data-bs-placement="top"
-                            title="View"
+                        <td className="date">
+                          {<FormatDate date={order.created_at} />}
+                          <small className="text-muted">
+                            {<FormatDateTime dateString={order.created_at} />}
+                          </small>
+                        </td>
+                        <td className="amount">
+                          {<FormatPrice price={order.total_amount} />}
+                        </td>
+                        <td className="payment text-center">
+                          {order.payment_method}
+                        </td>
+                        <td className="status">
+                          <span
+                            className={`badge  uppercase px-2 py-1 rounded`}
+                            style={{
+                              backgroundColor: getOrderStatusColor(
+                                order.status
+                              ),
+                            }}
                           >
-                            <Link
-                              to={`/admin/order_detail/6730c5042009824f08db8eab`}
-                              className="text-primary d-inline-block"
+                            {getOrderStatus(order.status)}
+                          </span>
+                        </td>
+                        <td>
+                          <ul className="list-inline hstack gap-2 mb-0">
+                            <li className="list-inline-item" title="View">
+                              <Link
+                                to={`/admin/order_detail/${order.id}`}
+                                className="text-primary d-inline-block"
+                              >
+                                <i className="ri-eye-fill fs-16" />
+                              </Link>
+                            </li>
+                            <li
+                              className="list-inline-item edit"
+                              data-bs-toggle="tooltip"
+                              data-bs-trigger="hover"
+                              data-bs-placement="top"
+                              title="Edit"
                             >
-                              <i className="ri-eye-fill fs-16" />
-                            </Link>
-                          </li>
-                          <li
-                            className="list-inline-item edit"
-                            data-bs-toggle="tooltip"
-                            data-bs-trigger="hover"
-                            data-bs-placement="top"
-                            title="Edit"
-                          >
-                            <a
-                              href="#showModal"
-                              data-bs-toggle="modal"
-                              className="text-primary d-inline-block edit-item-btn"
-                            >
-                              <i className="ri-pencil-fill fs-16" />
-                            </a>
-                          </li>
-                        </ul>
-                      </td>
-                    </tr>
-                  ))}
-                  
+                              <a
+                                href="#showModal"
+                                data-bs-toggle="modal"
+                                className="text-primary d-inline-block edit-item-btn"
+                              >
+                                <i className="ri-pencil-fill fs-16" />
+                              </a>
+                            </li>
+                          </ul>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
                 <div className="noresult" style={{ display: "none" }}>

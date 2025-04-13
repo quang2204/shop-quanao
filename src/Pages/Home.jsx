@@ -3,6 +3,7 @@ import { useProduct, useProducts } from "../Hook/useProduct";
 import { Empty, Spin } from "antd";
 import { Link } from "react-router-dom";
 import { FormatPrice } from "../Format";
+import { useProductVariant } from "../Hook/useDetailProduct";
 import { motion } from "framer-motion";
 import { useBanners } from "../Hook/useBanner";
 const Home = () => {

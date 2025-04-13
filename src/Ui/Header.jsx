@@ -1,16 +1,32 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useCart, useCartItem } from "../Hook/useCart";
 import { useState } from "react";
 import logo from "../images/icons/logo-02.png";
 import logo1 from "../images/icons/logo-01.png";
 import useQuantity from "../Hook/useQuantity";
+import { useMutation } from "react-query";
+import { logout } from "../Apis/Api";
+import { message } from "antd";
 const Header = () => {
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+  // const user = JSON.parse(localStorage.getItem("auth_token") || "null");
+  const user = localStorage.getItem("auth_token");
   const [show, setShow] = useState(false);
   // const { data } = useCart();
-  const {cartItem} =useCartItem();
-  const quantity = cartItem?.data?.map((a) => a.quantity);
+  const { cartItem } = useCartItem();
+  const quantity = cartItem?.map((a) => a.quantity);
+  const navigate=useNavigate()
   const sum = quantity?.reduce((acc, curr) => acc + curr, 0);
+    const { mutate } = useMutation(logout, {
+      onSuccess: () => {
+        message.success("Đăng xuất thành công");
+        localStorage.removeItem("auth_token");
+        navigate('signin')
+        setShow(false);
+      },
+      onError: () => {
+        message.error("Đăng xuất thất bại");
+      },
+    });
   return (
     <>
       <header>
@@ -265,9 +281,12 @@ const Header = () => {
                 </Link>
               </li>
               <li className="p-b-13">
-                <Link to={""} className="stext-102 cl2 hov-cl1 trans-04">
+                <div
+                  className="stext-102 cl2 hov-cl1 trans-04 cursor-pointer"
+                  onClick={() => mutate()}
+                >
                   Đăng xuất
-                </Link>
+                </div>
               </li>
             </ul>
             <div className="sidebar-gallery w-full p-tb-30">

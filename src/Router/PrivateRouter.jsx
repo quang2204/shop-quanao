@@ -1,9 +1,18 @@
 import { Navigate } from "react-router-dom";
+import useAuth from "../Hook/useAuth";
+import { Spin } from "antd";
 
 const PrivateRouter = (props) => {
-  const user = JSON.parse(localStorage.getItem("user") || "null");
-  console.log(user.role);
-  if (user.role === 0) {
+  const {data,isLoading}=useAuth();
+  if (isLoading) {
+    return (
+      <Spin
+        size="large"
+        className="h-[50vh] mt-[100px] flex items-center justify-center w-full "
+      />
+    );
+  }
+  if (data.role === 0) {
     return <Navigate to="/signin" />;
   }
   return <div>{props.children}</div>;

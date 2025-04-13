@@ -1,22 +1,20 @@
 import { Link, useParams } from "react-router-dom";
-import { useQuery } from "react-query";
-import { getOrders } from "../Apis/Api.jsx";
 import { Spin, Empty } from "antd";
 import { FormatPrice } from "../Format.jsx";
 import UseOrderByStatus from "../Hook/useOrderByStatus.jsx";
+import { useDetailOrderByUserId } from "../Hook/useOrder.jsx";
+import {UseDetailUser} from "../Hook/useDetailUser.jsx";
 
 const Order = () => {
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+  // const { data: user, isLoading } = useAuth();
+  const { data, isLoading } = UseDetailUser();
   const { status } = useParams();
-  const { data: order, isLoading: isLoadingOrder } = useQuery({
-    queryKey: ["order", user._id],
-    queryFn: () => getOrders(user._id),
-    enabled: !!user,
-  });
+  const { data: order, isLoading: isLoadingOrder } = useDetailOrderByUserId();
+  // console.log(order);
   const { orderbyStatus, isLoadingOrderbyStatus } = UseOrderByStatus();
-  const data = status ? orderbyStatus : order;
-  const isLoading = status ? isLoadingOrderbyStatus : isLoadingOrder;
-  if (isLoading) {
+  // const data = status ? orderbyStatus : order;
+  // const isLoading = status ? isLoadingOrderbyStatus : isLoadingOrder;
+  if (isLoading || isLoadingOrder) {
     return (
       <Spin
         size="large"
@@ -24,20 +22,19 @@ const Order = () => {
       />
     );
   }
-
   return (
     <div className="container m-t-150 p-b-60 d-flex justify-content-between flex-wrap">
       <div>
-        <div className="d-flex  m-b-30  p-b-10" style={{ gap: 15 }}>
+      <div className="d-flex  m-b-30  p-b-10" style={{ gap: 15 }}>
           <img
-            src="admin/"
+            src={data?.avatar}
             alt=""
             style={{ maxWidth: 60, height: 60, borderRadius: "50%" }}
           />
           <div className="name">
             <span>
-              <strong>quang </strong>
-              <Link to="/portfolio">
+              <strong>{data?.name} </strong>
+              <Link to="">
                 <p style={{ color: "black" }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +46,8 @@ const Order = () => {
                       d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3
                     19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1
                     481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8
-                    37.4-22.2L421.7 220.3 291.7 90.3z"
+                    37.4-22.2L421.7 220.3
+                    291.7 90.3z"
                     />
                   </svg>
                   Sửa hồ sơ
@@ -86,8 +84,8 @@ const Order = () => {
       </div>
       <div>
         <div
-          className={` bor2 px-3 d-flex align-items-center justify-content-between m-b-40 
-          ${data.length === 0 && "lg:w-[900px]"}`}
+          className={` bor2 px-3 d-flex align-items-center justify-content-between m-b-40
+          ${order.length === 0 && "lg:w-[900px]"}`}
           style={{
             boxShadow: "-1px 0px 3px 0px #b0b0b0",
             position: "sticky",
@@ -136,33 +134,39 @@ const Order = () => {
             Đã hủy{" "}
           </Link>
         </div>
-        {data.length > 0 ? (
-          data.map((item) => (
+        {order.length > 0 ? (
+          order.map((item) => (
             <div
-              className="container how-shadow1 m-b-30 bor2 xl:w-[900px] "
-              key={item._id}
+              className="container how-shadow1 m-b-30 bor2 xl:w-[900px]"
+              key={item.id}
             >
               <div>
-                <div className="bor12 p-t-20  text-right p-b-20 text-danger text-xl">
-                  {item.status}
+                {/* Trạng thái đơn hàng */}
+                <div className="bor12 p-t-20 text-right p-b-20 text-danger text-xl">
+                  {item.status === "1" ? "Đã thanh toán" : "Chờ xác nhận"}
                 </div>
-                <Link to={`/bill/${item._id}`}>
-                  {item.products.map((product) => (
-                    <div className="d-flex justify-content-between align-items-center bor12">
-                      <div className="d-flex p-t-20 " style={{ gap: 20 }}>
+                <Link to={`/bill/${item.order.id}`}>
+                  {item?.products?.map((item) => (
+                    <div
+                      className="d-flex justify-content-between align-items-center bor12"
+                      key={item.id}
+                    >
+                      <div className="d-flex p-t-20" style={{ gap: 20 }}>
                         <img
-                          src={product.productId.imageUrl}
+                          src={item.product_variant.product.img_thumb}
                           style={{ width: 80, height: 80, marginBottom: 10 }}
+                          alt={item.product_variant.product.name}
                         />
                         <div style={{ lineHeight: 2 }}>
                           <h5 style={{ maxWidth: 580 }}>
-                            áo hoodie sweater VOCKOO MWY2410JLC118{" "}
+                            {item.product_variant.product.name}
                           </h5>
                           <p>
-                            Phân loại hàng : Size: S, Color: Black{" "}
-                            <input type="hidden" />
+                            Phân loại hàng: Size:{" "}
+                            {item.product_variant.size.name}, Color:
+                            {item.product_variant.color.name}
                           </p>
-                          <strong>x 1 </strong>
+                          <strong>x {item.quantity}</strong>
                         </div>
                       </div>
                       <div>
@@ -170,22 +174,24 @@ const Order = () => {
                           style={{ color: "red" }}
                           className="fs-20 m-b-20 m-l-80"
                         >
-                          <FormatPrice price={product.productId.price} />
+                          <FormatPrice price={item.product_variant.price} />
                         </p>
                       </div>
                     </div>
                   ))}
                 </Link>
-
+                {/* Tổng tiền */}
                 <div className="d-flex justify-content-end align-items-center">
-                  <h6 className="text-right m-t-30 m-b-30 ">Thành Tiền : </h6>
+                  <h6 className="text-right m-t-30 m-b-30">Thành Tiền:</h6>
                   <div className="fs-28 p-l-10" style={{ color: "red" }}>
-                    <FormatPrice price={item.totalPrice} />
+                    <FormatPrice price={item.order.total_amount} />
                   </div>
                 </div>
+
+                {/* Nút hành động */}
                 <div className="d-flex justify-content-end items-center gap-3">
                   <button
-                    className="btn mt-1  m-b-30 hov-btn4 "
+                    className="btn mt-1 m-b-30 hov-btn4"
                     style={{
                       backgroundColor: "red",
                       padding: "7px 10px",
@@ -193,18 +199,18 @@ const Order = () => {
                       height: 40,
                       color: "white",
                     }}
-                    type="submit"
+                    type="button"
                   >
                     Hủy đơn hàng
                   </button>
                   <button
-                    className="btn mt-1  m-b-30 hov-btn4 "
+                    className="btn mt-1 m-b-30 hov-btn4"
                     style={{
                       padding: "7px 10px",
                       maxWidth: 130,
                       height: 40,
                     }}
-                    type="submit"
+                    type="button"
                   >
                     Mua lại
                   </button>

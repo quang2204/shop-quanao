@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import {useCategory} from "../Hook/useCategory.jsx";
+import { useCategory } from "../Hook/useCategory.jsx";
 import { Empty, Spin } from "antd";
 import { useCategoryProducts, useProduct } from "../Hook/useProduct.jsx";
 import { FormatPrice } from "../Format.jsx";
@@ -8,13 +8,17 @@ const Product = () => {
   const navigate = useNavigate();
   const { caterory, pages } = useParams();
   const param = pages ? pages : 1;
+
   const { category, isCategory } = useCategory();
   const { products, isProducts } = useProduct(param);
   const { categoryproducts, iscategoryProducts } = useCategoryProducts();
   const data = caterory ? categoryproducts : products?.data;
   const isLoading = caterory ? iscategoryProducts : isProducts;
   const [filter, setFilter] = useState(false);
-  const page = Array.from({ length: products?.toatalPages }, (_, i) => i + 1);
+  const page = Array.from(
+    { length: products?.data.last_page },
+    (_, i) => i + 1
+  );
   if (isCategory || isLoading) {
     return (
       <Spin
@@ -23,12 +27,10 @@ const Product = () => {
       />
     );
   }
-  
-  console.log(category.data);
   const clickfilter = () => {
     setFilter(!filter);
   };
-
+  console.log(products?.data);
   return (
     <div className="bg0 m-t-23 p-b-100">
       <div className="container " style={{ marginTop: "100px" }}>
@@ -281,7 +283,7 @@ const Product = () => {
         </div>
         <div className="row isotope-grid">
           {data ? (
-            data.map((item, index) => (
+            data.data.map((item, index) => (
               <div
                 className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women"
                 key={index}
@@ -304,8 +306,8 @@ const Product = () => {
                       >
                         {item.name}
                       </Link>
-                      <span className="stext-105 cl3">
-                        {<FormatPrice price={item.price} />}
+                      <span className="stext-107 cl3">
+                        {<FormatPrice price={item.variants_min_price} />}
                       </span>
                     </div>
                   </div>

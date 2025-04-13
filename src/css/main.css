@@ -214,7 +214,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   height: 124px;
 }
 
-/*==================================================================
+/*===
 [ Top bar ]*/
 .top-bar {
   height: 40px;
@@ -255,7 +255,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   background-color: #222;
 }
 
-/*==================================================================
+/*===
 [ Menu ]*/
 
 .wrap-menu-desktop {
@@ -601,7 +601,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   }
 }
 
-/*==================================================================
+/*===
 [ Fixed menu desktop ]*/
 
 .fix-menu-desktop .wrap-menu-desktop {
@@ -711,7 +711,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   }
 }
 
-/*==================================================================
+/*===
 [ Menu mobile ]*/
 .menu-mobile {
   width: 100%;
@@ -2164,9 +2164,9 @@ input.num-product::-webkit-inner-spin-button {
   left: 12px;
 }
 
-/*==================================================================
+/*===
     TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT
-==================================================================*/
+===*/
 .cl0 {
   color: #fff;
 }
@@ -2490,9 +2490,9 @@ input.num-product::-webkit-inner-spin-button {
   line-height: 1.2857;
 }
 
-/*==================================================================
+/*===
     SIZE SIZE SIZE SIZE SIZE SIZE SIZE SIZE SIZE SIZE SIZE SIZE SIZE 
-==================================================================*/
+===*/
 
 /*//////////////////////////////////////////////////////////////////
 [ Size ]*/
@@ -2709,9 +2709,9 @@ input.num-product::-webkit-inner-spin-button {
   height: 390px;
 }
 
-/*==================================================================
+/*===
    BACKGROUND BACKGROUND BACKGROUND BACKGROUND BACKGROUND BACKGROUND 
-==================================================================*/
+===*/
 .bg-none {
   background-color: transparent;
 }
@@ -2773,9 +2773,9 @@ input.num-product::-webkit-inner-spin-button {
   background-repeat: no-repeat;
 }
 
-/*==================================================================
+/*===
        BORDER BORDER  BORDER  BORDER  BORDER  BORDER  BORDER  BORDER
-==================================================================*/
+===*/
 .bor0 {
   border-radius: 50%;
 }
@@ -2875,9 +2875,9 @@ input.num-product::-webkit-inner-spin-button {
   border-bottom: 1px solid #d9d9d9;
 }
 
-/*==================================================================
+/*===
  HOW HOW HOW HOW HOW HOW HOW HOW HOW HOW HOW HOW HOW HOW HOW HOW HOW 
-==================================================================*/
+===*/
 .plh0::-webkit-input-placeholder {
   color: #999999;
 }
@@ -3187,9 +3187,9 @@ input.num-product::-webkit-inner-spin-button {
   right: -21px;
 }
 
-/*==================================================================
+/*===
       PSEUDO PSEUDO PSEUDO PSEUDO PSEUDO PSEUDO PSEUDO PSEUDO PSEUDO
-==================================================================*/
+===*/
 
 /*//////////////////////////////////////////////////////////////////
 [ Focus ]*/
@@ -3347,9 +3347,9 @@ input.num-product::-webkit-inner-spin-button {
   opacity: 1;
 }
 
-/*==================================================================
+/*===
   RESPONSIVE RESPONSIVE RESPONSIVE RESPONSIVE RESPONSIVE RESPONSIVE
-==================================================================*/
+===*/
 
 /*//////////////////////////////////////////////////////////////////
 [ XL ]*/
@@ -3985,7 +3985,7 @@ table {
 
 #t {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: start;
   margin-top: 20px;
   padding: 0 15px;
@@ -4700,4 +4700,19 @@ li {
 
 .canva {
   filter: invert(0) hue-rotate(180deg);
+
+}
+
+
+
+
+button {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Thêm CSS vào file styles/globals.css hoặc styles/tailwind.css */
+@media (max-width: 640px) {
+  .custom-modal .ant-modal {
+    padding: 10px !important;
+  }
 }

@@ -1,11 +1,10 @@
 import React from "react";
 import background from "../velzon/assets/images/profile-bg.jpg";
 import avatar from "../velzon/assets/images/users/avatar-1.jpg";
-import UseDetailUser from "../../Hook/useDetailUser";
+import {UseDetailUser} from "../../Hook/useDetailUser";
 import { Spin } from "antd";
 const Profile = () => {
   const { data, isLoading } = UseDetailUser();
-  console.log(data);
   if (isLoading) {
     return (
       <Spin
