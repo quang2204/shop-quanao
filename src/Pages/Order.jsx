@@ -18,8 +18,7 @@ const Order = () => {
   const { isLoading: isLoadingorder, mutate } = useStatusOrderCline(
     order?.[0]?.order?.user_id
   );
-  // const data = status ? orderbyStatus : order;
-  // const isLoading = status ? isLoadingOrderbyStatus : isLoadingOrder;
+  
   const getOrderStatus = (status) => {
     const statusMapping = {
       1: "Chờ xử lý",
@@ -212,7 +211,7 @@ const Order = () => {
                     30.000 đ
                   </div>
                 </div>
-                <div className="d-flex justify-content-end align-items-center">
+                <div className="d-flex justify-content-end align-items-center ">
                   <h6 className="text-right m-t-30 m-b-30">Thành Tiền:</h6>
                   <div
                     className="text-[1.7rem] p-l-10"
@@ -223,16 +222,16 @@ const Order = () => {
                 </div>
 
                 {/* Nút hành động */}
-                <div className="d-flex justify-content-end align-items-center gap-3">
+                <div className="d-flex justify-content-end align-items-center gap-3 mt-2 ">
                   {(item.order.status === 1 || item.order.status === 2) && (
                     <button
-                      className="btn mt-1 m-b-30 hov-btn4"
+                      className="btn mt-1 m-b-30 hov-btn4 "
                       style={{
                         backgroundColor: "red",
                         padding: "7px 10px",
                         maxWidth: 130,
                         height: 40,
-                        color: "white",
+                        // color: "white",
                         fontSize: "16px",
                       }}
                       type="button"
@@ -250,7 +249,7 @@ const Order = () => {
                         padding: "7px 10px",
                         maxWidth: 130,
                         height: 40,
-                        color: "white",
+                        // color: "white",
                         fontSize: "16px",
                       }}
                       onClick={() => handleorderstatus(item.order.id, 5)}
@@ -259,8 +258,24 @@ const Order = () => {
                       Đã nhận hàng
                     </button>
                   )}
-
-                  <button
+                  {item.order.status === 5 && (
+                    <button
+                      className="btn mt-1 m-b-30 hov-btn4 "
+                      style={{
+                        backgroundColor: "red",
+                        padding: "7px 10px",
+                        maxWidth: 130,
+                        height: 40,
+                        // color: "white",
+                        fontSize: "16px",
+                      }}
+                      onClick={() => handleorderstatus(item.order.id, 5)}
+                      type="button"
+                    >
+                      Bình luận
+                    </button>
+                  )}
+                  {/* <button
                     className="btn mt-1 m-b-30 hov-btn4"
                     style={{
                       padding: "7px 10px",
@@ -271,7 +286,7 @@ const Order = () => {
                     type="button"
                   >
                     Mua lại
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>

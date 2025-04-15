@@ -31,7 +31,6 @@ import AddProduct from "../Admin/Pages/Products/AddProduct.jsx";
 import Detail_Product from "../Admin/Pages/Products/Detail.jsx";
 import Customers from "../Admin/Pages/User/Customers.jsx";
 import TwoStep from "../Admin/Pages/User/TwoStep.jsx";
-
 import Order_Detail from "../Admin/Pages/Orders/Order_Detail.jsx";
 import Profile from "../Admin/Pages/Profile.jsx";
 import Login from "../Admin/Pages/Login.jsx";
@@ -47,8 +46,6 @@ import Sizes from "../Admin/Pages/Sizes/Sizes.jsx";
 import UpdateProduct from "../Admin/Pages/Products/UpdateProduct.jsx";
 import Email_Password from "../Pages/Email_Password.jsx";
 import ConfirmResetEmail from "../Pages/ConfirmResetEmail.jsx";
-import ResetPassword from "../Pages/ResetPassword.jsx";
-
 const Router = () => {
   ScrollToTop();
   return (
@@ -75,7 +72,6 @@ const Router = () => {
         <Route path="portfolio" element={<Portfolio />} />
         <Route path="emailpassword" element={<Email_Password />} />
         <Route path="confirmemail" element={<ConfirmResetEmail />} />
-        <Route path="resetmemail" element={<ResetPassword />} />
         <Route path="verify/password" element={<UpdatePassWord />} />
         <Route path="twostep" element={<TwoStep />} />
       </Route>

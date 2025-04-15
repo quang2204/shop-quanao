@@ -10,7 +10,6 @@ import "./vendor/css-hamburgers/hamburgers.min.css";
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./Router/Router";
 import { QueryClient, QueryClientProvider } from "react-query";
-import NeonCursor from "./Admin/Ui/NeonCursor";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -22,6 +21,7 @@ createRoot(document.getElementById("root")).render(
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       {/* <NeonCursor/> */}
+      
       <AppRoutes />
     </BrowserRouter>
   </QueryClientProvider>

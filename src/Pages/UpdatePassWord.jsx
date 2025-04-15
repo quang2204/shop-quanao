@@ -1,5 +1,5 @@
 import { Spin, message } from "antd";
-import {UseDetailUser} from "../Hook/useDetailUser";
+import { UseDetailUser } from "../Hook/useDetailUser";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -8,23 +8,31 @@ import { useMutation } from "react-query";
 import { updatePassword } from "../Apis/Api";
 const UpdatePassWord = () => {
   const { data, isLoading } = UseDetailUser();
-  const schema = z.object({
-    beforePassword: z
-      .string()
-      .min(1, "Password is required")
-      .min(8, "Password must be more than 8 characters")
-      .max(32, "Password must be less than 32 characters"),
-    newPassword: z
-      .string()
-      .min(1, "Password is required")
-      .min(8, "Password must be more than 8 characters")
-      .max(32, "Password must be less than 32 characters"),
-    confirmPassword: z
-      .string()
-      .min(1, "ConfimPassword is required")
-      .min(8, "ConfimPassword must be more than 8 characters")
-      .max(32, "ConfimPassword must be less than 32 characters"),
-  });
+  const schema = z
+    .object({
+      current_password: z
+        .string()
+        .min(1, "Password is required")
+        .min(8, "Password must be more than 8 characters")
+        .max(32, "Password must be less than 32 characters"),
+      new_password: z
+        .string()
+        .min(1, "Password is required")
+        .min(8, "Password must be more than 8 characters")
+        .max(32, "Password must be less than 32 characters")
+        .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+        .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+        .regex(/[0-9]/, "Password must contain at least one number"),
+      new_password_confirmation: z
+        .string()
+        .min(1, "ConfimPassword is required")
+        .min(8, "ConfimPassword must be more than 8 characters")
+        .max(32, "ConfimPassword must be less than 32 characters"),
+    })
+    .refine((data) => data.new_password === data.new_password_confirmation, {
+      message: "Passwords do not match",
+      path: ["new_password_confirmation"],
+    });
   const {
     register,
     handleSubmit,
@@ -32,10 +40,11 @@ const UpdatePassWord = () => {
   } = useForm({
     resolver: zodResolver(schema),
   });
+  console.log(errors);
   const { mutate, isLoading: isLoading1 } = useMutation({
-    mutationFn: (datapass) => updatePassword(datapass, data._id),
+    mutationFn: (data) => updatePassword(data),
     onSuccess: () => {
-      message.success("Thành công");
+      message.success("Thay đổi thành công");
     },
     onError: (error) => {
       message.error(error.response.data.message);
@@ -55,7 +64,7 @@ const UpdatePassWord = () => {
   return (
     <div className="container m-t-150 p-b-60 d-flex justify-content-between rounded-md">
       <div>
-        <div className="d-flex  m-b-30  p-b-10" style={{ gap: 15 }}>
+        <div className="d-flex m-b-30 p-b-10" style={{ gap: 15 }}>
           <img
             src={data.avatar}
             alt=""
@@ -63,7 +72,7 @@ const UpdatePassWord = () => {
           />
           <div className="name">
             <span>
-              <strong>{data.username} </strong>
+              <strong>{data.name} </strong>
               <Link to="/profile">
                 <p style={{ color: "black" }}>
                   <svg
@@ -107,7 +116,7 @@ const UpdatePassWord = () => {
         </div>
       </div>{" "}
       <form
-        className="m-b-50 d-flex  align-items-center bor4 p-b-30 p-t-30 m-lr-auto p-r-30 p-l-30 p-t-30 p-b-30"
+        className="m-b-50 d-flex align-items-center bor4 p-b-30 p-t-30 m-lr-auto p-r-30 p-l-30 p-t-30 p-b-30"
         style={{ boxShadow: "1px 0px 10px 1px #bab5b5", gap: 30, width: 800 }}
         onSubmit={handleSubmit(onSubmit)}
       >
@@ -131,11 +140,11 @@ const UpdatePassWord = () => {
                 type="password"
                 className="bor4 xl:w-[320px] p-t-7  p-l-10 pb-2"
                 disabled={isLoading1}
-                {...register("beforePassword")}
+                {...register("current_password")}
               />
             </div>
-            {errors.beforePassword && (
-              <p className="text-red-600">{errors.beforePassword.message}</p>
+            {errors.current_password && (
+              <p className="text-red-600">{errors.current_password.message}</p>
             )}
             <div className="m-b-30"></div>
             <div
@@ -148,12 +157,12 @@ const UpdatePassWord = () => {
               <input
                 type="password"
                 disabled={isLoading1}
-                {...register("newPassword")}
+                {...register("new_password")}
                 className="bor4 p-t-7 p-l-10 xl:w-[320px] pb-2"
               />
             </div>
-            {errors.newPassword && (
-              <p className="text-red-600">{errors.newPassword.message}</p>
+            {errors.new_password && (
+              <p className="text-red-600">{errors.new_password.message}</p>
             )}
             <div className="m-b-30"></div>
 
@@ -167,18 +176,20 @@ const UpdatePassWord = () => {
               <input
                 type="password"
                 disabled={isLoading1}
-                {...register("confirmPassword")}
+                {...register("new_password_confirmation")}
                 className="bor4 p-t-7 xl:w-[320px] p-b-7 p-l-10 "
               />
             </div>
-            {errors.confirmPassword && (
-              <p className="text-red-600">{errors.confirmPassword.message}</p>
+            {errors.new_password_confirmation && (
+              <p className="text-red-600">
+                {errors.new_password_confirmation.message}
+              </p>
             )}
             <div className="m-b-30"></div>
 
             <button
               type="submit"
-              className="hov-btn5 m-t-30 bg-red-600 "
+              className="hov-btn5 m-t-10 bg-red-600 "
               style={{ width: "30%", height: 40, marginLeft: 165 }}
               disabled={isLoading1}
             >

@@ -118,9 +118,9 @@ export const logout = async () => {
 
 export const getUserToken = async () => {
   const res = await Axios.get(`api/user_token`, {
-    headers: {
-      Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth_token")).split("|")[1]}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${JSON.parse(localStorage.getItem("auth_token")).split("|")[1]}`,
+    // },
   });
   return res.data.user;
 };
@@ -228,15 +228,10 @@ export const deleteOrder = async (id) => {
   const res = await Axios.delete(`api/admin/users/${id}`);
   return res.data;
 };
-export const updatePassword = async (data, id) => {
-  const res = await Axios.patch(`/user/pass/${id}`, data);
-  return res.data;
-};
 export const addProduct = async (data) => {
   const res = await Axios.post(`api/admin/products`, data);
   return res.data;
 };
-
 // color
 export const getColors = async (page) => {
   const res = await Axios.get(`/api/admin/colors?page=${page}`);
@@ -398,5 +393,26 @@ export const verifytoken = async (data) => {
 };
 export const resetpassword = async (data) => {
   const res = await Axios.post("api/reset-password", data);
+  return res.data;
+};
+export const updatePassword = async (data) => {
+  const res = await Axios.post("api/change-password", data);
+  return res.data;
+};
+export const getHome = async () => {
+  const res = await Axios.get("api");
+  return res.data;
+};
+export const getBlogs = async (filters = {}) => {
+  const params = new URLSearchParams();
+  // Add filters if they exist
+  if (filters.category_id) params.append("category_id", filters.category_id);
+  if (filters.page) params.append("sort_price", filters.sort);
+  if (filters.search) params.append("search", filters.search);
+  const res = await Axios.get(`api/blogs?${params.toString()}`);
+  return res.data;
+};
+export const getBlogDetail = async (id) => {
+  const res = await Axios.get(`api/blogs/${id}`);
   return res.data;
 };

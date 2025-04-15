@@ -1,19 +1,26 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { user } from "../../../Apis/Api";
-import { Link, useLocation, useParams } from "react-router-dom";
-import { Modal, Spin } from "antd";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Modal, Pagination, Spin } from "antd";
 import { FormatDate } from "../../../Format";
 import { useDeleteUser } from "../../../Hook/useUser";
 import { useForm } from "react-hook-form";
 const Customers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idDelete, setIdDelete] = useState("");
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
 
-  const page =
-    pathname.split("/")[3] === undefined ? 1 : pathname.split("/")[3];
-  const convertPage = parseInt(page);
+  const page = parseInt(searchParams.get("page")) || 1;
+  // const page =
+  //   pathname.split("/")[3] === undefined ? 1 : pathname.split("/")[3];
+  const onShowSizeChange = (current, pageSize) => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", current);
+    navigate(`${location.pathname}?${searchParams.toString()}`);
+  };
   const showModal = (id) => {
     setIdDelete(id);
     setIsModalOpen(true);
@@ -72,13 +79,6 @@ const Customers = () => {
                   >
                     <i className="ri-add-line align-bottom me-1" /> Add Customer
                   </button>
-                  <button
-                    type="button"
-                    className="px-3 py-2 rounded-md btn-info"
-                  >
-                    <i className="ri-file-download-line align-bottom me-1" />
-                    Import
-                  </button>
                 </div>
               </div>
             </div>
@@ -99,19 +99,6 @@ const Customers = () => {
                 {/*end col*/}
                 <div className="col-xl-6">
                   <div className="row g-3">
-                    <div className="col-sm-4">
-                      <div className="">
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="datepicker-range"
-                          data-provider="flatpickr"
-                          data-date-format="d M, Y"
-                          data-range-date="true"
-                          placeholder="Select date"
-                        />
-                      </div>
-                    </div>
                     {/*end col*/}
                     <div className="col-sm-4">
                       <div>
@@ -137,7 +124,7 @@ const Customers = () => {
                       <div>
                         <button
                           type="button"
-                          className="py-2 bg-[#405189] rounded-md btn-primary w-100"
+                          className="py-2 bg-[#5671cc] text-white rounded-md btn-primary w-100"
                         >
                           <i className="ri-equalizer-fill me-2 align-bottom" />
                           Filters
@@ -206,21 +193,19 @@ const Customers = () => {
                         </td>
                         <td className="role">
                           <span
-                            className={`badge ${item.role === "0" ? "text-success" : "text-red-600"}  text-uppercase`}
+                            className={`text-sm text-uppercase`}
                           >
-                            {item.role}
+                            {item.role==0?"User":"Admin"}
                           </span>
                         </td>
                         <td>
                           <ul className="list-inline hstack gap-2 mb-0">
                             <li className="list-inline-item edit">
-                              <a
-                                href="#showModal"
-                                data-bs-toggle="modal"
+                              <div
                                 className="text-primary d-inline-block edit-item-btn"
                               >
                                 <i className="ri-pencil-fill fs-16" />
-                              </a>
+                              </div>
                             </li>
                             <li
                               className="list-inline-item"
@@ -258,23 +243,16 @@ const Customers = () => {
                   </div>
                 </div>
               </div>
-              <div className="d-flex justify-content-end">
-                <div className="pagination-wrap hstack gap-2">
-                  <Link
-                    className={`page-item pagination-prev ${convertPage <= 1 ? "disabled" : ""}`}
-                    to={`/admin/customers/${convertPage < 2 ? 1 : page - 1}`}
-                  >
-                    Previous
-                  </Link>
-                  <ul className="pagination listjs-pagination mb-0" />
-                  <Link
-                    className={`page-item pagination-prev ${page >= 1 ? "disabled" : ""}`}
-                    to={`/admin/customers/${page <= 1 ? convertPage + 1 : ""}`}
-                  >
-                    Previous
-                  </Link>
-                </div>
-              </div>
+              <div className="d-flex justify-center mb-4">
+            <Pagination
+              showSizeChanger
+              onChange={onShowSizeChange}
+              current={data.current_page}
+              total={data.total}
+              pageSize={data.per_page}
+              align="center"
+            />
+          </div>
             </div>
 
             <div

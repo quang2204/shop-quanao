@@ -856,61 +856,7 @@ const Layout = () => {
                       <span data-key="t-layouts">User</span>
                     </Link>
                   </li>
-                  {/* end Dashboard Menu */}
-                  <li className="menu-title">
-                    <i className="ri-more-fill" />
-                    <span data-key="t-pages">Pages</span>
-                  </li>
 
-                  <li className="nav-item">
-                    <div
-                      className="nav-link menu-link relative"
-                      data-bs-toggle="collapse"
-                      role="button"
-                      aria-expanded={open ? "true" : "false"}
-                      aria-controls="sidebarAuth"
-                      onClick={() => setOpen(!open)}
-                    >
-                      <i className="ri-account-circle-line" />
-                      <span data-key="t-authentication">Authentication</span>
-                    </div>
-                    <div
-                      className={`menu-dropdown ${open ? "show" : "collapse"}`}
-                    >
-                      <ul className="nav nav-sm flex-column">
-                        <li className="nav-item">
-                          <Link to="signin" className="nav-link">
-                            Sign In
-                          </Link>
-                        </li>
-                        <li className="nav-item">
-                          <Link to="/admin/login" className="nav-link">
-                            Sign Up
-                          </Link>
-                        </li>
-                        <li className="nav-item">
-                          <Link to="/admin/reset" className="nav-link">
-                            Password Reset
-                          </Link>
-                        </li>
-                        <li className="nav-item">
-                          <Link to="" className="nav-link">
-                            Password Create
-                          </Link>
-                        </li>
-                        <li className="nav-item">
-                          <Link to="" className="nav-link">
-                            Lock Screen
-                          </Link>
-                        </li>
-                        <li className="nav-item">
-                          <Link to="" className="nav-link">
-                            Logout
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
                   <li className="nav-item">
                     <Link
                       to="profile"

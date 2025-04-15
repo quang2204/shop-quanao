@@ -6,7 +6,6 @@ import { FormatDate, FormatDateTime, FormatPrice } from "../../../Format";
 import { useForm } from "react-hook-form";
 
 const Orders = () => {
-  const [pageProduct, setPageProduct] = useState();
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -148,6 +147,16 @@ const Orders = () => {
                       <option value="Visa">Visa</option>
                       <option value="COD">COD</option>
                     </select>
+                  </div>
+                </div>
+                <div class="col-sm-1 ">
+                  <div>
+                    <button
+                      type="button"
+                      className="py-2 bg-[#5671cc] text-white rounded-md btn-primary w-100"
+                    >
+                      <i className="ri-equalizer-fill me-2 align-bottom"></i>Filters
+                    </button>
                   </div>
                 </div>
               </div>

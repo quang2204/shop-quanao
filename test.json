@@ -1,0 +1,162 @@
+{
+    "blog": {
+        "id": 2,
+        "title": "Non voluptates magnam ut nostrum amet dolores iste.",
+        "img_avt": "https://media-public.canva.com/ARdoo/MAEV6LARdoo/1/tl.jpg",
+        "content": "Hic quo aspernatur voluptas placeat libero aut quasi. Magni suscipit explicabo eos aspernatur.\n\nUt accusamus eveniet eveniet veniam et quos. Explicabo esse impedit esse ut nisi occaecati. Tenetur dolorem iste nulla corporis blanditiis.\n\nQuos velit tenetur praesentium praesentium. Et enim eum vel est autem dolorum voluptatem nemo. Eos nostrum ut et. Autem dolorum beatae saepe omnis nam officiis sint.",
+        "is_active": true,
+        "view": 258,
+        "category_blog_id": 1,
+        "user_id": 7,
+        "deleted_at": null,
+        "created_at": "2025-03-02T16:38:36.000000Z",
+        "updated_at": "2025-04-14T09:21:50.000000Z",
+        "category_blog": {
+            "id": 1,
+            "name": "Kattie Pfannerstill",
+            "is_active": true,
+            "deleted_at": null,
+            "created_at": "2025-03-02T16:38:36.000000Z",
+            "updated_at": "2025-03-02T16:38:36.000000Z"
+        },
+        "user": {
+            "id": 7,
+            "name": "Gus Hackett",
+            "email": "jimmy62@example.net",
+            "address": null,
+            "phone": "475-409-3953",
+            "avatar": "https://via.placeholder.com/200x200.png/0055bb?text=people+quasi",
+            "role": "1",
+            "points": 0,
+            "is_active": true,
+            "date_of_birth": "2005-02-13",
+            "email_verified_at": "2022-10-30T10:59:25.000000Z",
+            "email_verification_expires_at": null,
+            "created_at": "2025-03-02T16:38:36.000000Z",
+            "updated_at": "2025-03-02T16:38:36.000000Z"
+        }
+    },
+    "voucher": {
+        "id": 3,
+        "code": "AZCXKB",
+        "discount": "7.86",
+        "start_date": "2025-03-25",
+        "end_date": "2025-08-24",
+        "quantity": 187,
+        "min_money": "37.24",
+        "max_money": "48.95",
+        "is_active": true,
+        "points_required": null,
+        "created_at": "2025-03-02T16:38:36.000000Z",
+        "updated_at": "2025-03-02T16:38:36.000000Z"
+    },
+    "bestSellingProducts": [
+        {
+            "id": 53,
+            "name": "Đồ Bộ Nam Đủ Size Tới 8XL Bigsize > 145 Kg Có Hình, Set Đồ Nam Mặc Thể Thao Boy Phố Mùa Hè",
+            "slug": "do-bo-nam-du-size-toi-8xl-bigsize-145-kg-co-hinh-set-do-nam-mac-the-thao-boy-pho-mua-he",
+            "img_thumb": "http://res.cloudinary.com/dkrcsuwbc/image/upload/v1743949464/nnlwah1dbg5ivskehaun.webp",
+            "description": "MÔ TẢ SẢN PHẨM\nĐồ Bộ Nam Đủ Size Tới 8XL Bigsize > 145 Kg Có Hình, Set Đồ Nam Mặc Thể Thao Boy Phố Mùa Hè",
+            "category_id": 11,
+            "view": 0,
+            "is_active": true,
+            "deleted_at": null,
+            "created_at": "2025-04-06T14:25:24.000000Z",
+            "updated_at": "2025-04-06T14:25:24.000000Z",
+            "variants_min_price": 4534,
+            "total_sold": "2"
+        }
+    ],
+    "categoryBlog": [
+        {
+            "id": 1,
+            "name": "Kattie Pfannerstill",
+            "is_active": true,
+            "deleted_at": null,
+            "created_at": "2025-03-02T16:38:36.000000Z",
+            "updated_at": "2025-03-02T16:38:36.000000Z",
+            "blogs_count": 1
+        },
+        {
+            "id": 2,
+            "name": "Vella Schmeler",
+            "is_active": true,
+            "deleted_at": null,
+            "created_at": "2025-03-02T16:38:36.000000Z",
+            "updated_at": "2025-03-02T16:38:36.000000Z",
+            "blogs_count": 0
+        },
+        {
+            "id": 3,
+            "name": "Abby Gaylord MD",
+            "is_active": true,
+            "deleted_at": null,
+            "created_at": "2025-03-02T16:38:36.000000Z",
+            "updated_at": "2025-03-02T16:38:36.000000Z",
+            "blogs_count": 0
+        },
+        {
+            "id": 4,
+            "name": "Brenden Powlowski",
+            "is_active": true,
+            "deleted_at": null,
+            "created_at": "2025-03-02T16:38:36.000000Z",
+            "updated_at": "2025-03-02T16:38:36.000000Z",
+            "blogs_count": 0
+        },
+        {
+            "id": 5,
+            "name": "Dr. Candelario Bernier PhD",
+            "is_active": true,
+            "deleted_at": null,
+            "created_at": "2025-03-02T16:38:36.000000Z",
+            "updated_at": "2025-03-02T16:38:36.000000Z",
+            "blogs_count": 0
+        },
+        {
+            "id": 6,
+            "name": "Taryn Hermann",
+            "is_active": true,
+            "deleted_at": null,
+            "created_at": "2025-03-02T16:38:36.000000Z",
+            "updated_at": "2025-03-02T16:38:36.000000Z",
+            "blogs_count": 0
+        },
+        {
+            "id": 7,
+            "name": "Prof. Liliane Rath",
+            "is_active": true,
+            "deleted_at": null,
+            "created_at": "2025-03-02T16:38:36.000000Z",
+            "updated_at": "2025-03-02T16:38:36.000000Z",
+            "blogs_count": 2
+        },
+        {
+            "id": 8,
+            "name": "Dr. Jan Harris",
+            "is_active": true,
+            "deleted_at": null,
+            "created_at": "2025-03-02T16:38:36.000000Z",
+            "updated_at": "2025-03-02T16:38:36.000000Z",
+            "blogs_count": 0
+        },
+        {
+            "id": 9,
+            "name": "Mia Carter",
+            "is_active": true,
+            "deleted_at": null,
+            "created_at": "2025-03-02T16:38:36.000000Z",
+            "updated_at": "2025-03-02T16:38:36.000000Z",
+            "blogs_count": 0
+        },
+        {
+            "id": 10,
+            "name": "Garrick O'Kon",
+            "is_active": true,
+            "deleted_at": null,
+            "created_at": "2025-03-02T16:38:36.000000Z",
+            "updated_at": "2025-03-02T16:38:36.000000Z",
+            "blogs_count": 0
+        }
+    ]
+}

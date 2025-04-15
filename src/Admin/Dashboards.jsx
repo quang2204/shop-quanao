@@ -284,6 +284,10 @@ const Dashboards = () => {
                                 </a>
                               </h5>
                               <span className="text-muted">
+                              Phân loại : {item.variant_name}
+                              </span>
+                              <br />
+                              <span className="text-muted">
                                 {item.last_order_date}
                               </span>
                             </div>

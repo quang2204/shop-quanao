@@ -18,6 +18,8 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   function (config) {
+    const token = JSON.parse(localStorage.getItem("auth_token")).split("|")[1];
+    config.headers["Authorization"] = "Bearer " + token;
     nProgress.start();
     return config;
   },
