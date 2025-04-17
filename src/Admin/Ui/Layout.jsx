@@ -841,12 +841,12 @@ const Layout = () => {
                       <span data-key="t-layouts">Voucher</span>
                     </Link>
                   </li>
-                  {/* <li className="nav-item">
-                    <Link to="Comment" className={`nav-link menu-link ${thirdPathSegment=="Order"?"active":""}`}>
+                  <li className="nav-item">
+                    <Link to="comments" className={`nav-link menu-link ${thirdPathSegment=="Order"?"active":""}`}>
                       <i className="fa fa-comment"></i>
                       <span data-key="t-layouts">Comments</span>
                     </Link>
-                  </li> */}
+                  </li>
                   <li className="nav-item">
                     <Link
                       to="customers"

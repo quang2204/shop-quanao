@@ -105,8 +105,23 @@ const VoucherList = () => {
   } = useForm();
 
   const onSubmit = (data) => {
+    if (parseFloat(data.max_money) <= parseFloat(data.min_money)) {
+      message.error("Max Money phải lớn hơn Min Money.");
+      return;
+    }
+  
+    if (new Date(data.end_date) <= new Date(data.start_date)) {
+      message.error("End Date phải lớn hơn Start Date.");
+      return;
+    }
+  
+    const formattedData = {
+      ...data,
+      is_active: data.is_active === "true" || data.is_active === true,
+    };
+  
     setIsSubmitting(true);
-    addVoucher(data, {
+    addVoucher(formattedData, {
       onSuccess: () => {
         reset();
         handleCancelAdd();
@@ -118,8 +133,18 @@ const VoucherList = () => {
       },
     });
   };
-
+  
   const onUpdate = (data) => {
+    if (parseFloat(data.max_money) <= parseFloat(data.min_money)) {
+      message.error("Max Money phải lớn hơn Min Money.");
+      return;
+    }
+  
+    if (new Date(data.end_date) <= new Date(data.start_date)) {
+      message.error("End Date phải lớn hơn Start Date.");
+      return;
+    }
+  
     const datares = {
       code: data?.code,
       discount: data?.discount,
@@ -133,6 +158,7 @@ const VoucherList = () => {
           ? data.is_active
           : data?.is_active?.toString().toLowerCase() === "true",
     };
+  
     setIsSubmitting(true);
     updateVoucher(
       { id: voucherToUpdate.id, ...datares },
