@@ -48,6 +48,8 @@ import UpdateProduct from "../Admin/Pages/Products/UpdateProduct.jsx";
 import Email_Password from "../Pages/Email_Password.jsx";
 import ConfirmResetEmail from "../Pages/ConfirmResetEmail.jsx";
 import ResetPassword from "../Pages/ResetPassword.jsx";
+import CommentListProduct from "../Admin/Pages/Comment/CommentListProduct.jsx";
+import CommentList from "../Admin/Pages/Comment/CommentList.jsx";
 
 const Router = () => {
   ScrollToTop();
@@ -109,6 +111,8 @@ const Router = () => {
         <Route path="login" element={<Login />} />
         <Route path="colors" element={<ColorList />} />
         <Route path="vouchers" element={<VoucherList />} />
+        <Route path="comments" element={<CommentListProduct />} />
+        <Route path="comment-list/:id" element={<CommentList />} />
         <Route path="fullscreen" element={<FullScreenButton />} />
         <Route path="login/callback" element={<LoginCallback />} />
       </Route>

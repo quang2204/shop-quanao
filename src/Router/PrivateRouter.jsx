@@ -12,7 +12,7 @@ const PrivateRouter = (props) => {
       />
     );
   }
-  if (data.role !== "1") {
+  if (data.role !== "admin") {
     return <Navigate to="/signin" />;
   }
   return <div>{props.children}</div>;

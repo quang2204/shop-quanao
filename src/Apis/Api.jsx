@@ -400,3 +400,27 @@ export const resetpassword = async (data) => {
   const res = await Axios.post("api/reset-password", data);
   return res.data;
 };
+//comment
+// Lấy danh sách bình luận
+export const getComments = async (page = 1) => {
+  const res = await Axios.get(`/api/comments?page=${page}`);
+  return res.data;
+};
+
+// Lấy chi tiết bình luận
+export const getCommentDetail = async (id) => {
+  const res = await Axios.get(`/api/comments/${id}`);
+  return res.data;
+};
+
+// Lấy danh sách bình luận con
+export const getChildComments = async (id) => {
+  const res = await Axios.get(`/api/comments/${id}/children`);
+  return res.data;
+};
+
+// Xóa bình luận
+export const deleteComment = async (id) => {
+  const res = await Axios.delete(`/api/comments/delete`, { data: { id } });
+  return res.data;
+};
