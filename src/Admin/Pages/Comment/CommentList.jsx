@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Spin, Modal } from "antd";
 import Axios from "../../../Apis/Axios";
+import { getChildComments } from "../../../Apis/Api";
 
 const CommentList = () => {
   const { id } = useParams();
@@ -10,6 +11,19 @@ const CommentList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idDelete, setIdDelete] = useState("");
+  const [childComments, setChildComments] = useState([]);
+  const [isChildModalOpen, setIsChildModalOpen] = useState(false);
+
+  const handleShowChildComments = async (commentId) => {
+    const { childComments } = await getChildComments(commentId);
+    setChildComments(childComments || []);
+    setIsChildModalOpen(true);
+  };
+
+  const handleChildModalClose = () => {
+    setIsChildModalOpen(false);
+    setChildComments([]);
+  };
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -39,6 +53,7 @@ const CommentList = () => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedComment, setSelectedComment] = useState(null);
 
+  
   const showModalDetail = (comment) => {
     setSelectedComment(comment);
     setIsDetailModalOpen(true);
@@ -48,11 +63,15 @@ const CommentList = () => {
     setIsDetailModalOpen(false);
     setSelectedComment(null);
   };
-
+  const handleDeleteChildComment = (childCommentId) => {
+    setIdDelete(childCommentId); // Đặt ID của comment con cần xóa
+    setIsModalOpen(true); // Hiển thị modal xác nhận xóa
+  };
   const handleOk = async () => {
     try {
       await Axios.delete(`/api/comments/delete`, { data: { id: idDelete } });
-      setComments((prev) => prev.filter((comment) => comment.id !== idDelete));
+      // Xóa comment con khỏi danh sách
+      setChildComments((prev) => prev.filter((child) => child.id !== idDelete));
       setIsModalOpen(false);
       setIdDelete("");
     } catch (error) {
@@ -161,6 +180,17 @@ const CommentList = () => {
                                   <i className="ri-delete-bin-5-fill fs-16"></i>
                                 </div>
                               </li>
+                              <li className="list-inline-item">
+                                <div
+                                  className="text-info d-inline-block"
+                                  onClick={() =>
+                                    handleShowChildComments(comment.id)
+                                  }
+                                >
+                                  <i className="ri-chat-3-line fs-16"></i>{" "}
+                                  {/* Icon for child comments */}
+                                </div>
+                              </li>
                             </ul>
                           </td>
                         </tr>
@@ -179,6 +209,35 @@ const CommentList = () => {
           </div>
         </div>
       </div>
+      {/* show comment con  */}
+      <Modal
+  open={isChildModalOpen}
+  onCancel={handleChildModalClose}
+  footer={null}
+  title="Child Comments"
+>
+  {childComments.length > 0 ? (
+    <div>
+      {childComments.map((child) => (
+        <div className="child-comment">
+  <div className="info">
+    <strong>{child.user?.name || "Anonymous"}:</strong>
+    <p className="mb-1">{child.content}</p>
+    <div className="timestamp">
+      Created At: {new Date(child.created_at).toLocaleString()}
+    </div>
+  </div>
+  <button onClick={() => handleDeleteChildComment(child.id)}>
+    Delete
+  </button>
+</div>
+
+      ))}
+    </div>
+  ) : (
+    <p>No child comments available.</p>
+  )}
+</Modal>
 
       {/* Modal delete */}
       <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>

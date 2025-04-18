@@ -415,12 +415,19 @@ export const getCommentDetail = async (id) => {
 
 // Lấy danh sách bình luận con
 export const getChildComments = async (id) => {
-  const res = await Axios.get(`/api/comments/${id}/children`);
-  return res.data;
+  try {
+    const response = await Axios.get(`/api/comments/${id}/children`);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      return { childComments: [] };
+    }
+    throw error;
+  }
 };
 
 // Xóa bình luận
 export const deleteComment = async (id) => {
-  const res = await Axios.delete(`/api/comments/delete`, { data: { id } });
+  const res = await Axios.delete(`/api/comments/${id}`);
   return res.data;
 };
