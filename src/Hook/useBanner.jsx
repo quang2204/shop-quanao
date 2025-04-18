@@ -45,8 +45,8 @@ const useCreateBanner = () => {
       queryClient.invalidateQueries({ queryKey: ["banner"] });
       message.success("Banner added successfully");
     },
-    onError: () => {
-      message.error("Failed to add banner");
+    onError: (error) => {
+      message.error(error.response.data.message);
     },
   });
   return { mutate, isLoading };
@@ -56,9 +56,10 @@ const useUpdateBanner = () => {
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useMutation({
     mutationFn: ({ id, updatedBanner }) => updateBanner(id, updatedBanner),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["banner"] });
       message.success("Banner updated successfully");
+      console.log(data);
     },
     onError: () => {
       message.error("Failed to update banner");

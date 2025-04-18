@@ -1,8 +1,24 @@
-import React, { useState } from "react";
-import { useBanner, useDeleteBanner, useCreateBanner, useUpdateBanner } from "../../../Hook/useBanner";
+import React, { useEffect, useState } from "react";
+import {
+  useBanner,
+  useDeleteBanner,
+  useCreateBanner,
+  useUpdateBanner,
+} from "../../../Hook/useBanner";
+import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { Modal, Spin, Pagination, message } from "antd";
+import {
+  Modal,
+  Spin,
+  Pagination,
+  message,
+  Image,
+  Upload,
+  Select,
+  Form,
+} from "antd";
 import { useForm } from "react-hook-form";
+import { set } from "nprogress";
 
 const Banners = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -10,7 +26,9 @@ const Banners = () => {
   const { mutate: createBanner } = useCreateBanner();
   const { mutate: updateBanner } = useUpdateBanner();
   const { mutate: deleteBanner } = useDeleteBanner();
-
+  const [fileList, setFileList] = useState([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idDelete, setIdDelete] = useState("");
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
@@ -18,7 +36,37 @@ const Banners = () => {
   const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
   const [currentBannerDetail, setCurrentBannerDetail] = useState(null);
   const [currentBanner, setCurrentBanner] = useState(null);
+  const [status, setStatus] = useState();
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+  };
+  const handleChange = (value) => {
+    setStatus(value);
+  };
+  const handleUpload = (info) => {
+    let newFileList = [...info.fileList];
 
+    // Nếu upload thành công, cập nhật URL
+    newFileList = newFileList.map((file) => {
+      if (file.response) {
+        file.url = file.response.url;
+      }
+      return file;
+    });
+
+    setFileList(newFileList);
+  };
+  const beforeUpload = (file) => {
+    const isImage = file.type.startsWith("image/");
+    if (!isImage) {
+      message.error("Chỉ được tải lên định dạng ảnh!");
+    }
+    return isImage || Upload.LIST_IGNORE;
+  };
   const {
     register,
     handleSubmit,
@@ -43,59 +91,60 @@ const Banners = () => {
   const handleCancelEdit = () => {
     setIsModalOpenEdit(false);
     setCurrentBanner(null);
+    setFileList([]);
     reset();
   };
 
   const handleOk = () => {
-    deleteBanner(idDelete, {
-      onSuccess: () => {
-        setIsModalOpen(false); // Đóng modal
-        setIdDelete(""); // Xóa ID đã chọn
-        message.success("Banner deleted successfully!"); // Hiển thị thông báo thành công
-      },
-      onError: (error) => {
-        message.error("Failed to delete banner!"); // Hiển thị thông báo lỗi
-        console.error("Delete error:", error);
-      },
-    });
+    deleteBanner(idDelete);
+    setIsModalOpen(false);
   };
 
-  const onSubmit = (data) => {
-    const formData = new FormData();
-    formData.append("image", data.image[0]); // Lấy file từ input
-    formData.append("is_active", data.is_active);
-
-    createBanner(formData, {
-      onSuccess: () => {
-        reset();
-        handleCancelAdd();
-      },
-    });
+  const onSubmit = () => {
+    if (fileList.length > 0) {
+      const data = {
+        image: fileList[0].url,
+        is_active: status,
+      };
+      createBanner(data);
+      setIsModalOpenAdd(false);
+      setFileList([]);
+    } else {
+      message.error("Thêm ảnh");
+    }
   };
 
   const showEditModal = (banner) => {
     setCurrentBanner(banner);
     setIsModalOpenEdit(true);
-  };
-
-
-  const onEditSubmit = (data) => {
-    const formData = new FormData();
-    if (data.image && data.image[0]) {
-      formData.append("image", data.image[0]); // Lấy file từ input nếu có
-    }
-    formData.append("is_active", data.is_active);
-
-    updateBanner(
-      { id: currentBanner.id, updatedBanner: formData },
+    setFileList([
       {
-        onSuccess: () => {
-          handleCancelEdit();
-        },
-      }
-    );
+        uid: Math.random().toString(),
+        url: banner.image ? banner.image : fileList[0]?.url,
+        status: "done",
+        name: banner.image ? banner.image : "",
+      },
+    ]);
   };
-    const showDetailModal = (banner) => {
+
+  const onEditSubmit = () => {
+    if (fileList.length > 0) {
+      const data = {
+        image: fileList[0].url,
+        is_active: status === undefined ? currentBanner.is_active : status,
+      };
+      console.log(data);
+      updateBanner({
+        id: currentBanner.id,
+        updatedBanner: data,
+      });
+      setIsModalOpenEdit(false);
+      setFileList([]);
+    } else {
+      message.error("Thêm ảnh");
+    }
+  };
+  const showDetailModal = (banner) => {
     setCurrentBannerDetail(banner);
     setIsModalOpenDetail(true);
   };
@@ -115,13 +164,11 @@ const Banners = () => {
         <div className="card" id="orderList">
           <div className="card-header border-0 bg-none">
             <div className="row align-items-center gy-3">
-              <div className="col-sm">
-                <h5 className="card-title mb-0 fw-medium">Banner Management</h5>
-              </div>
+              <div className="col-sm"></div>
               <div className="col-sm-auto">
                 <button
                   type="button"
-                  className="px-3 py-2 rounded-md btn-success add-btn"
+                  className="text-white text-[0.9rem] bg-[#03A9F4] px-4 py-2 rounded-md mb-3"
                   onClick={() => setIsModalOpenAdd(true)}
                 >
                   <i className="ri-add-line align-bottom me-1" />
@@ -132,7 +179,10 @@ const Banners = () => {
           </div>
           <div className="card-body pt-0">
             <div className="table-responsive table-card mb-1">
-              <table className="table table-nowrap align-middle" id="orderTable">
+              <table
+                className="table table-nowrap align-middle"
+                id="orderTable"
+              >
                 <thead className="text-muted table-light">
                   <tr className="text-uppercase">
                     <th>#</th>
@@ -146,7 +196,7 @@ const Banners = () => {
                     <tr key={item.id}>
                       <td>{(currentPage - 1) * banner.per_page + index + 1}</td>
                       <td>
-                        <img
+                        <Image
                           src={item.image}
                           alt="Banner"
                           className="img-fluid"
@@ -189,12 +239,15 @@ const Banners = () => {
                 </tbody>
               </table>
             </div>
-            <Pagination
-              current={currentPage}
-              onChange={(page) => setCurrentPage(page)}
-              total={banner?.total}
-              pageSize={banner?.per_page}
-            />
+            <div className="d-flex justify-center ">
+              <Pagination
+                showSizeChanger
+                current={currentPage}
+                onChange={(page) => setCurrentPage(page)}
+                total={banner?.total}
+                pageSize={banner?.per_page}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -202,32 +255,61 @@ const Banners = () => {
       {/* Modal Add */}
       <Modal
         open={isModalOpenAdd}
-        onOk={handleSubmit(onSubmit)}
+        onOk={onSubmit}
         onCancel={handleCancelAdd}
         title="Add Banner"
       >
         <form>
           <div className="mb-3">
             <label className="form-label">Upload Banner Image</label>
-            <input
-              type="file"
-              className="form-control"
-              {...register("image", { required: true })}
-            />
-            {errors.image && <p className="text-danger">Image is required</p>}
+
+            <Upload
+              action="https://api.cloudinary.com/v1_1/dkrcsuwbc/image/upload"
+              listType="picture-card"
+              data={{ upload_preset: "image1" }}
+              onPreview={handlePreview}
+              onChange={handleUpload}
+              beforeUpload={beforeUpload}
+              fileList={fileList}
+            >
+              {fileList.length >= 1 ? null : (
+                <button
+                  style={{
+                    border: 0,
+                    background: "none",
+                  }}
+                  type="button"
+                >
+                  <PlusOutlined />
+                  <div style={{ marginTop: 8 }}>Upload Image</div>
+                </button>
+              )}
+            </Upload>
+            {previewImage && (
+              <Image
+                wrapperStyle={{
+                  display: "none",
+                }}
+                preview={{
+                  visible: previewOpen,
+                  onVisibleChange: (visible) => setPreviewOpen(visible),
+                  afterOpenChange: (visible) => !visible && setPreviewImage(""),
+                }}
+                src={previewImage}
+              />
+            )}
           </div>
           <div className="mb-3">
             <label className="form-label">Active</label>
-            <select
-              className="form-select"
-              {...register("is_active", { required: true })}
-            >
-              <option value={true}>Active</option>
-              <option value={false}>Block</option>
-            </select>
-            {errors.is_active && (
-              <p className="text-danger">Active status is required</p>
-            )}
+            <Select
+              defaultValue="true"
+              style={{ width: 120 }}
+              onChange={handleChange}
+              options={[
+                { value: true, label: "true" },
+                { value: false, label: "false" },
+              ]}
+            />
           </div>
         </form>
       </Modal>
@@ -241,39 +323,60 @@ const Banners = () => {
       >
         <form>
           <div className="mb-3">
-            <label className="form-label">Current Banner Image</label>
-            <img
-              src={currentBanner?.image}
-              alt="Current Banner"
-              className="img-fluid mb-3"
-              style={{ maxHeight: "200px" }}
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Upload New Banner Image</label>
-            <input
-              type="file"
-              className="form-control"
-              {...register("image")}
-            />
+            <label className="form-label">Upload Banner Image</label>
+
+            <Upload
+              action="https://api.cloudinary.com/v1_1/dkrcsuwbc/image/upload"
+              listType="picture-card"
+              data={{ upload_preset: "image1" }}
+              onPreview={handlePreview}
+              onChange={handleUpload}
+              beforeUpload={beforeUpload}
+              fileList={fileList}
+            >
+              {fileList.length >= 1 ? null : (
+                <button
+                  style={{
+                    border: 0,
+                    background: "none",
+                  }}
+                  type="button"
+                >
+                  <PlusOutlined />
+                  <div style={{ marginTop: 8 }}>Upload Image</div>
+                </button>
+              )}
+            </Upload>
+            {previewImage && (
+              <Image
+                wrapperStyle={{
+                  display: "none",
+                }}
+                preview={{
+                  visible: previewOpen,
+                  onVisibleChange: (visible) => setPreviewOpen(visible),
+                  afterOpenChange: (visible) => !visible && setPreviewImage(""),
+                }}
+                src={previewImage}
+              />
+            )}
           </div>
           <div className="mb-3">
             <label className="form-label">Active</label>
-            <select
-              className="form-select"
-              defaultValue={currentBanner?.is_active}
-              {...register("is_active", { required: true })}
-            >
-              <option value={true}>Active</option>
-              <option value={false}>Block</option>
-            </select>
-            {errors.is_active && (
-              <p className="text-danger">Active status is required</p>
-            )}
+            {currentBanner?.is_active}
+            <Select
+              defaultValue={currentBanner?.is_active === true ? true : false}
+              style={{ width: 120 }}
+              onChange={handleChange}
+              options={[
+                { value: true, label: "true" },
+                { value: false, label: "false" },
+              ]}
+            />
           </div>
         </form>
       </Modal>
-            <Modal
+      <Modal
         open={isModalOpenDetail}
         onCancel={() => setIsModalOpenDetail(false)}
         footer={null}
@@ -292,7 +395,11 @@ const Banners = () => {
             </div>
             <div className="mb-3">
               <label className="form-label">Active Status</label>
-              <p style={{ color: currentBannerDetail.is_active ? "green" : "red" }}>
+              <p
+                style={{
+                  color: currentBannerDetail.is_active ? "green" : "red",
+                }}
+              >
                 {currentBannerDetail.is_active ? "Active" : "Block"}
               </p>
             </div>
@@ -307,8 +414,27 @@ const Banners = () => {
         onCancel={handleCancel} // Đóng modal khi nhấn "Cancel"
         title="Delete Banner"
       >
-        <h4>Are you sure?</h4>
-        <p>Do you want to delete this banner permanently?</p>
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content border-none">
+            <div className="modal-body">
+              <div className="mt-2 text-center ">
+                <div className="flex justify-center">
+                  <img
+                    src="https://media-public.canva.com/de2y0/MAFqwzde2y0/1/tl.png"
+                    alt=""
+                    width={100}
+                  />
+                </div>
+                <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                  <h4>Are you sure ?</h4>
+                  <p className="text-muted mx-4 mb-0">
+                    Are you sure you want to remove this record ?
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </Modal>
     </div>
   );

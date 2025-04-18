@@ -36,7 +36,6 @@ const AddProduct = () => {
   const [valueVariants, setvalueVariants] = useState();
   // const { mutate } = useAddProduct();
   const queryClient = useQueryClient();
-
   const navigate = useNavigate();
   const { mutate, isLoading } = useMutation({
     mutationFn: (data) => addProduct(data),
@@ -335,7 +334,11 @@ const AddProduct = () => {
       // slug: data.slugName,
       is_active: true,
     };
-    mutate(product);
+    if (variants.length > 0) {
+      mutate(product);
+    } else {
+      message.error("Vui lòng thêm biến thể");
+    }
   };
 
   const validateFileList = () => {
@@ -356,35 +359,6 @@ const AddProduct = () => {
   return (
     <>
       <section className="grid grid-cols-12 gap-4 px-4">
-        {/* <div
-          className="col-span-3 bg-white rounded-xl h-[220px] "
-          style={{ boxShadow: "0px 0px 4px 1px #d1d1d1" }}
-        >
-          <div
-            className="text-[1.1rem] rounded-t-xl py-3 px-2 bg-[#E5EEFB] "
-            style={{ boxShadow: "inset 0 3px 0 #2673dd" }}
-          >
-            Gợi ý điền Thông tin
-          </div>
-          <div className="mt-3">
-            <div className="flex items-center mb-2 px-3 gap-2">
-              <i className="fa fa-check-circle text-[#d1d2d4] text-xl"></i>
-              <div className="text-[1rem]"> Thêm ít nhất 5 hình ảnh</div>
-            </div>
-            <div className="flex items-center mb-2 px-3 gap-2">
-              <i className="fa fa-check-circle text-[#d1d2d4] text-xl"></i>
-              <div className="text-[1rem]">
-                Tên sản phẩm có ít nhất 15~100 kí tự
-              </div>
-            </div>
-            <div className="flex items-center mb-2 px-3 gap-2">
-              <i className="fa fa-check-circle text-[#d1d2d4] text-xl"></i>
-              <div className="text-[1rem] text-left">
-                Thêm ít nhất 100 kí tự hoặc 1 hình ảnh trong mô tả sản phẩm
-              </div>
-            </div>
-          </div>
-        </div> */}
         <section className="col-span-12" ref={section1Ref} id="section1">
           <div
             className="  bg-white rounded-xl z-50 "
@@ -1080,6 +1054,44 @@ const AddProduct = () => {
                                         <div className="flex-[1_0_205px] flex justify-center border-e px-3 rounded-s border-[#EBEBEB] border-solid">
                                           <Form.Item
                                             name={`pricesale-${outerIndex}-${innerIndex}`}
+                                            rules={[
+                                              ({ getFieldValue }) => ({
+                                                validator(_, value) {
+                                                  const price = getFieldValue(
+                                                    `price-${outerIndex}-${innerIndex}`
+                                                  );
+
+                                                  // Nếu không nhập giá sale => hợp lệ (cho phép bỏ trống)
+                                                  if (!value) {
+                                                    return Promise.resolve();
+                                                  }
+
+                                                  // Kiểm tra giá sale > 1000
+                                                  if (Number(value) <= 1000) {
+                                                    return Promise.reject(
+                                                      new Error(
+                                                        "Giá sale phải lớn hơn 1.000"
+                                                      )
+                                                    );
+                                                  }
+
+                                                  // Kiểm tra giá sale <= giá gốc
+                                                  if (
+                                                    price &&
+                                                    Number(value) >
+                                                      Number(price)
+                                                  ) {
+                                                    return Promise.reject(
+                                                      new Error(
+                                                        "Giá sale phải nhỏ hơn hoặc bằng giá gốc"
+                                                      )
+                                                    );
+                                                  }
+
+                                                  return Promise.resolve();
+                                                },
+                                              }),
+                                            ]}
                                           >
                                             <Input
                                               type="number"
@@ -1135,7 +1147,7 @@ const AddProduct = () => {
               </div>
             </section>
             <div
-              className="flex gap-4 justify-content-end bg-white p-3 rounded-lg mb-1 text-[1rem] fixed bottom-0 w-[82.5%]"
+              className="flex gap-4 justify-content-end bg-white p-3 rounded-lg mb-1 text-[1rem] fixed bottom-0 w-[77.6%] "
               style={{ boxShadow: "rgb(209, 209, 209) 0px 0px 4px 1px" }}
             >
               <button className="py-2 px-4 bg-white border-2 border-[#EBEBEB] rounded-lg border-solid text-black">

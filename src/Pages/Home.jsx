@@ -12,7 +12,6 @@ const Home = () => {
   // const { banners, loading, error } = useBanners();
   // const { products, isProducts } = useProduct();
   const { data, isLoading } = getHomes();
-  console.log(data);
   const [count, setCount] = useState(0);
   const next = () => {
     if (count < 2) {

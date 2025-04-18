@@ -184,10 +184,18 @@ export const addUsers = async (data) => {
   return res.data;
 };
 
-export const getOrdersAdmin = async (page) => {
-  const res = await Axios.get(`api/admin/orders/?page=${page}`);
+export const getOrdersAdmin = async (page, filters = {}) => {
+  const params = new URLSearchParams({
+    page,
+    ...(filters.search && { keyword: filters.search }),
+    ...(filters.statusOrder && { status: filters.statusOrder }),
+    ...(filters.paymen && { payment_method: filters.paymen }),
+  });
+  console.log(filters);
+  const res = await Axios.get(`/api/admin/orders/?${params.toString()}`);
   return res.data;
 };
+
 export const addOrder = async (data) => {
   const res = await Axios.post(`api/admin/orders`, data);
   return res.data;
@@ -214,9 +222,12 @@ export const getOrderbystatus = async (status, userId) => {
   const res = await Axios.get(`/order/status/${status}/${userId}`);
   return res.data;
 };
-export const getOrderByUserid = async (userId) => {
-  const res = await Axios.get(`api/admin/orders/byuser/${userId}`);
-  console.log(res);
+export const getOrderByUserid = async (userId, filters = {}) => {
+  const params = new URLSearchParams();
+  if (filters.status) params.append("status", filters.status);
+  const res = await Axios.get(
+    `api/admin/orders/byuser/${userId}?${params.toString()}`
+  );
   return res.data;
 };
 export const updateUser = async (data, id) => {
@@ -306,26 +317,16 @@ export const getBannerDetail = async (id) => {
 };
 
 export const createBanner = async (formData) => {
-  const res = await Axios.post(`/api/admin/banners`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const res = await Axios.post(`/api/admin/banners`, formData);
   return res.data;
 };
 
 export const updateBanner = async (id, formData) => {
-  const res = await Axios.put(`/api/admin/banners/${id}`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const res = await Axios.put(`/api/admin/banners/${id}`, formData);
   if (res.status !== 200) {
     throw new Error("Failed to update banner");
   }
-  // Xử lý thành công
-  console.log("Banner updated successfully:", res.data);
-  // Trả về dữ liệu đã cập nhật
+
   return res.data;
 };
 
@@ -412,7 +413,39 @@ export const getBlogs = async (filters = {}) => {
   const res = await Axios.get(`api/blogs?${params.toString()}`);
   return res.data;
 };
+export const getBlogsAdmin = async () => {
+  const res = await Axios.get(`api/admin/blogs`);
+  return res.data;
+};
 export const getBlogDetail = async (id) => {
   const res = await Axios.get(`api/blogs/${id}`);
+  return res.data;
+};
+export const getBlogDetailAdmin = async (id) => {
+  const res = await Axios.get(`api/admin/blogs/${id}`);
+  return res.data;
+};
+export const blogDelete = async (id) => {
+  const res = await Axios.delete(`api/admin/blogs/${id}`);
+  return res.data;
+};
+export const getCommentIdProduct = async (id) => {
+  const res = await Axios.get(`api/admin/comments/product/${id}`);
+  return res.data;
+};
+export const getCateroryBlog = async () => {
+  const res = await Axios.get(`api/admin/category-blogs`);
+  return res.data;
+};
+export const AddBlog = async (data) => {
+  const res = await Axios.post(`api/admin/blogs`, data);
+  return res.data;
+};
+export const updateBlog = async (id, data) => {
+  const res = await Axios.put(`api/admin/blogs/${id}`, data);
+  return res.data;
+};
+export const addComents = async (data) => {
+  const res = await Axios.get(`api/admin/comments`, data);
   return res.data;
 };

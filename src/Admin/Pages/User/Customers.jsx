@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { user } from "../../../Apis/Api";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Modal, Pagination, Spin } from "antd";
 import { FormatDate } from "../../../Format";
 import { useDeleteUser } from "../../../Hook/useUser";
@@ -12,8 +12,8 @@ const Customers = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
-
   const page = parseInt(searchParams.get("page")) || 1;
+ 
   // const page =
   //   pathname.split("/")[3] === undefined ? 1 : pathname.split("/")[3];
   const onShowSizeChange = (current, pageSize) => {
@@ -74,7 +74,7 @@ const Customers = () => {
                   </button>
                   <button
                     type="button"
-                    className=" px-3 py-2 rounded-md btn-success add-btn"
+                    className=" text-white text-[0.9rem] bg-[#03A9F4] px-4 py-2 rounded-md "
                     onClick={() => useBlock(true)}
                   >
                     <i className="ri-add-line align-bottom me-1" /> Add Customer
@@ -192,18 +192,14 @@ const Customers = () => {
                           </span>
                         </td>
                         <td className="role">
-                          <span
-                            className={`text-sm text-uppercase`}
-                          >
-                            {item.role==0?"User":"Admin"}
+                          <span className={`text-sm text-uppercase`}>
+                            {item.role == 0 ? "User" : "Admin"}
                           </span>
                         </td>
                         <td>
                           <ul className="list-inline hstack gap-2 mb-0">
                             <li className="list-inline-item edit">
-                              <div
-                                className="text-primary d-inline-block edit-item-btn"
-                              >
+                              <div className="text-primary d-inline-block edit-item-btn">
                                 <i className="ri-pencil-fill fs-16" />
                               </div>
                             </li>
@@ -244,15 +240,15 @@ const Customers = () => {
                 </div>
               </div>
               <div className="d-flex justify-center mb-4">
-            <Pagination
-              showSizeChanger
-              onChange={onShowSizeChange}
-              current={data.current_page}
-              total={data.total}
-              pageSize={data.per_page}
-              align="center"
-            />
-          </div>
+                <Pagination
+                  showSizeChanger
+                  onChange={onShowSizeChange}
+                  current={data.current_page}
+                  total={data.total}
+                  pageSize={data.per_page}
+                  align="center"
+                />
+              </div>
             </div>
 
             <div

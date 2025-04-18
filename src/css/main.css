@@ -4746,21 +4746,16 @@ li {
 
 }
 
-
-
-
 button {
   font-family: 'Poppins', sans-serif;
 }
 
-/* Thêm CSS vào file styles/globals.css hoặc styles/tailwind.css */
 @media (max-width: 640px) {
   .custom-modal .ant-modal {
     padding: 10px !important;
   }
 }
 
-/* From Uiverse.io by krlozCJ */
 .search {
   position: relative;
   --size-button: 40px;
@@ -5040,4 +5035,48 @@ button {
   margin-left: 10px;
   cursor: pointer;
   font-size: 18px;
+}
+
+/* From Uiverse.io by andrew-demchenk0 */
+.rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.rating input {
+  opacity: 0;
+  /* width: 0;
+  height: 0; */
+  margin-top: 0px;
+  margin-left: -18px;
+  cursor: pointer;
+}
+
+
+.rating label {
+  cursor: pointer;
+  font-size: 30px;
+  color: #666;
+}
+
+.rating label::before {
+  content: '★';
+}
+
+.rating input:checked~label {
+  color: #ffa723;
+}
+
+.rating:not(:checked) label:hover,
+.rating:not(:checked) label:hover~label {
+  color: #ff9e0b;
+}
+
+.rating input:checked+label:hover,
+.rating input:checked+label:hover~label,
+.rating input:checked~label:hover,
+.rating input:checked~label:hover~label,
+.rating label:hover~input:checked~label {
+  color: #e58e09;
 }

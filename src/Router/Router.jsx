@@ -46,6 +46,9 @@ import Sizes from "../Admin/Pages/Sizes/Sizes.jsx";
 import UpdateProduct from "../Admin/Pages/Products/UpdateProduct.jsx";
 import Email_Password from "../Pages/Email_Password.jsx";
 import ConfirmResetEmail from "../Pages/ConfirmResetEmail.jsx";
+import Blogs from "../Admin/Pages/Blogs/Blogs.jsx";
+import AddBlog from "../Admin/Pages/Blogs/AddBlog.jsx";
+import UpdateBlog from "../Admin/Pages/Blogs/UpdateBlog.jsx";
 const Router = () => {
   ScrollToTop();
   return (
@@ -91,10 +94,11 @@ const Router = () => {
         <Route path="addproduct" element={<AddProduct />} />
         <Route path="categories" element={<Categories />} />
         <Route path="categories/:id" element={<Categories_Detail />} />
-
         <Route path="banners" element={<Banner />} />
+        <Route path="blogs" element={<Blogs />} />
+        <Route path="addblog" element={<AddBlog />} />
+        <Route path="updateblog/:id" element={<UpdateBlog />} />
         <Route path="sizes" element={<Sizes />} />
-
         <Route path="product_detail/:id" element={<Detail_Product />} />
         <Route path="signin" element={<SignIn />} />
         <Route path="customers" element={<Customers />} />

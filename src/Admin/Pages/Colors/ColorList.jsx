@@ -106,28 +106,12 @@ const Color = () => {
         <div className="card " id="orderList">
           <div className="card-header border-0 bg-none">
             <div className="row align-items-center gy-3 mb-8">
-              <div className="col-sm ">
-                <form>
-                  <div className="row g-3">
-                    <div className="col-xxl-5 col-sm-5">
-                      <div className="search-box">
-                        <input
-                          type="text"
-                          className="form-control search"
-                          placeholder="Search for Color "
-                        />
-                        <i className="ri-search-line search-icon" />
-                      </div>
-                    </div>
-                  </div>
-                  {/*end row*/}
-                </form>
-              </div>
+              <div className="col-sm "></div>
               <div className="col-sm-auto">
                 <div className="d-flex gap-1 flex-wrap">
                   <button
                     type="button"
-                    className=" px-3 py-2 rounded-md btn-success add-btn "
+                    className=" text-white text-[0.9rem] bg-[#03A9F4] px-4 py-2 rounded-md  "
                     onClick={() => setIsModalOpenAdd(true)}
                   >
                     <i className="ri-add-line align-bottom me-1" />

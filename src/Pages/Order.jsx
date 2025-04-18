@@ -1,5 +1,5 @@
-import { Link, useParams } from "react-router-dom";
-import { Spin, Empty, message } from "antd";
+import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Spin, Empty, message, Modal } from "antd";
 import { FormatPrice } from "../Format.jsx";
 import UseOrderByStatus from "../Hook/useOrderByStatus.jsx";
 import {
@@ -8,17 +8,66 @@ import {
   useStatusOrderCline,
 } from "../Hook/useOrder.jsx";
 import { UseDetailUser } from "../Hook/useDetailUser.jsx";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addComent } from "./useComent.jsx";
 
 const Order = () => {
   // const { data: user, isLoading } = useAuth();
   const { data, isLoading } = UseDetailUser();
-  const { status } = useParams();
-  const { data: order, isLoading: isLoadingOrder } = useDetailOrderByUserId();
-
+  // const { status } = useParams();
+  const [searchParam]=useSearchParams();
+  const status =searchParam.get("status");
+  const { data: order, isLoading: isLoadingOrder } = useDetailOrderByUserId({status});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isid, setId] = useState(false);
+  const { mutate: comment, isLoading: isComment } = addComent();
   const { isLoading: isLoadingorder, mutate } = useStatusOrderCline(
     order?.[0]?.order?.user_id
   );
-  
+  const schema = z.object({
+    content: z.string().min(1, "Please enter a content."),
+    star: z
+      .string()
+      .min(1, "Please select a star rating.")
+      .refine((val) => ["1", "2", "3", "4", "5"].includes(val), {
+        message: "Invalid star rating.",
+      }),
+  });
+  const handleOpen = (id) => {
+    setId(id);
+    setIsModalOpen(true);
+  };
+  const handleCancelAdd = () => {
+    setIsModalOpen(false);
+    reset();
+    setId("")
+  };
+  //comment
+  const onSubmit = (value) => {
+    const data = {
+      user_id: order?.[0]?.order?.user_id,
+      product_id: isid,
+      content: value.content,
+      is_active: true,
+      star: value.star,
+    };
+
+    comment(data);
+    setId("");
+    setIsModalOpen(false)
+  };
+  // trạng thái đơn hàng
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
   const getOrderStatus = (status) => {
     const statusMapping = {
       1: "Chờ xử lý",
@@ -117,40 +166,41 @@ const Order = () => {
             Tất cả{" "}
           </Link>
           <Link
-            to="/order/Wait for confirmation"
+            to="/order?status=1"
             className={`${status == "Wait for confirmation" && "text-red-600"} px-3`}
           >
-            Chờ xác nhận
+            Chờ xử lý
           </Link>
           <Link
-            to="/order/Confirm"
-            className={`${status == "Confirm" && "text-red-600"} px-3`}
+            to="/order?status=2"
+            className={`${status == "Wait for confirmation" && "text-red-600"} px-3`}
           >
-            Xác nhận
+            Đang xử lý
           </Link>
           <Link
-            to="/order/Shipping"
+            to="/order?status=3"
             className={`${status == "Confirm" && "text-red-600"} px-3`}
           >
             Đang vận chuyển
           </Link>
           <Link
-            to="/order/Successful delivery"
+            to="/order?status=4"
+            className={`${status == "Confirm" && "text-red-600"} px-3`}
+          >
+            Đã giao hàng
+          </Link>
+          <Link
+            to="/order?status=5"
             className={`${status == "Successful delivery" && "text-red-600"} px-3`}
           >
-            Giao hàng thành công
+           Hoàn thành
           </Link>
+
           <Link
-            to="/order/Successful"
-            className={`${status == "Successful" && "text-red-600"} px-3`}
-          >
-            Thành công{" "}
-          </Link>
-          <Link
-            to="/order/Canceled"
+            to="/order?status=6"
             className={`${status == "Canceled" && "text-red-600"} px-3`}
           >
-            Đã hủy{" "}
+            Đã hủy
           </Link>
         </div>
         {order.length > 0 ? (
@@ -164,43 +214,65 @@ const Order = () => {
                 <div className="bor12 p-t-20 text-right p-b-20 text-danger text-xl">
                   {getOrderStatus(item.order.status)}
                 </div>
-                <Link to={`/bill/${item.order.id}`}>
-                  {item?.products?.map((item) => (
-                    <div
-                      className="d-flex justify-content-between align-items-center bor12"
-                      key={item.id}
-                    >
-                      <div className="d-flex p-t-20" style={{ gap: 20 }}>
-                        <img
-                          src={item.product_variant.product.img_thumb}
-                          style={{ width: 80, height: 80, marginBottom: 10 }}
-                          alt={item.product_variant.product.name}
-                        />
-                        <div style={{ lineHeight: 2 }}>
-                          <h5 style={{ maxWidth: 580 }}>
-                            {item.product_variant.product.name}
-                          </h5>
-                          <p>
-                            Phân loại hàng: <br />
-                            Size: {item.product_variant.size.name}, Color:{" "}
-                            {item.product_variant.color.name}
-                          </p>
-                          <strong>x {item.quantity}</strong>
-                        </div>
-                      </div>
-                      <div>
-                        <p
-                          style={{ color: "red" }}
-                          className="fs-20 m-b-20 m-l-80"
+                {/* <Link to={`/bill/${item.order.id}`}> */}
+                {item?.products?.map((product) => (
+                  <div
+                    className="d-flex justify-content-between align-items-center bor12"
+                    key={product.id}
+                  >
+                    <div className="d-flex p-t-20" style={{ gap: 30 }}>
+                      <img
+                        src={product.product_variant.product.img_thumb}
+                        style={{ width: 80, height: 80, marginBottom: 10 }}
+                        alt={product.product_variant.product.name}
+                      />
+                      <div style={{ lineHeight: 2 }}>
+                        <Link
+                          to={`/bill/${item.order.id}`}
+                          style={{ maxWidth: 580 }}
                         >
-                          <FormatPrice
-                            price={item.product_variant.price_sale}
-                          />
+                          {product.product_variant.product.name}
+                        </Link>
+                        <p>
+                          Phân loại hàng: Size:{" "}
+                          {product.product_variant.size.name}, Color:{" "}
+                          {product.product_variant.color.name}
                         </p>
+                        <strong>x {product.quantity}</strong>
                       </div>
                     </div>
-                  ))}
-                </Link>
+                    <div className="">
+                      <p
+                        style={{ color: "red" }}
+                        className={`fs-20 ${item.order.status !== 5 ? "m-b-20" : "mt-3"} m-l-80`}
+                      >
+                        <FormatPrice
+                          price={product.product_variant.price_sale}
+                        />
+                      </p>
+                      {item.order.status === 5 && (
+                        <button
+                          className="btn m-b-30 hov-btn4 float-right"
+                          style={{
+                            backgroundColor: "red",
+                            padding: "7px 10px",
+                            maxWidth: 130,
+                            height: 40,
+                            // color: "white",
+                            fontSize: "16px",
+                          }}
+                          onClick={() =>
+                            handleOpen(product.product_variant.product.id)
+                          }
+                          type="button"
+                        >
+                          Bình luận
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                {/* </Link> */}
                 {/* Tổng tiền */}
                 <div className="d-flex justify-content-end align-items-center mt-4">
                   <h6 className="text-right  ">Ship:</h6>
@@ -258,23 +330,6 @@ const Order = () => {
                       Đã nhận hàng
                     </button>
                   )}
-                  {item.order.status === 5 && (
-                    <button
-                      className="btn mt-1 m-b-30 hov-btn4 "
-                      style={{
-                        backgroundColor: "red",
-                        padding: "7px 10px",
-                        maxWidth: 130,
-                        height: 40,
-                        // color: "white",
-                        fontSize: "16px",
-                      }}
-                      onClick={() => handleorderstatus(item.order.id, 5)}
-                      type="button"
-                    >
-                      Bình luận
-                    </button>
-                  )}
                   {/* <button
                     className="btn mt-1 m-b-30 hov-btn4"
                     style={{
@@ -287,6 +342,119 @@ const Order = () => {
                   >
                     Mua lại
                   </button> */}
+                </div>
+              </div>
+              <div
+                className={`modal fade ${isModalOpen ? "block opacity-100" : ""} `}
+                // style={{ background: "rgba(0, 0, 0, 0.5)" }}
+              >
+                <div
+                  className="modal-dialog modal-dialog-centered "
+                  style={{ transform: "none" }}
+                >
+                  <div className="modal-content">
+                    <div className="modal-header bg-light p-3">
+                      <h5 className="modal-title" id="exampleModalLabel">
+                        Comment
+                      </h5>
+                      <button
+                        type="button"
+                        className="btn-close"
+                        onClick={handleCancelAdd}
+                      />
+                    </div>
+                    <form
+                      className="tablelist-form"
+                      onSubmit={handleSubmit(onSubmit)}
+                    >
+                      <div className="modal-body">
+                        <div className="mb-3">
+                          <label
+                            htmlFor="customername-field"
+                            className="form-label"
+                          >
+                            Content
+                          </label>
+                          <input
+                            type="text"
+                            id="customername-field"
+                            className="form-control"
+                            placeholder="Enter name"
+                            {...register("content", { required: true })}
+                          />
+                          {errors.content && (
+                            <p className="text-red-500">
+                              Please enter a Content.
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="rating">
+                          <input
+                            {...register("star")}
+                            value="5"
+                            id="star5"
+                            type="radio"
+                          />
+                          <label htmlFor="star5"></label>
+
+                          <input
+                            {...register("star")}
+                            value="4"
+                            id="star4"
+                            type="radio"
+                          />
+                          <label htmlFor="star4"></label>
+
+                          <input
+                            {...register("star")}
+                            value="3"
+                            id="star3"
+                            type="radio"
+                          />
+                          <label htmlFor="star3"></label>
+
+                          <input
+                            {...register("star")}
+                            value="2"
+                            id="star2"
+                            type="radio"
+                          />
+
+                          <label htmlFor="star2"></label>
+                          <input
+                            {...register("star")}
+                            value="1"
+                            id="star1"
+                            type="radio"
+                          />
+                          <label htmlFor="star1"></label>
+                        </div>
+                        {errors.star && (
+                          <p className="text-red-500">Please enter a Star.</p>
+                        )}
+                      </div>
+                      <div className="modal-footer">
+                        <div className="hstack gap-2 justify-content-end">
+                          <button
+                            type="button"
+                            className="px-3 py-2 mt-2 rounded-md bg-[#F3F6F9]"
+                            onClick={handleCancelAdd}
+                          >
+                            Close
+                          </button>
+                          <button
+                            type="submit"
+                            className="px-3 py-2 mt-2 rounded-md bg-red-500 text-white"
+                            id="add-btn"
+                          >
+                            Comment
+                          </button>
+                          {/* <button type="button" className="btn btn-success" id="edit-btn">Update</button> */}
+                        </div>
+                      </div>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>
