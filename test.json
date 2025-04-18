@@ -1,0 +1,84 @@
+{
+  "categories": [
+    {
+      "id": 10,
+      "name": "Garrick O'Kon",
+      "is_active": true,
+      "deleted_at": null,
+      "created_at": "2025-03-02T16:38:36.000000Z",
+      "updated_at": "2025-03-02T16:38:36.000000Z"
+    },
+    {
+      "id": 9,
+      "name": "Mia Carter",
+      "is_active": true,
+      "deleted_at": null,
+      "created_at": "2025-03-02T16:38:36.000000Z",
+      "updated_at": "2025-03-02T16:38:36.000000Z"
+    },
+    {
+      "id": 8,
+      "name": "Dr. Jan Harris",
+      "is_active": true,
+      "deleted_at": null,
+      "created_at": "2025-03-02T16:38:36.000000Z",
+      "updated_at": "2025-03-02T16:38:36.000000Z"
+    },
+    {
+      "id": 7,
+      "name": "Prof. Liliane Rath",
+      "is_active": true,
+      "deleted_at": null,
+      "created_at": "2025-03-02T16:38:36.000000Z",
+      "updated_at": "2025-03-02T16:38:36.000000Z"
+    },
+    {
+      "id": 6,
+      "name": "Taryn Hermann",
+      "is_active": true,
+      "deleted_at": null,
+      "created_at": "2025-03-02T16:38:36.000000Z",
+      "updated_at": "2025-03-02T16:38:36.000000Z"
+    },
+    {
+      "id": 5,
+      "name": "Dr. Candelario Bernier PhD",
+      "is_active": true,
+      "deleted_at": null,
+      "created_at": "2025-03-02T16:38:36.000000Z",
+      "updated_at": "2025-03-02T16:38:36.000000Z"
+    },
+    {
+      "id": 4,
+      "name": "Brenden Powlowski",
+      "is_active": true,
+      "deleted_at": null,
+      "created_at": "2025-03-02T16:38:36.000000Z",
+      "updated_at": "2025-03-02T16:38:36.000000Z"
+    },
+    {
+      "id": 3,
+      "name": "Abby Gaylord MD",
+      "is_active": true,
+      "deleted_at": null,
+      "created_at": "2025-03-02T16:38:36.000000Z",
+      "updated_at": "2025-03-02T16:38:36.000000Z"
+    },
+    {
+      "id": 2,
+      "name": "Vella Schmeler",
+      "is_active": true,
+      "deleted_at": null,
+      "created_at": "2025-03-02T16:38:36.000000Z",
+      "updated_at": "2025-03-02T16:38:36.000000Z"
+    },
+    {
+      "id": 1,
+      "name": "Kattie Pfannerstill",
+      "is_active": true,
+      "deleted_at": null,
+      "created_at": "2025-03-02T16:38:36.000000Z",
+      "updated_at": "2025-03-02T16:38:36.000000Z"
+    }
+  ]
+}

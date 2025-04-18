@@ -256,10 +256,10 @@ const ShopingCart = () => {
                                 </p>
                               </Link>
                               <p className="text-gray-500 text-[14px]">
-                                Size :{item.product_variant.color.name}{" "}
+                                Size :{item.product_variant.color.name}
                               </p>
                               <p className="text-gray-500 text-[14px]">
-                                Color :{item.product_variant.size.name}{" "}
+                                Color :{item.product_variant.size.name}
                               </p>
                             </td>
 
@@ -468,12 +468,14 @@ const Voucher = ({
           const isInvalidAmount = !(
             total >= item.min_money && total <= item.max_money
           );
-          const isDisabled = isExpired || isInvalidAmount;
+          const isDisabled = isExpired || isInvalidAmount||item.quantity<1;
           const handleClick = () => {
             if (isExpired) {
               message.error("Voucher này đã hết hạn!");
             } else if (isInvalidAmount) {
               message.error("Không đủ điều kiện để sử dụng voucher này!");
+            } else if(item.quantity<1){
+              message.error("Số lượng đã hết !");
             } else {
               handleVoucherId(item.discount, item.id);
             }
@@ -503,12 +505,16 @@ const Voucher = ({
                       Giảm tối đa <FormatPrice price={item.discount} />
                     </p>
                     <p className="text-muted text-lg">
-                      Giảm cho đơn từ <FormatPrice price={item.min_money} /> -{" "}
+                      Giảm cho đơn từ <FormatPrice price={item.min_money} /> -
                       <FormatPrice price={item.max_money} />
                     </p>
                     <p className="text-muted text-lg">
-                      Hạn sử dụng:{" "}
+                      Hạn sử dụng:
                       {new Date(item.end_date).toLocaleDateString("vi-VN")}
+                    </p>
+                    <p className="text-muted text-lg">
+                      Số lượng:
+                      {item.quantity}
                     </p>
                   </div>
                 </div>

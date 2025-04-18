@@ -1,17 +1,29 @@
 import React, { useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { useOrder, useStatusOrder } from "../../../Hook/useOrder";
-import { Modal, Pagination, Spin } from "antd";
+import { Empty, Modal, Pagination, Spin } from "antd";
 import { FormatDate, FormatDateTime, FormatPrice } from "../../../Format";
 import { useForm } from "react-hook-form";
 
 const Orders = () => {
-  const [pageProduct, setPageProduct] = useState();
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const page = parseInt(searchParams.get("page")) || 1;
-  const { data, isLoading } = useOrder(page);
+  // const [searchParam]=useSearchParams();
+  // const search=searchParam.get("search")
+  // const statusOrder=searchParam.get("status")
+  // const paymen=searchParam.get("paymen")
+  const [search, setSearch] = useState("");
+  const [statusOrder, setstatusOrder] = useState("");
+  const [paymen, setPaymen] = useState("");
+  const [filters, setFilters] = useState({});
+  const { data, isLoading } = useOrder(page,filters );
   const [isOpen, setIsOpen] = useState(false);
   const [idOpen, setIdOpen] = useState("");
   const [status, setStatus] = useState();
@@ -46,8 +58,6 @@ const Orders = () => {
       4: "Đã giao hàng",
       5: "Hoàn thành",
       6: "Đã hủy",
-      7: "Trả hàng",
-      8: "Hoàn tiền",
     };
 
     return statusMapping[status] || "Trạng thái không xác định";
@@ -71,6 +81,13 @@ const Orders = () => {
 
     return statusMapping[status] || "Trạng thái không xác định";
   };
+  const handleFilter = () => {
+    setFilters({
+      search,
+      statusOrder,
+      paymen,
+    });
+  };
   if (isLoading) {
     return (
       <Spin
@@ -91,70 +108,69 @@ const Orders = () => {
                     <input
                       type="text"
                       className="form-control search"
+                      value={search}
                       placeholder="Search for order ID, customer, order status or something..."
+                      onChange={(e) => setSearch(e.target.value)}
                     />
                     <i className="ri-search-line search-icon" />
                   </div>
                 </div>
-                {/*end col*/}
-                <div className="col-xxl-2 col-sm-3">
-                  <div>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Select date"
-                    />
-                  </div>
-                </div>
-                {/*end col*/}
-                <div className="col-xxl-2 col-sm-2">
+                <div className="col-xxl-3 col-sm-2">
                   <div>
                     <select
                       className="form-control"
-                      data-choices=""
-                      data-choices-search-false=""
                       name="choices-single-default"
                       id="idStatus"
+                      value={statusOrder}
+                      onChange={(e) => setstatusOrder(e.target.value)}
                     >
                       <option value="">Status</option>
-                      <option value="all" selected="">
+                      <option value="" selected="">
                         All
                       </option>
-                      <option value="Pending">Pending</option>
-                      <option value="Inprogress">Inprogress</option>
-                      <option value="Cancelled">Cancelled</option>
-                      <option value="Pickups">Pickups</option>
-                      <option value="Returns">Returns</option>
-                      <option value="Delivered">Delivered</option>
+                      <option value="1">Chờ xử lý</option>
+                      <option value="2">Đang xử lý</option>
+                      <option value="3">Đang vận chuyển</option>
+                      <option value="4">Đã giao hàng</option>
+                      <option value="5">Hoàn thành</option>
+                      <option value="6">Đã hủy</option>
                     </select>
                   </div>
                 </div>
                 {/*end col*/}
-                <div className="col-xxl-2 col-sm-2">
+                <div className="col-xxl-3 col-sm-2">
                   <div>
                     <select
                       className="form-control"
-                      data-choices=""
-                      data-choices-search-false=""
-                      name="choices-single-default"
                       id="idPayment"
+                      value={paymen}
+                      onChange={(e) => setPaymen(e.target.value)}
                     >
                       <option value="">Select Payment</option>
-                      <option value="all" selected="">
+                      <option value="" selected="">
                         All
                       </option>
-                      <option value="Mastercard">Mastercard</option>
-                      <option value="Paypal">Paypal</option>
-                      <option value="Visa">Visa</option>
-                      <option value="COD">COD</option>
+                      <option value="COD" >COD</option>
+                      <option value="MOMO">MOMO</option>
                     </select>
+                  </div>
+                </div>
+                <div class="col-sm-1 ">
+                  <div onClick={handleFilter}>
+                    <button
+                      type="button"
+                      className="py-2 bg-[#5671cc] text-white rounded-md btn-primary w-100"
+                    >
+                      <i className="ri-equalizer-fill me-2 align-bottom"></i>
+                      Filters
+                    </button>
                   </div>
                 </div>
               </div>
               {/*end row*/}
             </form>
           </div>
-          <div className="card-body pt-0">
+          {data?.data.length>0?       <div className="card-body pt-0">
             <div>
               <div className="table-responsive table-card mb-1 mt-3">
                 <table
@@ -197,7 +213,7 @@ const Orders = () => {
                   </thead>
                   <tbody className="list form-check-all">
                     {data?.data.map((order) => (
-                      <tr>
+                      <tr key={order.id}>
                         <th scope="row">
                           <div className="form-check">
                             <input
@@ -535,7 +551,8 @@ const Orders = () => {
               </div>
             </div>
             {/*end modal */}
-          </div>
+          </div>:<Empty/>}
+    
         </div>
       </div>
       <Modal

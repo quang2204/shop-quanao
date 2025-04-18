@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { CloseOutlined } from "@ant-design/icons";
 
-const ChatApp = () => {
+const ChatApp = ({ close }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -81,155 +82,111 @@ const ChatApp = () => {
   };
 
   return (
-    <div className="chat-container">
-      <h2 className="chat-header">🔮 Gemini Chat</h2>
+    // <div className="chat-container">
+    //   <div style={{ boxShadow: " 2px 7px 14px 1px #cfc9c9" }}>
+    //     {error && <div className="error-message">{error}</div>}
+    //     <div className="flex gap-2 items-center bg-blue-400 rounded-t px-3 py-2 justify-between">
+    //       <div className="flex gap-2 items-center">
+    //         <img
+    //           src="https://media-public.canva.com/r4Rpw/MAGLXGr4Rpw/1/tl.png"
+    //           width={40}
+    //           alt="img"
+    //         />
+    //         <h4 className="text-lg text-white">Trợ lý của Coza Store</h4>
+    //       </div>
+    //       <CloseOutlined
+    //         onClick={close}
+    //         className="text-white cursor-pointer"
+    //       />
+    //     </div>
+    //     <div className="chat-messages">
+    //       {messages.map((msg, idx) => (
+    //         <div
+    //           key={idx}
+    //           className={`message ${msg.role} ${msg.isError ? "error" : ""}`}
+    //         >
+    //           <div className="message-header">
+    //             <b>{msg.role === "user" ? "Bạn" : "Gemini"}</b>
+    //             <span className="message-time">
+    //               {formatTime(msg.timestamp)}
+    //             </span>
+    //           </div>
+    //           <div className="message-content">{msg.text}</div>
+    //         </div>
+    //       ))}
+    //       {loading && (
+    //         <div className="message ai">
+    //           <div className="message-header">
+    //             <b>Gemini</b>
+    //           </div>
+    //           <div className="message-content loading">Đang trả lời...</div>
+    //         </div>
+    //       )}
+    //       <div ref={messagesEndRef} />
+    //     </div>
 
-      {error && <div className="error-message">{error}</div>}
+    //     <div className="chat-input">
+    //       <input
+    //         type="text"
+    //         value={input}
+    //         onChange={(e) => setInput(e.target.value)}
+    //         onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+    //         placeholder="Nhập nội dung..."
+    //         disabled={loading}
+    //       />
+    //       <button onClick={sendMessage} disabled={loading || !input.trim()}>
+    //         {loading ? "Đang gửi..." : "Gửi"}
+    //       </button>
+    //     </div>
+    //   </div>
+    // </div>
+    <div className="chatbot">
+      <div className="chat-header">
+        <div className="flex gap-2 items-center">
+          <img
+            src="https://media-public.canva.com/r4Rpw/MAGLXGr4Rpw/1/tl.png"
+            alt="avatar"
+            className="avatar"
+          />
+          <h3 className="chat-title">Chat bot của Coza store</h3>
+        </div>
+        <CloseOutlined onClick={close} className="close-btn" />
+      </div>
 
-      <div className="chat-messages">
+      <div className="chat-body">
         {messages.map((msg, idx) => (
           <div
             key={idx}
             className={`message ${msg.role} ${msg.isError ? "error" : ""}`}
           >
-            <div className="message-header">
-              <b>{msg.role === "user" ? "Bạn" : "Gemini"}</b>
-              <span className="message-time">{formatTime(msg.timestamp)}</span>
-            </div>
             <div className="message-content">{msg.text}</div>
           </div>
         ))}
+
         {loading && (
           <div className="message ai">
             <div className="message-header">
-              <b>Gemini</b>
+              <b>Coza Store</b>
             </div>
-            <div className="message-content loading">Đang trả lời...</div>
+            <div className="message-content">Đang trả lời...</div>
           </div>
         )}
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="chat-input">
+      <div className="input-area">
         <input
           type="text"
+          placeholder="Enter your message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-          placeholder="Nhập nội dung..."
           disabled={loading}
         />
         <button onClick={sendMessage} disabled={loading || !input.trim()}>
-          {loading ? "Đang gửi..." : "Gửi"}
+          ➤
         </button>
       </div>
-
-      <style jsx>{`
-        .chat-container {
-          max-width: 600px;
-          margin: 0 auto;
-          padding: 20px;
-          font-family: Arial, sans-serif;
-        }
-
-        .chat-header {
-          text-align: center;
-          color: #4a4a4a;
-          margin-bottom: 20px;
-        }
-
-        .error-message {
-          color: #d32f2f;
-          background: #ffebee;
-          padding: 8px 12px;
-          border-radius: 4px;
-          margin-bottom: 10px;
-        }
-
-        .chat-messages {
-          border: 1px solid #e0e0e0;
-          border-radius: 8px;
-          padding: 15px;
-          height: 400px;
-          overflow-y: auto;
-          margin-bottom: 15px;
-          background: #f9f9f9;
-        }
-
-        .message {
-          margin-bottom: 12px;
-          padding: 8px 12px;
-          border-radius: 8px;
-          max-width: 80%;
-          word-wrap: break-word;
-        }
-
-        .message.user {
-          margin-left: auto;
-          background: #e3f2fd;
-          border-bottom-right-radius: 2px;
-        }
-
-        .message.ai {
-          margin-right: auto;
-          background: #f1f1f1;
-          border-bottom-left-radius: 2px;
-        }
-
-        .message.error {
-          background: #ffebee;
-          color: #d32f2f;
-        }
-
-        .message-header {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 4px;
-          font-size: 0.9em;
-        }
-
-        .message-time {
-          color: #757575;
-          font-size: 0.8em;
-        }
-
-        .message-content {
-          line-height: 1.4;
-        }
-
-        .message-content.loading {
-          color: #9e9e9e;
-          font-style: italic;
-        }
-
-        .chat-input {
-          display: flex;
-          gap: 10px;
-        }
-
-        .chat-input input {
-          flex: 1;
-          padding: 10px;
-          border: 1px solid #e0e0e0;
-          border-radius: 4px;
-          font-size: 16px;
-        }
-
-        .chat-input button {
-          padding: 10px 20px;
-          background: #1976d2;
-          color: white;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 16px;
-        }
-
-        .chat-input button:disabled {
-          background: #b0bec5;
-          cursor: not-allowed;
-        }
-      `}</style>
     </div>
   );
 };

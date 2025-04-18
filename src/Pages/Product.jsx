@@ -13,7 +13,7 @@ import { FormatPrice } from "../Format.jsx";
 import Emptys from "../Admin/Ui/Emty.jsx";
 const Product = () => {
   const navigate = useNavigate();
-  const { caterory, pages } = useParams();
+  const {  pages } = useParams();
   const param = pages ? pages : 1;
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get("category_id");
@@ -22,14 +22,12 @@ const Product = () => {
   const search = searchParams.get("search");
   const { category, isCategory } = useCategory();
   const { isProducts, products } = useProduct(param, {
-    price: price,
+    price,
     category_id: categoryId,
-    sort: sort,
-    search: search,
+    sort,
+    search,
   });
-  const { categoryproducts, iscategoryProducts } = useCategoryProducts();
   const data = products?.data;
-
   const [filter, setFilter] = useState(false);
   const page = Array.from(
     { length: products?.data.last_page },

@@ -302,7 +302,7 @@ const Pay = () => {
               </tfoot>
             </table>
             <button
-              className="flex-c-m text-[21px] cl0 w-full h-12 bg3 bor2 hov-btn4 p-lr-15 trans-04 m-b-10 m-t-20 cursor"
+              className="flex-c-m text-[18px] cl0 w-full h-12 bg3 bor2 hov-btn4 p-lr-15 trans-04 m-b-10 m-t-20 cursor"
               type="submit"
               onClick={() => onsubmit()}
             >

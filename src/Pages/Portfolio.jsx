@@ -43,7 +43,6 @@ const Portfolio = () => {
     });
   };
 
-  const handleCancel = () => setPreviewOpen(false);
   const { data, isLoading } = UseDetailUser();
   const { mutate, isLoadingUser } = useUpdateUser();
   const schema = z.object({

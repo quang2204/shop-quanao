@@ -29,23 +29,22 @@ const UseDetailOrder = (id) => {
     refetch, // Cho phép refetch thủ công khi cần
   };
 };
-const useDetailOrderByUserId = () => {
+const useDetailOrderByUserId = (filters={}) => {
   const { data: auth } = useAuth();
-
   const userId = auth?.id;
   const { data, isLoading } = useQuery({
-    queryKey: ["orderbyuserid", userId],
-    queryFn: () => (userId ? getOrderByUserid(userId) : Promise.resolve(null)),
+    queryKey: ["orderbyuserid", userId,filters],
+    queryFn: () => (userId ? getOrderByUserid(userId,filters) : Promise.resolve(null)),
     enabled: Boolean(userId),
   });
 
   return { data, isLoading };
 };
 
-const useOrder = (page) => {
+const useOrder = (page,filters={}) => {
   const { data, isLoading } = useQuery({
-    queryKey: ["order", page],
-    queryFn: () => getOrdersAdmin(page || 1),
+    queryKey: ["order", page,filters],
+    queryFn: () => getOrdersAdmin(page || 1,filters),
   });
   return { data, isLoading };
 };

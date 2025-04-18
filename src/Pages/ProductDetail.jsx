@@ -12,11 +12,14 @@ import { useMutation, useQueryClient } from "react-query";
 import { addCart, addCartItem } from "../Apis/Api.jsx";
 import useAuth from "../Hook/useAuth.jsx";
 import { useCart } from "../Hook/useCart.jsx";
+import { getCommentProduct } from "./useComent.jsx";
+import StarRating from "../Ui/StarRating.jsx";
 const ProductDetail = () => {
   const queryCline = useQueryClient();
   const { detailProduct, isDetailProduct } = useDetailProduct();
   const { isProductVariants, productVariant } = useProductVariants();
   const { productGallerie, isproductGalleries } = useProductGalleries();
+  const { data, isLoading } = getCommentProduct();
   const [color, setColor] = useState();
   const [size, setSize] = useState();
   const [idVariants, setidVariants] = useState();
@@ -28,7 +31,6 @@ const ProductDetail = () => {
     inputValue,
     handleBlur,
   } = useQuantity();
-  console.log(productVariant);
   const [indexImg, setindexImg] = useState(0);
   const { data: cart } = useCart();
 
@@ -79,7 +81,7 @@ const ProductDetail = () => {
   const handleColor = (color) => {
     setColor(color);
   };
-  if (isDetailProduct || isProductVariants || isproductGalleries) {
+  if (isDetailProduct || isProductVariants || isproductGalleries || isLoading) {
     return (
       <Spin
         size="large"
@@ -356,7 +358,24 @@ const ProductDetail = () => {
                   {
                     label: "Đánh giá",
                     key: "2",
-                    children: <p>Content of Tab Pane 2</p>,
+                    children: data.map((item) => (
+                      <div className="flex-w flex-t p-b-20" key={item.id}>
+                        <div className="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
+                          <img src={item.user.avatar} alt="AVATAR" />
+                        </div>
+                        <div className="size-207">
+                          <div className="flex-w flex-sb-m p-b-17">
+                            <span className="mtext-107 cl2 p-r-20">
+                              {item.user.name}
+                            </span>
+                            <span className="fs-18 cl11">
+                              <StarRating rating={item.star} />
+                            </span>
+                          </div>
+                          <p className="stext-102 cl6">{item.content}</p>
+                        </div>
+                      </div>
+                    )),
                   },
                 ]}
               />

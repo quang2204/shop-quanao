@@ -328,54 +328,6 @@ const Header = () => {
                 </div>
               </li>
             </ul>
-            <div className="sidebar-gallery w-full p-tb-30">
-              <div className="flex-w flex-sb p-t-36 gallery-lb">
-                {/* item gallery sidebar */}
-                <div className="wrap-item-gallery m-b-10">
-                  <Link
-                    className="item-gallery bg-img1"
-                    to={""}
-                    data-lightbox="gallery"
-                    style={{
-                      backgroundImage:
-                        'url("http://quang2204.000.pe/view/images/gallery-01.jpg")',
-                    }}
-                  />
-                </div>
-                {/* item gallery sidebar */}
-                <div className="wrap-item-gallery m-b-10">
-                  <Link
-                    className="item-gallery bg-img1"
-                    to={""}
-                    data-lightbox="gallery"
-                    style={{
-                      backgroundImage:
-                        'url("http://quang2204.000.pe/view/images/gallery-02.jpg")',
-                    }}
-                  />
-                </div>
-                {/* item gallery sidebar */}
-                <div className="wrap-item-gallery m-b-10">
-                  <Link
-                    className="item-gallery bg-img1"
-                    to={""}
-                    data-lightbox="gallery"
-                    style={{
-                      backgroundImage:
-                        'url("http://quang2204.000.pe/view/images/gallery-03.jpg")',
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="sidebar-gallery w-full">
-              <span className="mtext-101 cl5">About</span>
-              <p className="stext-108 cl6 p-t-27">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Curabitur maximus vulputate hendrerit. Praesent faucibus erat
-                vitae rutrum gravida
-              </p>
-            </div>
             <span className="mtext-101 cl5">@ Lương Thành Quang</span>
           </div>
         </div>

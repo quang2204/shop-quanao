@@ -31,7 +31,6 @@ import AddProduct from "../Admin/Pages/Products/AddProduct.jsx";
 import Detail_Product from "../Admin/Pages/Products/Detail.jsx";
 import Customers from "../Admin/Pages/User/Customers.jsx";
 import TwoStep from "../Admin/Pages/User/TwoStep.jsx";
-
 import Order_Detail from "../Admin/Pages/Orders/Order_Detail.jsx";
 import Profile from "../Admin/Pages/Profile.jsx";
 import Login from "../Admin/Pages/Login.jsx";
@@ -47,9 +46,15 @@ import Sizes from "../Admin/Pages/Sizes/Sizes.jsx";
 import UpdateProduct from "../Admin/Pages/Products/UpdateProduct.jsx";
 import Email_Password from "../Pages/Email_Password.jsx";
 import ConfirmResetEmail from "../Pages/ConfirmResetEmail.jsx";
+
 import ResetPassword from "../Pages/ResetPassword.jsx";
 import CommentListProduct from "../Admin/Pages/Comment/CommentListProduct.jsx";
 import CommentList from "../Admin/Pages/Comment/CommentList.jsx";
+
+
+import Blogs from "../Admin/Pages/Blogs/Blogs.jsx";
+import AddBlog from "../Admin/Pages/Blogs/AddBlog.jsx";
+import UpdateBlog from "../Admin/Pages/Blogs/UpdateBlog.jsx";
 
 const Router = () => {
   ScrollToTop();
@@ -77,7 +82,6 @@ const Router = () => {
         <Route path="portfolio" element={<Portfolio />} />
         <Route path="emailpassword" element={<Email_Password />} />
         <Route path="confirmemail" element={<ConfirmResetEmail />} />
-        <Route path="resetmemail" element={<ResetPassword />} />
         <Route path="verify/password" element={<UpdatePassWord />} />
         <Route path="twostep" element={<TwoStep />} />
       </Route>
@@ -97,10 +101,11 @@ const Router = () => {
         <Route path="addproduct" element={<AddProduct />} />
         <Route path="categories" element={<Categories />} />
         <Route path="categories/:id" element={<Categories_Detail />} />
-
         <Route path="banners" element={<Banner />} />
+        <Route path="blogs" element={<Blogs />} />
+        <Route path="addblog" element={<AddBlog />} />
+        <Route path="updateblog/:id" element={<UpdateBlog />} />
         <Route path="sizes" element={<Sizes />} />
-
         <Route path="product_detail/:id" element={<Detail_Product />} />
         <Route path="signin" element={<SignIn />} />
         <Route path="customers" element={<Customers />} />

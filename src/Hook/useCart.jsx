@@ -4,7 +4,6 @@ import useAuth from "./useAuth";
 
 const useCart = () => {
   const { data: auth } = useAuth();
-  const user = JSON.parse(localStorage.getItem("auth_token") || "{}");
 
   const { data, isLoading } = useQuery({
     queryKey: ["cart", auth?.id],
@@ -17,18 +16,12 @@ const useCart = () => {
 
 const useCartItem = () => {
   const { data: cartData, isLoading: isCartLoading } = useCart();
-  // Kiểm tra nếu cartData là một mảng và có ít nhất một phần tử
-  // const cartId =
-  //   Array.isArray(cartData) && cartData.length > 0 ? cartData[0].id : null;
-  // console.log(cartData);
-
   const { data: cartItem, isLoading: isCartItemLoading } = useQuery({
     queryKey: ["cartItem", cartData?.id],
     queryFn: () => CartItem(cartData?.id),
-    enabled: !!cartData?.id && !isCartLoading, // Chỉ chạy query nếu cartId tồn tại và cartData không đang loading
+    enabled: !!cartData?.id && !isCartLoading, 
   });
 
-  // Trả về trạng thái loading nếu cartData đang loading hoặc cartItem đang loading
   const isLoading = isCartLoading || isCartItemLoading;
 
   return { cartItem, isLoading };

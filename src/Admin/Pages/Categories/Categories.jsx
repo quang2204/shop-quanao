@@ -129,7 +129,7 @@ const Categories = () => {
                 <div className="d-flex gap-1 flex-wrap">
                   <button
                     type="button"
-                    className=" px-3 py-2 rounded-md btn-success add-btn "
+                    className=" text-white text-[0.9rem] bg-[#03A9F4] px-4 py-2 rounded-md "
                     onClick={() => setIsModalOpenAdd(true)}
                   >
                     <i className="ri-add-line align-bottom me-1" />

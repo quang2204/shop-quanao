@@ -123,7 +123,7 @@ const Sizes = () => {
               <div className="col-sm-auto">
                 <button
                   type="button"
-                  className="px-3 py-2 rounded-md btn-success add-btn"
+                  className="text-white text-[0.9rem] bg-[#03A9F4] px-4 py-2 rounded-md mb-3"
                   onClick={() => setIsModalOpenAdd(true)}
                 >
                   <i className="ri-add-line align-bottom me-1" />
