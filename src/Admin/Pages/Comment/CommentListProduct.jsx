@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Pagination, Spin } from "antd";
-import { useComments, useDeleteComment } from "../../../Hook/useComment";
+import { useComments } from "../../../Hook/useComment";
 import { Link } from "react-router-dom";
 
 const CommentListProduct = () => {
@@ -40,61 +40,75 @@ const CommentListProduct = () => {
                   className="table table-nowrap align-middle"
                   id="commentTable"
                 >
-<thead className="text-muted table-light">
-  <tr className="text-uppercase">
-    <th>#</th>
-    <th>Product Image</th>
-    <th>Product Name</th>
-    <th>Description</th>
-    <th>Views</th>
-    <th>Count</th>
-    <th>Action</th>
-  </tr>
-</thead>
-<tbody className="list form-check-all">
-  {comments?.products?.data?.length > 0 ? (
-    comments.products.data.map((item, index) => (
-      <tr key={item.id}>
-        <td>{index + 1}</td>
-        <td>
-          <img
-            src={item.img_thumb || "https://via.placeholder.com/50"}
-            alt={item.name || "No Image"}
-            style={{ width: "50px", height: "50px", objectFit: "cover" }}
-          />
-        </td> 
-        <td>{item.name || "No Name"}</td>
-        <td>
-          {item.description
-            ? item.description.length > 50
-              ? `${item.description.slice(0, 50)}...`
-              : item.description
-            : "No Description"}
-        </td>
-        <td>{item.view || 0}</td>
-        <td>{item.comments_count || 0}</td>
-        <td>
-          <ul className="list-inline hstack gap-2 mb-0">
-            <li className="list-inline-item">
-              <Link
-                to={`/admin/comment-list/${item.id}`}
-                className="text-primary d-inline-block"
-              >
-                <i className="ri-eye-fill fs-16" />
-              </Link>
-            </li>
-          </ul>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="7" className="text-center">
-        không có sản phẩm nào có bình luận
-      </td>
-    </tr>
-  )}
-</tbody>
+                  <thead className="text-muted table-light">
+                    <tr className="text-uppercase">
+                      <th>#</th>
+                      <th>Product Image</th>
+                      <th>Product Name</th>
+                      <th>Description</th>
+                      <th>Views</th>
+                      <th>Count</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="list form-check-all">
+                    {comments?.products?.data?.length > 0 ? (
+                      comments.products.data.map((item, index) => (
+                        <tr key={item.id}>
+                          <td>{index + 1}</td>
+                          <td>
+                            <img
+                              src={
+                                item.img_thumb ||
+                                "https://via.placeholder.com/50"
+                              }
+                              alt={item.name || "No Image"}
+                              style={{
+                                width: "50px",
+                                height: "50px",
+                                objectFit: "cover",
+                              }}
+                            />
+                          </td>
+                          <td>
+                            {item.name
+                              ? item.name.length > 30
+                                ? `${item.name.slice(0, 30)}...`
+                                : item.name
+                              : "No Name"}
+                          </td>
+
+                          <td>
+                            {item.description
+                              ? item.description.length > 50
+                                ? `${item.description.slice(0, 50)}...`
+                                : item.description
+                              : "No Description"}
+                          </td>
+                          <td>{item.view || 0}</td>
+                          <td>{item.comments_count || 0}</td>
+                          <td>
+                            <ul className="list-inline hstack gap-2 mb-0">
+                              <li className="list-inline-item">
+                                <Link
+                                  to={`/admin/comment-list/${item.id}`}
+                                  className="text-primary d-inline-block"
+                                >
+                                  <i className="ri-eye-fill fs-16" />
+                                </Link>
+                              </li>
+                            </ul>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="7" className="text-center">
+                          không có sản phẩm nào có bình luận
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
                 </table>
               </div>
               <Pagination

@@ -4853,3 +4853,44 @@ button {
   color: #343a40;
   font-weight: 600;
 }
+.child-comment {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+}
+
+.child-comment .info {
+  flex: 1;
+}
+
+.child-comment .info strong {
+  display: block;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.child-comment .timestamp {
+  font-size: 12px;
+  color: #888;
+}
+
+.child-comment button {
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  cursor: pointer;
+  height: fit-content;
+}
+
+.child-comment button:hover {
+  background-color: #e85959;
+}
+
