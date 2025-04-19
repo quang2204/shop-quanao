@@ -47,10 +47,8 @@ import UpdateProduct from "../Admin/Pages/Products/UpdateProduct.jsx";
 import Email_Password from "../Pages/Email_Password.jsx";
 import ConfirmResetEmail from "../Pages/ConfirmResetEmail.jsx";
 
-import ResetPassword from "../Pages/ResetPassword.jsx";
 import CommentListProduct from "../Admin/Pages/Comment/CommentListProduct.jsx";
 import CommentList from "../Admin/Pages/Comment/CommentList.jsx";
-
 
 import Blogs from "../Admin/Pages/Blogs/Blogs.jsx";
 import AddBlog from "../Admin/Pages/Blogs/AddBlog.jsx";

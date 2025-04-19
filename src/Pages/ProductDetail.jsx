@@ -358,7 +358,7 @@ const ProductDetail = () => {
                   {
                     label: "Đánh giá",
                     key: "2",
-                    children: data.map((item) => (
+                    children: data?.comments?.map((item) => (
                       <div className="flex-w flex-t p-b-20" key={item.id}>
                         <div className="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
                           <img src={item.user.avatar} alt="AVATAR" />

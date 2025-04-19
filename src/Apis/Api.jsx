@@ -427,8 +427,7 @@ export const getChildComments = async (id) => {
 export const deleteComment = async (id) => {
   const res = await Axios.delete(`/api/comments/${id}`);
   return res.data;
-
-}
+};
 export const updatePassword = async (data) => {
   const res = await Axios.post("api/change-password", data);
   return res.data;
@@ -463,7 +462,8 @@ export const blogDelete = async (id) => {
   return res.data;
 };
 export const getCommentIdProduct = async (id) => {
-  const res = await Axios.get(`api/admin/comments/product/${id}`);
+  const res = await Axios.get(`api/products/${id}/comments`);
+  console.log(res.data);
   return res.data;
 };
 export const getCateroryBlog = async () => {
