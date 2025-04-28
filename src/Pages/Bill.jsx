@@ -40,7 +40,6 @@ const Bill = () => {
       />
     );
   }
-  console.log(data);
   const getOrderStatus = (status) => {
     const statusMapping = {
       1: "Chờ xử lý",

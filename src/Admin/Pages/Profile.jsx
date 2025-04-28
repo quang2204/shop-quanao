@@ -1,7 +1,6 @@
 import React from "react";
-import background from "../velzon/assets/images/profile-bg.jpg";
-import avatar from "../velzon/assets/images/users/avatar-1.jpg";
-import {UseDetailUser} from "../../Hook/useDetailUser";
+// import background from "../velzon/assets/images/profile-bg.jpg";
+import { UseDetailUser } from "../../Hook/useDetailUser";
 import { Spin } from "antd";
 const Profile = () => {
   const { data, isLoading } = UseDetailUser();
@@ -17,7 +16,7 @@ const Profile = () => {
     <div className="px-4">
       <div className="profile-foreground position-relative mx-n4 mt-n4">
         <div className="profile-wid-bg">
-          <img src={background} alt="" className="profile-wid-img" />
+          {/* <img src={background} alt="" className="profile-wid-img" /> */}
         </div>
       </div>
       <div className="pt-4 mb-4 mb-lg-3 pb-lg-4 profile-wrapper">
@@ -63,7 +62,6 @@ const Profile = () => {
         <div className="col-lg-12">
           <div>
             <div className="d-flex profile-wrapper justify-end">
-            
               <div className="flex-shrink-0">
                 <a
                   href="pages-profile-settings.html"

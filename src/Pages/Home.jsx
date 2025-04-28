@@ -43,7 +43,7 @@ const Home = () => {
   }
   return (
     <>
-      <section className="section-slide mt-[5rem]">
+      <section className="section-slide mt-[4rem]">
         <div className="wrap-slick1 rs2-slick1">
           <div className="slick1">
             {data.banners.length > 0 && (
@@ -124,11 +124,7 @@ const Home = () => {
                             {item.name}
                           </Link>
                           <span className="stext-107 cl3">
-                            {
-                              <FormatPrice
-                                price={item.variants_min_price}
-                              />
-                            }
+                            {<FormatPrice price={item.variants_min_price} />}
                           </span>
                         </div>
                       </div>
@@ -139,7 +135,6 @@ const Home = () => {
               <Empty className="flex items-center justify-center w-full mt-10" />
             )}
           </div>
-          
         </div>
       </section>
       <section className="bg0 p-t-23 pb-10">
@@ -176,11 +171,7 @@ const Home = () => {
                             {item.name}
                           </Link>
                           <span className="stext-107 cl3">
-                            {
-                              <FormatPrice
-                                price={item.variants_min_price}
-                              />
-                            }
+                            {<FormatPrice price={item.variants_min_price} />}
                           </span>
                         </div>
                       </div>
@@ -191,7 +182,6 @@ const Home = () => {
               <Empty className="flex items-center justify-center w-full mt-10" />
             )}
           </div>
-          
         </div>
       </section>
       {/* <ChatApp/> */}

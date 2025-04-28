@@ -6,7 +6,7 @@ import logo1 from "../images/icons/logo-01.png";
 import useQuantity from "../Hook/useQuantity";
 import { useMutation } from "react-query";
 import { logout } from "../Apis/Api";
-import { message } from "antd";
+import { Spin, message } from "antd";
 const Header = () => {
   // const user = JSON.parse(localStorage.getItem("auth_token") || "null");
   const user = localStorage.getItem("auth_token");
@@ -16,7 +16,7 @@ const Header = () => {
   const quantity = cartItem?.map((a) => a.quantity);
   const navigate = useNavigate();
   const sum = quantity?.reduce((acc, curr) => acc + curr, 0);
-  const { mutate } = useMutation(logout, {
+  const { mutate, isLoading } = useMutation(logout, {
     onSuccess: () => {
       message.success("Đăng xuất thành công");
       localStorage.removeItem("auth_token");
@@ -32,6 +32,14 @@ const Header = () => {
       navigate(`/product?search=${e.target.value}`);
     }
   };
+  if (isLoading) {
+    return (
+      <Spin
+        size="large"
+        className="h-[50vh] mt-[100px] flex items-center justify-center w-full "
+      />
+    );
+  }
   return (
     <>
       <header>

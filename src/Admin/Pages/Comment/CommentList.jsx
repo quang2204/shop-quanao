@@ -53,7 +53,6 @@ const CommentList = () => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedComment, setSelectedComment] = useState(null);
 
-  
   const showModalDetail = (comment) => {
     setSelectedComment(comment);
     setIsDetailModalOpen(true);
@@ -89,7 +88,7 @@ const CommentList = () => {
   }
 
   return (
-    <div className="row mx-2">
+    <div className="row">
       <div className="col-lg-12">
         <div className="card" id="commentList">
           <div className="card-header border-0 bg-none">
@@ -132,7 +131,6 @@ const CommentList = () => {
                       <th>#</th>
                       <th>User</th>
                       <th>Content</th>
-                      <th>Children Count</th>
                       <th>Created At</th>
                       <th>Action</th>
                     </tr>
@@ -172,25 +170,14 @@ const CommentList = () => {
                                   <i className="ri-eye-fill fs-16" />
                                 </div>
                               </li>
-                              <li className="list-inline-item">
+                              {/* <li className="list-inline-item">
                                 <div
                                   className="text-danger d-inline-block"
                                   onClick={() => showModal(comment.id)}
                                 >
                                   <i className="ri-delete-bin-5-fill fs-16"></i>
                                 </div>
-                              </li>
-                              <li className="list-inline-item">
-                                <div
-                                  className="text-info d-inline-block"
-                                  onClick={() =>
-                                    handleShowChildComments(comment.id)
-                                  }
-                                >
-                                  <i className="ri-chat-3-line fs-16"></i>{" "}
-                                  {/* Icon for child comments */}
-                                </div>
-                              </li>
+                              </li> */}
                             </ul>
                           </td>
                         </tr>
@@ -209,36 +196,6 @@ const CommentList = () => {
           </div>
         </div>
       </div>
-      {/* show comment con  */}
-      <Modal
-  open={isChildModalOpen}
-  onCancel={handleChildModalClose}
-  footer={null}
-  title="Child Comments"
->
-  {childComments.length > 0 ? (
-    <div>
-      {childComments.map((child) => (
-        <div className="child-comment">
-  <div className="info">
-    <strong>{child.user?.name || "Anonymous"}:</strong>
-    <p className="mb-1">{child.content}</p>
-    <div className="timestamp">
-      Created At: {new Date(child.created_at).toLocaleString()}
-    </div>
-  </div>
-  <button onClick={() => handleDeleteChildComment(child.id)}>
-    Delete
-  </button>
-</div>
-
-      ))}
-    </div>
-  ) : (
-    <p>No child comments available.</p>
-  )}
-</Modal>
-
       {/* Modal delete */}
       <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <div className="text-center">
@@ -283,10 +240,6 @@ const CommentList = () => {
             <p className="text-muted mb-1">
               <strong>Content:</strong>{" "}
               {selectedComment.content || "No Content"}
-            </p>
-            <p className="text-muted mb-1">
-              <strong>Children Count:</strong>{" "}
-              {selectedComment.children_count || 0}
             </p>
             <p className="text-muted mb-1">
               <strong>Created At:</strong>{" "}

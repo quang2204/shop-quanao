@@ -16,12 +16,23 @@ export const getCategory = async (page) => {
   const res = await Axios.get(`api/admin/categories?page=${page}`);
   return res.data;
 };
+export const categoryTrashed = async () => {
+  const res = await Axios.get(`api/categories/trashed`);
+  return res.data;
+};
+export const categoryRestore = async (id) => {
+  const res = await Axios.put(`api/categories/restore/${id}`);
+  return res.data;
+};
+export const categoryForcedelete = async (id) => {
+  const res = await Axios.delete(`api/categories/force-delete/${id}`);
+  return res.data;
+};
 export const deleteCategory = async (id) => {
   const res = await Axios.delete(`api/admin/categories/${id}`);
   return res.data;
 };
 export const updateCategory = async (id, data) => {
-  console.log(data);
   const res = await Axios.put(`api/admin/categories/${id}`, data);
   return res.data;
 };
@@ -32,6 +43,14 @@ export const addCategory = async (data) => {
 };
 export const DetailProduct = async (id) => {
   const res = await Axios.get(`api/admin/products/${id}`);
+  return res.data;
+};
+export const forceDeleteProduct = async (id) => {
+  const res = await Axios.delete(`api/products/force-delete/${id}`);
+  return res.data;
+};
+export const restoreProduct = async (id) => {
+  const res = await Axios.put(`api/products/restore/${id}`);
   return res.data;
 };
 export const productGalleries = async (id) => {
@@ -161,9 +180,13 @@ export const getVouchers = async (page) => {
   const res = await Axios.get(`api/admin/vouchers?page=${page}`);
   return res.data;
 };
-
-export const user = async (page) => {
-  const res = await Axios.get(`api/admin/users/?page=${page}`);
+export const user = async (page, filter = {}) => {
+  const param = new URLSearchParams();
+  param.append("page", page);
+  if (filter.search) param.append("email", filter.search);
+  if (filter.role !== undefined && filter.role !== "")
+    param.append("role", filter.role);
+  const res = await Axios.get(`api/admin/users?${param.toString()}`);
   return res.data;
 };
 export const detailUser = async () => {
@@ -183,7 +206,10 @@ export const addUsers = async (data) => {
   const res = await Axios.post(`api/admin/users`, data);
   return res.data;
 };
-
+export const updateUsers = async (id, data) => {
+  const res = await Axios.put(`api/admin/users/${id}`, data);
+  return res.data;
+};
 export const getOrdersAdmin = async (page, filters = {}) => {
   const params = new URLSearchParams({
     page,
@@ -191,7 +217,6 @@ export const getOrdersAdmin = async (page, filters = {}) => {
     ...(filters.statusOrder && { status: filters.statusOrder }),
     ...(filters.paymen && { payment_method: filters.paymen }),
   });
-  console.log(filters);
   const res = await Axios.get(`/api/admin/orders/?${params.toString()}`);
   return res.data;
 };
@@ -231,7 +256,6 @@ export const getOrderByUserid = async (userId, filters = {}) => {
   return res.data;
 };
 export const updateUser = async (data, id) => {
-  console.log(id);
   const res = await Axios.put(`api/admin/users/${id}`, data);
   return res.data;
 };
@@ -243,12 +267,53 @@ export const addProduct = async (data) => {
   const res = await Axios.post(`api/admin/products`, data);
   return res.data;
 };
+export const harddeleteProduct = async () => {
+  const res = await Axios.get(`api/products/trashed`);
+  return res.data;
+};
+// blog
+export const harddeleteBlog = async () => {
+  const res = await Axios.get(`api/blogs/trashed`);
+  return res.data;
+};
+export const forceDeleteBlog = async (id) => {
+  const res = await Axios.delete(`api/blogs/force-delete/${id}`);
+  return res.data;
+};
+export const restoreBlog = async (id) => {
+  const res = await Axios.put(`api/blogs/restore/${id}`);
+  return res.data;
+};
 // color
 export const getColors = async (page) => {
   const res = await Axios.get(`/api/admin/colors?page=${page}`);
   return res.data;
 };
-
+export const getColorsTrashed = async () => {
+  const res = await Axios.get(`api/colors/trashed`);
+  return res.data;
+};
+export const Colorsforcedelete = async (id) => {
+  const res = await Axios.delete(`api/colors/force-delete/${id}`);
+  return res.data;
+};
+export const Colorsrestore = async (id) => {
+  const res = await Axios.put(`api/colors/restore/${id}`);
+  return res.data;
+};
+//
+export const getSizesTrashed = async () => {
+  const res = await Axios.get(`api/sizes/trashed`);
+  return res.data;
+};
+export const Sizesforcedelete = async (id) => {
+  const res = await Axios.delete(`api/sizes/force-delete/${id}`);
+  return res.data;
+};
+export const Sizesrestore = async (id) => {
+  const res = await Axios.put(`api/sizes/restore/${id}`);
+  return res.data;
+};
 export const getColorDetail = async (id) => {
   const res = await Axios.get(`/api/admin/colors/${id}`);
   return res.data;
@@ -453,6 +518,10 @@ export const getBlogDetail = async (id) => {
   const res = await Axios.get(`api/blogs/${id}`);
   return res.data;
 };
+export const getCaterotyBlog = async () => {
+  const res = await Axios.get(`api/admin/category-blogs`);
+  return res.data;
+};
 export const getBlogDetailAdmin = async (id) => {
   const res = await Axios.get(`api/admin/blogs/${id}`);
   return res.data;
@@ -461,13 +530,38 @@ export const blogDelete = async (id) => {
   const res = await Axios.delete(`api/admin/blogs/${id}`);
   return res.data;
 };
-export const getCommentIdProduct = async (id) => {
-  const res = await Axios.get(`api/products/${id}/comments`);
-  console.log(res.data);
+export const getCommentIdProduct = async (id, filterStart) => {
+  let url = `api/products/${id}/comments`;
+
+  if (filterStart) {
+    url += `?stars=${filterStart}`;
+  }
+
+  const res = await Axios.get(url);
   return res.data;
 };
 export const getCateroryBlog = async () => {
   const res = await Axios.get(`api/admin/category-blogs`);
+  return res.data;
+};
+export const getCateroryBlogAdmin = async (page) => {
+  const res = await Axios.get(`api/paginate?page=${page}`);
+  return res.data;
+};
+export const addCateroryBlog = async (data) => {
+  const res = await Axios.post(`api/admin/category-blogs`, data);
+  return res.data;
+};
+export const detailCateroryBlog = async (id) => {
+  const res = await Axios.post(`api/admin/category-blogs/${id}`);
+  return res.data;
+};
+export const deleteCateroryBlog = async (id) => {
+  const res = await Axios.delete(`api/admin/category-blogs/${id}`);
+  return res.data;
+};
+export const updateCateroryBlog = async (id, data) => {
+  const res = await Axios.put(`api/admin/category-blogs/${id}`, data);
   return res.data;
 };
 export const AddBlog = async (data) => {
@@ -479,6 +573,6 @@ export const updateBlog = async (id, data) => {
   return res.data;
 };
 export const addComents = async (data) => {
-  const res = await Axios.get(`api/admin/comments`, data);
+  const res = await Axios.post(`api/comments/store`, data);
   return res.data;
 };

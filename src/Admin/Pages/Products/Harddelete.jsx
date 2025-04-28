@@ -1,42 +1,49 @@
-import { useDeleteProduct, useProduct } from "../../../Hook/useProduct.jsx";
-import { Image, Modal, Pagination, Spin } from "antd";
-import { FormatDate, FormatDateTime, FormatPrice } from "../../../Format.jsx";
 import {
-  Link,
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+  harddeleteProducts,
+  useforceDeleteProduct,
+  userestoreProduct,
+} from "../../../Hook/useProduct.jsx";
+import { Empty, Image, Modal, Pagination, Spin } from "antd";
+import { FormatDate, FormatPrice } from "../../../Format.jsx";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Emptys from "../../Ui/Emty.jsx";
-const Products = () => {
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const page = parseInt(searchParams.get("page")) || 1;
+const Harddelete = () => {
   const [id, setId] = useState("");
-  const [sorttype, setSorttype] = useState(1);
-  const [pageProduct, setPageProduct] = useState(1);
-  const [searchParam] = useSearchParams();
   const navigate = useNavigate();
-  const search = searchParam.get("search");
-  const sort = searchParam.get("sort");
-  const { isProducts, products } = useProduct(page, {
-    sort,
-    search,
-  });
+
+  const { isProducts, products } = harddeleteProducts();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idDelete, setIdDelete] = useState("");
-  const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
-  const { mutate, isLoading } = useDeleteProduct(() => {
+  const [isModalOpendelete, setIsModalOpendelete] = useState(false);
+  const { mutate, isLoading } = useforceDeleteProduct(() => {
     // setOpen(false);
-    setId("");
+    setIdDelete("");
   });
+  const { mutate: mutaRestore, isLoading: isRestore } = userestoreProduct(
+    () => {
+      // setOpen(false);
+      setIdDelete("");
+    }
+  );
   const showModal = (id) => {
     setIdDelete(id);
     setIsModalOpen(true);
   };
+  const showRestore = (id) => {
+    setIdDelete(id);
+    setIsModalOpendelete(true);
+  };
+  const handleCancelRestore = () => {
+    setIdDelete("");
+    setIsModalOpendelete(false);
+  };
+  const handleOkRestore = () => {
+    mutaRestore(idDelete);
+    setIsModalOpendelete(false);
+  };
   const handleCancel = () => {
+    setIdDelete("");
     setIsModalOpen(false);
   };
   const handleOk = () => {
@@ -47,27 +54,6 @@ const Products = () => {
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("page", current);
     navigate(`${location.pathname}?${searchParams.toString()}`);
-  };
-  const handleSearch = (e) => {
-    if (e.key === "Enter") {
-      const value = e.target.value.trim();
-      const updateValue = new URLSearchParams(searchParam.toString());
-      updateValue.set("search", value);
-      navigate(`?${updateValue.toString()}`);
-    }
-  };
-  const handleSort = () => {
-    const updatedParams = new URLSearchParams(searchParam.toString());
-    updatedParams.delete("sort");
-    if (sorttype === 1) {
-      setSorttype(2);
-      updatedParams.set("sort", "1");
-    } else {
-      setSorttype(1);
-      updatedParams.set("sort_price", "");
-    }
-
-    navigate(`?${updatedParams.toString()}`);
   };
 
   if (isProducts) {
@@ -81,52 +67,11 @@ const Products = () => {
   return (
     <div className="row">
       <div className="col-lg-12">
-        {products?.data.data.length > 0 ? (
+        {products?.data.length > 0 ? (
           <div className="card" id="orderList">
-            <div className="card-header border-0 bg-none">
-              <div className="row align-items-center gy-3">
-                <div className="col-sm pl-2">
-                  <form>
-                    <div className="row g-3">
-                      <div className="col-xxl-5 col-sm-5">
-                        <div className="search-box">
-                          <input
-                            type="text"
-                            className="form-control search"
-                            placeholder="Search for product ..."
-                            onKeyDown={(e) => handleSearch(e)}
-                          />
-                          <i className="ri-search-line search-icon" />
-                        </div>
-                      </div>
-                    </div>
-                    {/*end row*/}
-                  </form>
-                </div>
-                <div className="col-sm-auto">
-                  <div className="d-flex gap-1 flex-wrap">
-                    <Link
-                      to="/admin/addproduct"
-                      type="button"
-                      className="text-white text-[0.9rem] bg-[#03A9F4] px-4 py-2 rounded-md "
-                    >
-                      Add product
-                    </Link>
-                    <button
-                      className="btn btn-soft-danger"
-                      id="remove-actions"
-                      onclick="deleteMultiple()"
-                    >
-                      <i className="ri-delete-bin-2-line" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <div className="card-body pt-0">
               <div>
-                <div className="table-responsive table-card mb-1 mt-3">
+                <div className="table-responsive table-card mb-1 mt-3 overflow-hidden">
                   <table
                     className="table table-nowrap align-middle"
                     id="orderTable"
@@ -136,16 +81,14 @@ const Products = () => {
                         <th>#</th>
                         <th>Name</th>
                         <th>Product Date</th>
-                        <th className="sort" onClick={() => handleSort()}>
-                          Price
-                        </th>
+                        <th>Price</th>
                         <th>Image</th>
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody className="list form-check-all">
-                      {products?.data.data.map((item, index) => (
+                      {products?.data.map((item, index) => (
                         <tr key={index}>
                           <td className="id">
                             <div className="fw-medium">{index + 1}</div>
@@ -187,35 +130,24 @@ const Products = () => {
                           </td>
                           <td>
                             <ul className="list-inline hstack gap-2 mb-0">
-                              <li
-                                className="list-inline-item"
-                                data-bs-toggle="tooltip"
-                                data-bs-trigger="hover"
-                                data-bs-placement="top"
-                                title="View"
-                              >
-                                <Link
-                                  to={`/admin/product_detail/${item.id}`}
-                                  className="text-primary d-inline-block"
-                                >
-                                  <i className="ri-eye-fill fs-16" />
-                                </Link>
-                              </li>
-                              <li className="list-inline-item edit">
-                                <Link
-                                  to={`/admin/uppdateproduct/${item.id}`}
-                                  data-bs-toggle="modal"
-                                  className="text-primary d-inline-block edit-item-btn"
-                                >
-                                  <i className="ri-pencil-fill fs-16" />
-                                </Link>
-                              </li>
                               <li className="list-inline-item">
                                 <div
                                   className="text-danger d-inline-block remove-item-btn"
                                   onClick={() => showModal(item.id)}
                                 >
                                   <i className="ri-delete-bin-5-fill fs-16"></i>
+                                </div>
+                              </li>
+                              <li className="list-inline-item cursor-pointer">
+                                <div
+                                  className="text-danger d-inline-block remove-item-btn"
+                                  onClick={() => showRestore(item.id)}
+                                >
+                                  <img
+                                    src="https://media-public.canva.com/RAeJ8/MAEy_-RAeJ8/1/tl.png"
+                                    alt="restore"
+                                    width={30}
+                                  />
                                 </div>
                               </li>
                             </ul>
@@ -237,7 +169,7 @@ const Products = () => {
             </div>
           </div>
         ) : (
-          <Emptys />
+          <Empty />
         )}
 
         <Modal
@@ -269,10 +201,39 @@ const Products = () => {
             </div>
           </div>
         </Modal>
+        <Modal
+          open={isModalOpendelete}
+          onOk={handleOkRestore}
+          onCancel={handleCancelRestore}
+
+          // className="modal fade zoomIn"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content border-none">
+              <div className="modal-body">
+                <div className="mt-2 text-center ">
+                  <div className="flex justify-center">
+                    <img
+                      src="https://media-public.canva.com/IgIvI/MAE5CbIgIvI/1/tl.png"
+                      alt=""
+                      width={100}
+                    />
+                  </div>
+                  <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                    <h4>Are you sure ?</h4>
+                    <p className="text-muted mx-4 mb-0">
+                      Are you sure you want to restore this record?
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
       </div>
       {/*end col*/}
     </div>
   );
 };
 
-export default Products;
+export default Harddelete;

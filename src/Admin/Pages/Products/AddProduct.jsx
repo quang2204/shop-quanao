@@ -12,9 +12,6 @@ import {
 import { useMutation, useQueryClient } from "react-query";
 import { useColors } from "../../../Hook/useColor.jsx";
 import { useSizes } from "../../../Hook/useSize.jsx";
-// import { useAddProduct, useAddProductGalleries } from "../../../Hook/useProduct.jsx";
-// import { Link } from "react-router-dom";
-
 const AddProduct = () => {
   const section1Ref = useRef(null);
   const section2Ref = useRef(null);
@@ -32,9 +29,7 @@ const AddProduct = () => {
   const { colors, isLoading: isLoadingColor } = useColors();
   const { sizes, isLoadingSize } = useSizes();
   const test = sizes?.data?.find((item) => item.id === selectedvalue[0])?.name;
-  // console.log(test,selectedvalue1);
   const [valueVariants, setvalueVariants] = useState();
-  // const { mutate } = useAddProduct();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { mutate, isLoading } = useMutation({
@@ -189,7 +184,9 @@ const AddProduct = () => {
     });
   };
 
-  const treeData = transformToTreeData(category?.data);
+  const treeData = transformToTreeData(
+    category?.data.filter((item) => item.is_active == 1)
+  );
   const onChange = (newValue) => {
     setValue(newValue);
   };
@@ -239,36 +236,6 @@ const AddProduct = () => {
     }
   }, [classify, classify1]);
 
-  const handleDeleteSelect1 = () => {
-    setClassify1(false);
-    setSelectedIds1([]);
-    setClassifys1([
-      {
-        id: 0,
-      },
-    ]);
-    setSelect1("");
-    setSelectedvalue1([]);
-    const check = selectedvalue ? selectedvalue : selectedvalue1;
-    const result = check.map((item, index) => ({
-      id: index,
-      type: item,
-    }));
-  };
-  const onhandluploadimgPl = (e) => {
-    let newFileList = [...e.fileList];
-
-    // Nếu upload thành công, cập nhật URL
-    newFileList = newFileList.map((file) => {
-      if (file.response) {
-        file.url = file.response.url; // URL trả về từ server
-      }
-      return file;
-    });
-
-    setFileList1(newFileList);
-    // setImg(!img);
-  };
   const onSearch = () => {
     // console.log("search:", value);
   };
@@ -388,7 +355,7 @@ const AddProduct = () => {
               <div
                 className="tab-link-bar"
                 style={{
-                  transform: `translateX(${tabs === "section1" ? "0" : "760"}px)`,
+                  transform: `translateX(${tabs === "section1" ? "0" : "1020"}px)`,
                   width: "130px",
                 }}
               ></div>

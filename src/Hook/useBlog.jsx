@@ -7,6 +7,9 @@ import {
   updateBlog,
   getBlogsAdmin,
   getBlogDetailAdmin,
+  harddeleteBlog,
+  forceDeleteBlog,
+  restoreBlog,
 } from "../Apis/Api";
 import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
@@ -18,10 +21,17 @@ const useBlogs = (filters = {}) => {
   });
   return { data, isLoading };
 };
+export const harddeleteBlogs = () => {
+  const { data: blogs, isLoading: isBlogs } = useQuery({
+    queryKey: ["harddeleteblog"],
+    queryFn: () => harddeleteBlog(),
+  });
+  return { blogs, isBlogs };
+};
 const useBlogsAdmin = () => {
   const { data, isLoading } = useQuery({
     queryFn: () => getBlogsAdmin(),
-    queryKey: ["blogs", ],
+    queryKey: ["blogs"],
   });
   return { data, isLoading };
 };
@@ -41,16 +51,17 @@ const useBlogDetailAdmin = () => {
   });
   return { data, isLoading };
 };
-const useDeletBlog = () => {
+const useDeletBlog = (setIsModalOpen) => {
   const queryCline = useQueryClient();
   const { mutate, isLoading } = useMutation({
     mutationFn: (id) => blogDelete(id),
     onSuccess: () => {
-      message.success("Xóa thành công");
+      message.success("Deleted successfully");
       queryCline.invalidateQueries({ queryKey: ["blogs"] });
+      setIsModalOpen(false);
     },
-    onError: () => {
-      message.error("Xóa thất bại");
+    onError: (error) => {
+      message.error(error.response.data.message);
     },
   });
   return { mutate, isLoading };
@@ -61,12 +72,12 @@ const useAddBlog = () => {
   const { mutate, isLoading } = useMutation({
     mutationFn: (data) => AddBlog(data),
     onSuccess: () => {
-      message.success("Thêm thành công");
+      message.success("More success");
       queryCline.invalidateQueries({ queryKey: ["blogs"] });
       navigate("/admin/blogs");
     },
-    onError: () => {
-      message.error("Thêm thất bại");
+    onError: (error) => {
+      message.error(error.response.data.message);
     },
   });
   return { mutate, isLoading };
@@ -77,14 +88,55 @@ const useupdateBlog = () => {
   const { mutate, isLoading } = useMutation({
     mutationFn: ({ id, data }) => updateBlog(id, data),
     onSuccess: () => {
-      message.success("Sửa thành công");
+      message.success("Edited successfully");
       queryCline.invalidateQueries({ queryKey: ["blogs"] });
       navigate("/admin/blogs");
     },
-    onError: () => {
-      message.error("Sửa thất bại");
+    onError: (error) => {
+      message.error(error.response.data.message);
     },
   });
   return { mutate, isLoading };
 };
-export { useBlogs, useBlogDetail, useDeletBlog, useAddBlog, useupdateBlog,useBlogsAdmin ,useBlogDetailAdmin};
+export const useforceDeleteBlog = (onSuccessCallback) => {
+  const queryClient = useQueryClient();
+
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (id) => forceDeleteBlog(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["harddeleteblog"] });
+      message.success("Xóa blog thành công");
+      onSuccessCallback?.();
+    },
+    onError: (error) => {
+      message.error(error.response.data.message);
+    },
+  });
+
+  return { mutate, isLoading };
+};
+export const userestoreBlog = (onSuccessCallback) => {
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (id) => restoreBlog(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["harddeleteblog"] });
+      message.success("Khôi phục blog thành công");
+      onSuccessCallback?.();
+    },
+    onError: (error) => {
+      message.error(error.response.data.message);
+    },
+  });
+
+  return { mutate, isLoading };
+};
+export {
+  useBlogs,
+  useBlogDetail,
+  useDeletBlog,
+  useAddBlog,
+  useupdateBlog,
+  useBlogsAdmin,
+  useBlogDetailAdmin,
+};

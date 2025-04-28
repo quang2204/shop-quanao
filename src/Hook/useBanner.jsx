@@ -37,13 +37,14 @@ const useBanner = (page = 1) => {
   return { banner, isBanner, error };
 };
 
-const useCreateBanner = () => {
+const useCreateBanner = (setIsModalOpenAdd) => {
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useMutation({
     mutationFn: (newBanner) => createBanner(newBanner),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["banner"] });
       message.success("Banner added successfully");
+      setIsModalOpenAdd(false);
     },
     onError: (error) => {
       message.error(error.response.data.message);
@@ -52,14 +53,14 @@ const useCreateBanner = () => {
   return { mutate, isLoading };
 };
 
-const useUpdateBanner = () => {
+const useUpdateBanner = (setIsModalOpenEdit) => {
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useMutation({
     mutationFn: ({ id, updatedBanner }) => updateBanner(id, updatedBanner),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["banner"] });
       message.success("Banner updated successfully");
-      console.log(data);
+      setIsModalOpenEdit(false);
     },
     onError: () => {
       message.error("Failed to update banner");
@@ -68,13 +69,14 @@ const useUpdateBanner = () => {
   return { mutate, isLoading };
 };
 
-const useDeleteBanner = () => {
+const useDeleteBanner = (setIsModalOpen) => {
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useMutation({
     mutationFn: (id) => deleteBanner(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["banner"] });
       message.success("Banner deleted successfully");
+      setIsModalOpen(false);
     },
     onError: () => {
       message.error("Failed to delete banner");

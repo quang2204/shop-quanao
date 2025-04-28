@@ -15,12 +15,12 @@ const addComent = () => {
   });
   return { mutate, isLoading };
 };
-const getCommentProduct = () => {
+const getCommentProduct = (filterStart) => {
   const { id } = useParams();
   const { data, isLoading } = useQuery({
-    queryKey: ["commentproduct", id],
-    queryFn:()=>getCommentIdProduct(id)
+    queryKey: ["commentproduct", id, filterStart],
+    queryFn: () => getCommentIdProduct(id, filterStart),
   });
-  return {data, isLoading }
+  return { data, isLoading };
 };
-export { addComent ,getCommentProduct};
+export { addComent, getCommentProduct };

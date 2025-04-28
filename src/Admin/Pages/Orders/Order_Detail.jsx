@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 const Order_Detail = () => {
   const { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenOrder, setIsOpenOrder] = useState(false);
   const { isLoading: isLoadingorder, mutate } = useStatusOrderAdmin(id);
   const { data, isLoading } = UseDetailOrder(id);
   const [idOpen, setIdOpen] = useState("");
@@ -35,13 +36,18 @@ const Order_Detail = () => {
   const handleCancel = (id) => {
     setIdOpen("");
     setIsOpen(false);
+    setIsOpenOrder(false);
   };
-  console.log(idOpen);
+
   const handleOpen = (id) => {
     setIdOpen(id[0].order.id);
-    console.log(id);
     setStatus(id[0].order.status);
     setIsOpen(true);
+  };
+  const handleCancelOrder = (id, status) => {
+    setIdOpen(id[0].order.id);
+    setStatus(status);
+    setIsOpenOrder(true);
   };
   const getOrderStatus = (status) => {
     const statusMapping = {
@@ -52,7 +58,6 @@ const Order_Detail = () => {
       5: "Completed",
       6: "Cancelled",
     };
-
     return statusMapping[status] || "Trạng thái không xác định";
   };
   if (isLoading || isLoadingUser) {
@@ -68,7 +73,7 @@ const Order_Detail = () => {
     Number(data?.[0]?.order?.voucher?.discount || 0);
   return (
     <div>
-      <div className="row mx-2">
+      <div className="row">
         <div className="col-xl-9">
           <div className="card">
             <div className="card-header">
@@ -112,7 +117,7 @@ const Order_Detail = () => {
                           <div className="d-flex">
                             <div className="flex-shrink-0 avatar-md bg-light rounded p-1">
                               <img
-                                src={item.product_variant.product.img_thumb}
+                                src={item.product_variant?.product?.img_thumb}
                                 alt=""
                                 className="img-fluid d-block"
                               />
@@ -236,13 +241,17 @@ const Order_Detail = () => {
                       <i className="ri-map-pin-line align-middle me-1" />
                       Order Status
                     </div>
-                    <div
-                      className="px-3 py-1 bg-[#fadbd5] hover:text-white  hover:bg-red-500 cursor-pointer rounded-md btn-sm mt-2 mt-sm-0"
-                      style={{ color: "white !important" }}
-                    >
-                      <i className="mdi mdi-archive-remove-outline align-middle me-1" />
-                      Cancel Order
-                    </div>
+                    {(data[0].order.status == 1 ||
+                      data[0].order.status == 2) && (
+                      <div
+                        className="px-3 py-1 bg-[#fadbd5] hover:text-white  hover:bg-red-500 cursor-pointer rounded-md btn-sm mt-2 mt-sm-0"
+                        onClick={() => handleCancelOrder(data, 6)}
+                        style={{ color: "white !important" }}
+                      >
+                        <i className="mdi mdi-archive-remove-outline align-middle me-1" />
+                        Cancel Order
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -294,36 +303,6 @@ const Order_Detail = () => {
         <div className="col-xl-3">
           <div className="card">
             <div className="card-header">
-              <div className="d-flex">
-                <h5 className="card-title flex-grow-1 mb-0">
-                  <i className="mdi mdi-truck-fast-outline align-middle me-1 text-muted" />
-                  Logistics Details
-                </h5>
-                <div className="flex-shrink-0 -mt-1">
-                  <a className="badge p-1 bg-primary-subtle text-primary fs-11">
-                    Track Order
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="card-body">
-              <div className="text-center">
-                <lord-icon
-                  src="https://cdn.lordicon.com/uetqnvvg.json"
-                  trigger="loop"
-                  colors="primary:#405189,secondary:#0ab39c"
-                  style={{ width: 80, height: 80 }}
-                />
-                <h5 className="fs-16 mt-2">RQK Logistics</h5>
-                <p className="text-muted mb-0">ID: MFDS1400457854</p>
-                <p className="text-muted mb-0">
-                  Payment Mode : {data[0].order.payment_method}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="card">
-            <div className="card-header">
               <h5 className="card-title mb-0">
                 <i className="ri-map-pin-line align-middle me-1 text-muted" />
                 Shipping Address
@@ -356,7 +335,6 @@ const Order_Detail = () => {
               { label: "Đang vận chuyển", value: 3 },
               { label: "Đã giao hàng", value: 4 },
               { label: "Hoàn thành", value: 5 },
-              { label: "Đã hủy", value: 6 },
             ].map((item) => (
               <label className="radio" key={item.value}>
                 <input
@@ -370,6 +348,18 @@ const Order_Detail = () => {
               </label>
             ))}
           </div>
+        </>
+      </Modal>
+      <Modal
+        open={isOpenOrder}
+        onOk={handleSubmit(onSubmitUpdate)}
+        onCancel={handleCancel}
+        title="Order status"
+        width={800}
+        // className="modal fade zoomIn"
+      >
+        <>
+          <div className="">Are you sure to cancel this order?</div>
         </>
       </Modal>
     </div>

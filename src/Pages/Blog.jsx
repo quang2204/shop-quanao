@@ -30,7 +30,6 @@ const Blog = () => {
     } else {
       param.delete('search');
     }
-console.log(param);
     navigate(`/blog?${param.toString()}`);
   };
   if (isLoading) {

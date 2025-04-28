@@ -13,7 +13,7 @@ import { FormatPrice } from "../Format.jsx";
 import Emptys from "../Admin/Ui/Emty.jsx";
 const Product = () => {
   const navigate = useNavigate();
-  const {  pages } = useParams();
+  const { pages } = useParams();
   const param = pages ? pages : 1;
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get("category_id");
@@ -54,7 +54,6 @@ const Product = () => {
   const clickfilter = () => {
     setFilter(!filter);
   };
-  console.log(categoryId);
   return (
     <div className="bg0 m-t-23 p-b-100">
       <div className="container " style={{ marginTop: "100px" }}>
@@ -69,7 +68,7 @@ const Product = () => {
               All Products
             </button>
             {category &&
-              category.data.map((item, index) => (
+              category.data.filter(item=>item.is_active==1).map((item, index) => (
                 <Link to={`/product?category_id=${item.id}`} key={index}>
                   <button
                     className={`stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 ${
@@ -210,37 +209,39 @@ const Product = () => {
         </div>
         <div className="row isotope-grid">
           {data.data.length > 0 ? (
-            data.data.map((item, index) => (
-              <div
-                className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women"
-                key={index}
-              >
-                <div className="block2">
-                  <div className="block2-pic hov-img0">
-                    <img alt="IMG-PRODUCT" src={item.img_thumb} />
-                    <a
-                      className="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 "
-                      href="#"
-                    >
-                      Quick View
-                    </a>
-                  </div>
-                  <div className="block2-txt flex-w flex-t p-t-14">
-                    <div className="block2-txt-child1 flex-col-l">
-                      <Link
-                        className="stext-107 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
-                        to={`/product/${item.id}`}
+            data.data
+              .filter((item) => item.is_active == 1)
+              .map((item, index) => (
+                <div
+                  className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women"
+                  key={index}
+                >
+                  <div className="block2">
+                    <div className="block2-pic hov-img0">
+                      <img alt="IMG-PRODUCT" src={item.img_thumb} />
+                      <a
+                        className="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 "
+                        href="#"
                       >
-                        {item.name}
-                      </Link>
-                      <span className="stext-107 cl3">
-                        {<FormatPrice price={item.variants_min_price_sale} />}
-                      </span>
+                        Quick View
+                      </a>
+                    </div>
+                    <div className="block2-txt flex-w flex-t p-t-14">
+                      <div className="block2-txt-child1 flex-col-l">
+                        <Link
+                          className="stext-107 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
+                          to={`/product/${item.id}`}
+                        >
+                          {item.name}
+                        </Link>
+                        <span className="stext-107 cl3">
+                          {<FormatPrice price={item.variants_min_price_sale} />}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))
+              ))
           ) : (
             <div className="flex items-center justify-center w-full">
               <Empty />

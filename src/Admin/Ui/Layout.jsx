@@ -5,7 +5,12 @@ import { Spin } from "antd";
 import FullScreenButton from "./FullScreen";
 import useAuth from "../../Hook/useAuth";
 const Layout = () => {
-  const [open, setOpen] = useState(false);
+  const location = useLocation();
+
+  const [open, setOpen] = useState("");
+  useEffect(() => {
+    setOpen("");
+  }, [location]);
   const [profile, setProfile] = useState(false);
   const dropdownRef = useRef(null);
   const handleClick = (e) => {
@@ -93,494 +98,6 @@ const Layout = () => {
                   <div className="ms-1 header-item d-none d-sm-flex">
                     <FullScreenButton />
                   </div>
-                  <div className="ms-1 header-item d-none d-sm-flex">
-                    <button
-                      type="button"
-                      className="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle light-dark-mode"
-                    >
-                      <i className="bx bx-moon fs-22" />
-                    </button>
-                  </div>
-                  <div
-                    className="dropdown topbar-head-dropdown ms-1 header-item"
-                    id="notificationDropdown"
-                  >
-                    <button
-                      type="button"
-                      className="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
-                      id="page-header-notifications-dropdown"
-                      data-bs-toggle="dropdown"
-                      data-bs-auto-close="outside"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      <i className="bx bx-bell fs-22" />
-                      <span className="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger">
-                        3
-                        <span className="visually-hidden">unread messages</span>
-                      </span>
-                    </button>
-                    <div
-                      className="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-                      aria-labelledby="page-header-notifications-dropdown"
-                    >
-                      <div className="dropdown-head bg-primary bg-pattern rounded-top">
-                        <div className="p-3">
-                          <div className="row align-items-center">
-                            <div className="col">
-                              <h6 className="m-0 fs-16 fw-semibold text-white">
-                                Notifications
-                              </h6>
-                            </div>
-                            <div className="col-auto dropdown-tabs">
-                              <span className="badge bg-light-subtle text-body fs-13">
-                                4 New
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="px-2 pt-2">
-                          <ul
-                            className="nav nav-tabs dropdown-tabs nav-tabs-custom"
-                            data-dropdown-tabs="true"
-                            id="notificationItemsTab"
-                            role="tablist"
-                          >
-                            <li className="nav-item waves-effect waves-light">
-                              <a
-                                className="nav-link active"
-                                data-bs-toggle="tab"
-                                href="#all-noti-tab"
-                                role="tab"
-                                aria-selected="true"
-                              >
-                                All (4)
-                              </a>
-                            </li>
-                            <li className="nav-item waves-effect waves-light">
-                              <a
-                                className="nav-link"
-                                data-bs-toggle="tab"
-                                href="#messages-tab"
-                                role="tab"
-                                aria-selected="false"
-                              >
-                                Messages
-                              </a>
-                            </li>
-                            <li className="nav-item waves-effect waves-light">
-                              <a
-                                className="nav-link"
-                                data-bs-toggle="tab"
-                                href="#alerts-tab"
-                                role="tab"
-                                aria-selected="false"
-                              >
-                                Alerts
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                      <div
-                        className="tab-content position-relative"
-                        id="notificationItemsTabContent"
-                      >
-                        <div
-                          className="tab-pane fade show active py-2 ps-2"
-                          id="all-noti-tab"
-                          role="tabpanel"
-                        >
-                          <div
-                            data-simplebar=""
-                            style={{ maxHeight: 300 }}
-                            className="pe-2"
-                          >
-                            <div className="text-reset notification-item d-block dropdown-item position-relative">
-                              <div className="d-flex">
-                                <div className="avatar-xs me-3 flex-shrink-0">
-                                  <span className="avatar-title bg-info-subtle text-info rounded-circle fs-16">
-                                    <i className="bx bx-badge-check" />
-                                  </span>
-                                </div>
-                                <div className="flex-grow-1">
-                                  <a href="#!" className="stretched-link">
-                                    <h6 className="mt-0 mb-2 lh-base">
-                                      Your <b>Elite</b> author Graphic
-                                      Optimization
-                                      <span className="text-secondary">
-                                        reward
-                                      </span>{" "}
-                                      is ready!
-                                    </h6>
-                                  </a>
-                                  <p className="mb-0 fs-11 fw-medium text-uppercase text-muted">
-                                    <span>
-                                      <i className="mdi mdi-clock-outline" />{" "}
-                                      Just 30 sec ago
-                                    </span>
-                                  </p>
-                                </div>
-                                <div className="px-2 fs-15">
-                                  <div className="form-check notification-check">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      id="all-notification-check01"
-                                    />
-                                    <label
-                                      className="form-check-label"
-                                      htmlFor="all-notification-check01"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="text-reset notification-item d-block dropdown-item position-relative">
-                              <div className="d-flex">
-                                <img
-                                  src="assets/images/users/avatar-2.jpg"
-                                  className="me-3 rounded-circle avatar-xs flex-shrink-0"
-                                  alt="user-pic"
-                                />
-                                <div className="flex-grow-1">
-                                  <a href="#!" className="stretched-link">
-                                    <h6 className="mt-0 mb-1 fs-13 fw-semibold">
-                                      Angela Bernier
-                                    </h6>
-                                  </a>
-                                  <div className="fs-13 text-muted">
-                                    <p className="mb-1">
-                                      Answered to your comment on the cash flow
-                                      forecast's graph 🔔.
-                                    </p>
-                                  </div>
-                                  <p className="mb-0 fs-11 fw-medium text-uppercase text-muted">
-                                    <span>
-                                      <i className="mdi mdi-clock-outline" /> 48
-                                      min ago
-                                    </span>
-                                  </p>
-                                </div>
-                                <div className="px-2 fs-15">
-                                  <div className="form-check notification-check">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      id="all-notification-check02"
-                                    />
-                                    <label
-                                      className="form-check-label"
-                                      htmlFor="all-notification-check02"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="text-reset notification-item d-block dropdown-item position-relative">
-                              <div className="d-flex">
-                                <div className="avatar-xs me-3 flex-shrink-0">
-                                  <span className="avatar-title bg-danger-subtle text-danger rounded-circle fs-16">
-                                    <i className="bx bx-message-square-dots" />
-                                  </span>
-                                </div>
-                                <div className="flex-grow-1">
-                                  <a href="#!" className="stretched-link">
-                                    <h6 className="mt-0 mb-2 fs-13 lh-base">
-                                      You have received
-                                      <b className="text-success">20</b> new
-                                      messages in the conversation
-                                    </h6>
-                                  </a>
-                                  <p className="mb-0 fs-11 fw-medium text-uppercase text-muted">
-                                    <span>
-                                      <i className="mdi mdi-clock-outline" /> 2
-                                      hrs ago
-                                    </span>
-                                  </p>
-                                </div>
-                                <div className="px-2 fs-15">
-                                  <div className="form-check notification-check">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      id="all-notification-check03"
-                                    />
-                                    <label
-                                      className="form-check-label"
-                                      htmlFor="all-notification-check03"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="text-reset notification-item d-block dropdown-item position-relative">
-                              <div className="d-flex">
-                                <img
-                                  src="assets/images/users/avatar-8.jpg"
-                                  className="me-3 rounded-circle avatar-xs flex-shrink-0"
-                                  alt="user-pic"
-                                />
-                                <div className="flex-grow-1">
-                                  <a href="#!" className="stretched-link">
-                                    <h6 className="mt-0 mb-1 fs-13 fw-semibold">
-                                      Maureen Gibson
-                                    </h6>
-                                  </a>
-                                  <div className="fs-13 text-muted">
-                                    <p className="mb-1">
-                                      We talked about a project on linkedin.
-                                    </p>
-                                  </div>
-                                  <p className="mb-0 fs-11 fw-medium text-uppercase text-muted">
-                                    <span>
-                                      <i className="mdi mdi-clock-outline" /> 4
-                                      hrs ago
-                                    </span>
-                                  </p>
-                                </div>
-                                <div className="px-2 fs-15">
-                                  <div className="form-check notification-check">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      id="all-notification-check04"
-                                    />
-                                    <label
-                                      className="form-check-label"
-                                      htmlFor="all-notification-check04"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="my-3 text-center view-all">
-                              <button
-                                type="button"
-                                className="btn btn-soft-success waves-effect waves-light"
-                              >
-                                View All Notifications
-                                <i className="ri-arrow-right-line align-middle" />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          className="tab-pane fade py-2 ps-2"
-                          id="messages-tab"
-                          role="tabpanel"
-                          aria-labelledby="messages-tab"
-                        >
-                          <div
-                            data-simplebar=""
-                            style={{ maxHeight: 300 }}
-                            className="pe-2"
-                          >
-                            <div className="text-reset notification-item d-block dropdown-item">
-                              <div className="d-flex">
-                                <img
-                                  src="assets/images/users/avatar-3.jpg"
-                                  className="me-3 rounded-circle avatar-xs"
-                                  alt="user-pic"
-                                />
-                                <div className="flex-grow-1">
-                                  <a href="#!" className="stretched-link">
-                                    <h6 className="mt-0 mb-1 fs-13 fw-semibold">
-                                      James Lemire
-                                    </h6>
-                                  </a>
-                                  <div className="fs-13 text-muted">
-                                    <p className="mb-1">
-                                      We talked about a project on linkedin.
-                                    </p>
-                                  </div>
-                                  <p className="mb-0 fs-11 fw-medium text-uppercase text-muted">
-                                    <span>
-                                      <i className="mdi mdi-clock-outline" /> 30
-                                      min ago
-                                    </span>
-                                  </p>
-                                </div>
-                                <div className="px-2 fs-15">
-                                  <div className="form-check notification-check">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      id="messages-notification-check01"
-                                    />
-                                    <label
-                                      className="form-check-label"
-                                      htmlFor="messages-notification-check01"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="text-reset notification-item d-block dropdown-item">
-                              <div className="d-flex">
-                                <img
-                                  src="assets/images/users/avatar-2.jpg"
-                                  className="me-3 rounded-circle avatar-xs"
-                                  alt="user-pic"
-                                />
-                                <div className="flex-grow-1">
-                                  <a href="#!" className="stretched-link">
-                                    <h6 className="mt-0 mb-1 fs-13 fw-semibold">
-                                      Angela Bernier
-                                    </h6>
-                                  </a>
-                                  <div className="fs-13 text-muted">
-                                    <p className="mb-1">
-                                      Answered to your comment on the cash flow
-                                      forecast's graph 🔔.
-                                    </p>
-                                  </div>
-                                  <p className="mb-0 fs-11 fw-medium text-uppercase text-muted">
-                                    <span>
-                                      <i className="mdi mdi-clock-outline" /> 2
-                                      hrs ago
-                                    </span>
-                                  </p>
-                                </div>
-                                <div className="px-2 fs-15">
-                                  <div className="form-check notification-check">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      id="messages-notification-check02"
-                                    />
-                                    <label
-                                      className="form-check-label"
-                                      htmlFor="messages-notification-check02"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="text-reset notification-item d-block dropdown-item">
-                              <div className="d-flex">
-                                <img
-                                  src="assets/images/users/avatar-6.jpg"
-                                  className="me-3 rounded-circle avatar-xs"
-                                  alt="user-pic"
-                                />
-                                <div className="flex-grow-1">
-                                  <a href="#!" className="stretched-link">
-                                    <h6 className="mt-0 mb-1 fs-13 fw-semibold">
-                                      Kenneth Brown
-                                    </h6>
-                                  </a>
-                                  <div className="fs-13 text-muted">
-                                    <p className="mb-1">
-                                      Mentionned you in his comment on 📃
-                                      invoice #12501.
-                                    </p>
-                                  </div>
-                                  <p className="mb-0 fs-11 fw-medium text-uppercase text-muted">
-                                    <span>
-                                      <i className="mdi mdi-clock-outline" /> 10
-                                      hrs ago
-                                    </span>
-                                  </p>
-                                </div>
-                                <div className="px-2 fs-15">
-                                  <div className="form-check notification-check">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      id="messages-notification-check03"
-                                    />
-                                    <label
-                                      className="form-check-label"
-                                      htmlFor="messages-notification-check03"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="text-reset notification-item d-block dropdown-item">
-                              <div className="d-flex">
-                                <img
-                                  src="assets/images/users/avatar-8.jpg"
-                                  className="me-3 rounded-circle avatar-xs"
-                                  alt="user-pic"
-                                />
-                                <div className="flex-grow-1">
-                                  <a href="#!" className="stretched-link">
-                                    <h6 className="mt-0 mb-1 fs-13 fw-semibold">
-                                      Maureen Gibson
-                                    </h6>
-                                  </a>
-                                  <div className="fs-13 text-muted">
-                                    <p className="mb-1">
-                                      We talked about a project on linkedin.
-                                    </p>
-                                  </div>
-                                  <p className="mb-0 fs-11 fw-medium text-uppercase text-muted">
-                                    <span>
-                                      <i className="mdi mdi-clock-outline" /> 3
-                                      days ago
-                                    </span>
-                                  </p>
-                                </div>
-                                <div className="px-2 fs-15">
-                                  <div className="form-check notification-check">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      id="messages-notification-check04"
-                                    />
-                                    <label
-                                      className="form-check-label"
-                                      htmlFor="messages-notification-check04"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="my-3 text-center view-all">
-                              <button
-                                type="button"
-                                className="btn btn-soft-success waves-effect waves-light"
-                              >
-                                View All Messages
-                                <i className="ri-arrow-right-line align-middle" />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          className="tab-pane fade p-4"
-                          id="alerts-tab"
-                          role="tabpanel"
-                          aria-labelledby="alerts-tab"
-                        />
-                        <div
-                          className="notification-actions"
-                          id="notification-actions"
-                        >
-                          <div className="d-flex text-muted justify-content-center">
-                            Select
-                            <div
-                              id="select-content"
-                              className="text-body fw-semibold px-1"
-                            >
-                              0
-                            </div>
-                            Result
-                            <button
-                              type="button"
-                              className="btn btn-link link-danger p-0 ms-3"
-                              data-bs-toggle="modal"
-                              data-bs-target="#removeNotificationModal"
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                   <div className="dropdown ms-sm-3 header-item topbar-user">
                     <button
                       type="button"
@@ -614,50 +131,11 @@ const Layout = () => {
                       }}
                     >
                       {/* item*/}
-                      <h6 className="dropdown-header">Welcome Anna!</h6>
+                      <h6 className="dropdown-header">Welcome {data.name}</h6>
                       <Link className="dropdown-item" to={"/admin/profile"}>
                         <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1" />
                         <span className="align-middle">Profile</span>
                       </Link>
-                      <a className="dropdown-item" href="apps-chat.html">
-                        <i className="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1" />
-                        <span className="align-middle">Messages</span>
-                      </a>
-                      <a
-                        className="dropdown-item"
-                        href="apps-tasks-kanban.html"
-                      >
-                        <i className="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1" />
-                        <span className="align-middle">Taskboard</span>
-                      </a>
-                      <a className="dropdown-item" href="pages-faqs.html">
-                        <i className="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1" />
-                        <span className="align-middle">Help</span>
-                      </a>
-                      <div className="dropdown-divider" />
-                      <a className="dropdown-item" href="pages-profile.html">
-                        <i className="mdi mdi-wallet text-muted fs-16 align-middle me-1" />
-                        <span className="align-middle">
-                          Balance : <b>$5971.67</b>
-                        </span>
-                      </a>
-                      <a
-                        className="dropdown-item"
-                        href="pages-profile-settings.html"
-                      >
-                        <span className="badge bg-success-subtle text-success mt-1 float-end">
-                          New
-                        </span>
-                        <i className="mdi mdi-cog-outline text-muted fs-16 align-middle me-1" />
-                        <span className="align-middle">Settings</span>
-                      </a>
-                      <a
-                        className="dropdown-item"
-                        href="auth-lockscreen-basic.html"
-                      >
-                        <i className="mdi mdi-lock text-muted fs-16 align-middle me-1" />
-                        <span className="align-middle">Lock screen</span>
-                      </a>
                       <a
                         className="dropdown-item"
                         href="auth-logout-basic.html"
@@ -750,9 +228,6 @@ const Layout = () => {
               <div className="container-fluid">
                 <div id="two-column-menu" />
                 <ul className="navbar-nav" id="navbar-nav">
-                  <li className="menu-title">
-                    <span data-key="t-menu">Menu</span>
-                  </li>
                   <li className="nav-item">
                     <Link
                       to=""
@@ -762,15 +237,36 @@ const Layout = () => {
                       <span data-key="t-dashboards">Dashboards</span>
                     </Link>
                   </li>
-                  {/* end Dashboard Menu */}
                   <li className="nav-item">
-                    <Link
-                      to="products"
+                    <div
                       className={`nav-link menu-link ${thirdPathSegment == "Products" ? "active" : ""}`}
+                      data-bs-toggle="collapse"
+                      role="button"
+                      aria-expanded={open == "products" ? "true" : "false"}
+                      aria-controls="sidebarAuth"
+                      onClick={() =>
+                        setOpen(open === "products" ? "" : "products")
+                      }
                     >
                       <i className="ri-apps-2-line" />
-                      <span data-key="t-apps">Products</span>
-                    </Link>
+                      <span data-key="t-authentication">Products</span>
+                    </div>
+                    <div
+                      className={`menu-dropdown ${open == "products" ? "show" : "collapse"}`}
+                    >
+                      <ul className="nav nav-sm flex-column">
+                        <li className="nav-item">
+                          <Link to="products" className="nav-link">
+                            All
+                          </Link>
+                        </li>
+                        <li className="nav-item">
+                          <Link to="hard-delete-product" className="nav-link">
+                            Hard-delete
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
                   </li>
                   <li className="nav-item">
                     <Link
@@ -796,53 +292,128 @@ const Layout = () => {
                       <span data-key="t-layouts">Banners</span>
                     </Link>
                   </li>
+
                   <li className="nav-item">
                     <Link
-                      to="blogs"
+                      to="Blogs"
                       className={`nav-link menu-link ${thirdPathSegment == "Blogs" ? "active" : ""}`}
                     >
-                      <img
-                        src="https://media-public.canva.com/TbR0s/MADa1xTbR0s/2/tl.png"
-                        alt=""
-                        width={20}
-                        style={{ filter: "invert(1) hue-rotate(180deg)" }}
-                        className="me-2"
-                      />
+                      <i className="ri-layout-3-line" />
                       <span data-key="t-layouts">Blogs</span>
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link
-                      to="categories"
-                      className={`nav-link menu-link ${thirdPathSegment == "Categories" ? "active" : ""}`}
+                      to="categoryblogs"
+                      className={`nav-link menu-link ${thirdPathSegment == "categoryblogs" ? "active" : ""}`}
                     >
                       <i className="ri-layout-3-line" />
-                      <span data-key="t-layouts">Categories</span>
+                      <span data-key="t-layouts">Category_blogs</span>
                     </Link>
+                  </li>
+                  <li className="nav-item">
+                    <div
+                      className={`nav-link menu-link ${thirdPathSegment == "Categories" ? "active" : ""}`}
+                      data-bs-toggle="collapse"
+                      role="button"
+                      aria-expanded={open == "Category" ? "true" : "false"}
+                      aria-controls="sidebarAuth"
+                      onClick={() =>
+                        setOpen(open === "Category" ? "" : "Category")
+                      }
+                    >
+                      <i className="ri-layout-3-line" />
+                      <span data-key="t-authentication">Category</span>
+                    </div>
+                    <div
+                      className={`menu-dropdown ${open == "Category" ? "show" : "collapse"}`}
+                    >
+                      <ul className="nav nav-sm flex-column">
+                        <li className="nav-item">
+                          <Link to="categories" className="nav-link">
+                            All
+                          </Link>
+                        </li>
+                        <li className="nav-item">
+                          <Link to="hard-delete-caterory" className="nav-link">
+                            Hard-delete
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li className="nav-item">
+                    <div
+                      className={`nav-link menu-link ${thirdPathSegment == "Colors" ? "active" : ""}`}
+                      data-bs-toggle="collapse"
+                      role="button"
+                      aria-expanded={open == "color" ? "true" : "false"}
+                      aria-controls="sidebarAuth"
+                      onClick={() => setOpen(open === "color" ? "" : "color")}
+                    >
+                      <i className="ri-layout-3-line" />
+                      <span data-key="t-authentication">Color</span>
+                    </div>
+                    <div
+                      className={`menu-dropdown ${open == "color" ? "show" : "collapse"}`}
+                    >
+                      <ul className="nav nav-sm flex-column">
+                        <li className="nav-item">
+                          <Link to="colors" className="nav-link">
+                            All
+                          </Link>
+                        </li>
+                        <li className="nav-item">
+                          <Link to="hard-delete-color" className="nav-link">
+                            Hard-delete
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li className="nav-item">
+                    <div
+                      className={`nav-link menu-link ${thirdPathSegment == "Sizes" ? "active" : ""}`}
+                      data-bs-toggle="collapse"
+                      role="button"
+                      aria-expanded={open == "sizes" ? "true" : "false"}
+                      aria-controls="sidebarAuth"
+                      onClick={() => setOpen(open === "sizes" ? "" : "sizes")}
+                    >
+                      <i className="ri-layout-3-line" />
+                      <span data-key="t-authentication">Sizes</span>
+                    </div>
+                    <div
+                      className={`menu-dropdown ${open == "sizes" ? "show" : "collapse"}`}
+                    >
+                      <ul className="nav nav-sm flex-column">
+                        <li className="nav-item">
+                          <Link to="sizes" className="nav-link">
+                            All
+                          </Link>
+                        </li>
+                        <li className="nav-item">
+                          <Link to="hard-delete-size" className="nav-link">
+                            Hard-delete
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
                   </li>
                   <li className="nav-item">
                     <Link
-                      to="colors"
-                      className={`nav-link menu-link ${thirdPathSegment == "Color" ? "active" : ""}`}
+                      to="vouchers"
+                      className={`nav-link menu-link ${thirdPathSegment == "Vouchers" ? "active" : ""}`}
                     >
-                      <i className="ri-layout-3-line" />
-                      <span data-key="t-layouts">Color</span>
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="sizes" className="nav-link menu-link">
-                      <i className="ri-layout-3-line" />
-                      <span data-key="t-layouts">Sizes</span>
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="vouchers" className="nav-link menu-link">
                       <i className="ri-layout-3-line" />
                       <span data-key="t-layouts">Voucher</span>
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="comments" className={`nav-link menu-link ${thirdPathSegment=="Order"?"active":""}`}>
+                    <Link
+                      to="comments"
+                      className={`nav-link menu-link ${thirdPathSegment == "Comments" ? "active" : ""}`}
+                    >
                       <i className="fa fa-comment"></i>
                       <span data-key="t-layouts">Comments</span>
                     </Link>

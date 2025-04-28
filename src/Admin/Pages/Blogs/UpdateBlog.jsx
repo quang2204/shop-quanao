@@ -18,7 +18,6 @@ const UpdateBlog = () => {
   const [fileList, setFileList] = useState([]);
   const { data, isLoading } = usecateroryBlogs();
   const { data: detailBlog, isLoading: isDetail } = useBlogDetailAdmin();
-  console.log(detailBlog);
   const { mutate, isLoading: isUpdate } = useupdateBlog();
   useEffect(() => {
     form.setFieldsValue({
@@ -84,7 +83,6 @@ const UpdateBlog = () => {
       user_id: user.id,
       is_active: Boolean(value.is_active),
     };
-    console.log(data);
     mutate({ id: detailBlog.id, data });
   };
   if (isLoading || isDetail) {

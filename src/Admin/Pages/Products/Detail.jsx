@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react";
-import img1 from "../../velzon/assets/images/products/img-8.png";
-import img2 from "../../velzon/assets/images/products/img-7.png";
-import img3 from "../../velzon/assets/images/products/img-3.png";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Thumbs } from "swiper/modules";
@@ -14,31 +11,25 @@ import {
   useProductGalleries,
   useProductVariants,
 } from "../../../Hook/useDetailProduct";
-import { Select, Spin } from "antd";
+import { Image, Select, Space, Spin, Table, Tag } from "antd";
 import { FormatDate, FormatPrice } from "../../../Format";
+import StarRating from "../../../Ui/StarRating";
 const Detail_Product = () => {
   const { id } = useParams();
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [idVariants, setidVariants] = useState();
-  const [color, setColor] = useState();
-  const [size, setSize] = useState();
   const { detailProduct, isDetailProduct } = useDetailProduct();
   const { isProductVariants, productVariant } = useProductVariants();
   const { productGallerie, isproductGalleries } = useProductGalleries();
 
-  useEffect(() => {
-    const checkid = productVariant?.filter(
-      (item) =>
-        item.size_id === size && item.color_id === color && item.quantity > 0
-    );
-    console.log(checkid);
-    if (checkid?.length > 0) {
-      setidVariants(checkid[0]);
-    } else {
-      setidVariants(null);
-    }
-  }, [size, color, productVariant]);
+  const totalStar = detailProduct?.[0]?.comments
+    ?.filter((item) => item.is_active == 1)
+    .reduce((acc, cur) => acc + cur.star, 0);
+  const starPercentage =
+    totalStar /
+      detailProduct?.[0]?.comments?.filter((item) => item.is_active == 1)
+        .length || 0;
+  const roundNumber = Math.round(starPercentage) || 0;
+  console.log(starPercentage);
   // console.log(productVariant);
   if (isDetailProduct || isProductVariants || isproductGalleries) {
     return (
@@ -48,7 +39,42 @@ const Detail_Product = () => {
       />
     );
   }
-  const images = [img1, img2, img3];
+  const columns = [
+    {
+      title: "Color",
+      dataIndex: "color",
+      key: "color",
+    },
+    {
+      title: "Size",
+      dataIndex: "size",
+      key: "size",
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      render: (text) => <FormatPrice price={text} />,
+    },
+    {
+      title: "Price_Sale",
+      dataIndex: "price_sale",
+      key: "price_sale",
+      render: (text) => <FormatPrice price={text} />,
+    },
+    {
+      title: "Quantity",
+      key: "quantity",
+      dataIndex: "quantity",
+    },
+  ];
+  const data = productVariant.map((item) => ({
+    color: item?.color?.name,
+    size: item?.size?.name,
+    quantity: item.quantity,
+    price: item.price,
+    price_sale: item.price_sale,
+  }));
   return (
     <div className="row">
       <div className="col-lg-12">
@@ -70,7 +96,7 @@ const Detail_Product = () => {
                   >
                     {productGallerie.map((img, index) => (
                       <SwiperSlide key={index}>
-                        <img
+                        <Image
                           src={img.image}
                           alt="Product"
                           className="img-fluid d-block w-full"
@@ -97,7 +123,7 @@ const Detail_Product = () => {
                   >
                     {productGallerie.map((img, index) => (
                       <SwiperSlide key={index} className="thumbnail-slide">
-                        <img
+                        <Image
                           src={img.image}
                           alt="Thumbnail"
                           className="img-fluid d-block cursor-pointer"
@@ -112,9 +138,7 @@ const Detail_Product = () => {
                 <div className="mt-xl-0 mt-5">
                   <div className="d-flex">
                     <div className="flex-grow-1">
-                      <h4>
-                        {detailProduct[0]?.name.slice(0, 70) + "..."}
-                      </h4>
+                      <h4>{detailProduct[0]?.name.slice(0, 70) + "..."}</h4>
                       <div className="hstack gap-3 flex-wrap">
                         {/* <div>
                           <a href="#" className="text-primary d-block">
@@ -147,17 +171,23 @@ const Detail_Product = () => {
                     </div>
                   </div>
                   <div className="d-flex flex-wrap gap-2 align-items-center mt-3">
-                    <div className="text-muted fs-16">
-                      <span className="mdi mdi-star text-warning" />
-                      <span className="mdi mdi-star text-warning" />
-                      <span className="mdi mdi-star text-warning" />
-                      <span className="mdi mdi-star text-warning" />
-                      <span className="mdi mdi-star text-warning" />
+                    <div className="text-muted fs-16 !text-yellow-500" >
+                      <StarRating rating={roundNumber} />
                     </div>
-                    <div className="text-muted">( 5.50k Customer Review )</div>
+                    <div className="text-muted">
+                      ({" "}
+                      {
+                        detailProduct?.[0]?.comments?.filter(
+                          (item) => item.is_active == 1
+                        )?.length
+                      }
+                      Customer Review)
+                    </div>
                   </div>
-                  <div className="row mt-4">
-                    <div className="col-lg-3 col-sm-6">
+                  <br />
+                  <Table columns={columns} dataSource={data} />
+                  {/* <div className="row mt-4"> */}
+                  {/* <div className="col-lg-3 col-sm-6">
                       <div className="p-2 border border-dashed rounded">
                         <div className="d-flex align-items-center">
                           <div className="avatar-sm me-2">
@@ -178,9 +208,9 @@ const Detail_Product = () => {
                           </div>
                         </div>
                       </div>
-                    </div>
-                    {/* end col */}
-                    <div className="col-lg-3 col-sm-6">
+                    </div> */}
+                  {/* end col */}
+                  {/* <div className="col-lg-3 col-sm-6">
                       <div className="p-2 border border-dashed rounded">
                         <div className="d-flex align-items-center">
                           <div className="avatar-sm me-2">
@@ -191,16 +221,12 @@ const Detail_Product = () => {
                           <div className="flex-grow-1">
                             <p className="text-muted mb-1">No. of Orders :</p>
                             <h5 className="mb-0">
-                              {/* {detailProduct.variants.reduce(
-                                (sum, item) => sum + item.quantity,
-                                0
-                              )} */}
                             </h5>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="col-lg-3 col-sm-6">
+                    </div> */}
+                  {/* <div className="col-lg-3 col-sm-6">
                       <div className="p-2 border border-dashed rounded">
                         <div className="d-flex align-items-center">
                           <div className="avatar-sm me-2">
@@ -236,10 +262,10 @@ const Detail_Product = () => {
                           </div>
                         </div>
                       </div>
-                    </div>
-                    {/* end col */}
-                  </div>
-                  <div className="row">
+                    </div> */}
+                  {/* end col */}
+                  {/* </div> */}
+                  {/* <div className="row">
                     <div className="col-xl-6">
                       <div className="mt-4">
                         <h5 className="fs-14">Sizes :</h5>
@@ -268,7 +294,6 @@ const Detail_Product = () => {
                         </div>
                       </div>
                     </div>
-                    {/* end col */}
                     <div className="col-xl-6">
                       <div className=" mt-4">
                         <h5 className="fs-14">Colors :</h5>
@@ -297,8 +322,7 @@ const Detail_Product = () => {
                         </div>
                       </div>
                     </div>
-                    {/* end col */}
-                  </div>
+                  </div> */}
 
                   <div className="product-content mt-5">
                     <h5 className="text-[17px] mb-3 font-medium">

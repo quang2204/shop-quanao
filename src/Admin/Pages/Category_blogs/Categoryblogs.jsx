@@ -3,18 +3,18 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button, Modal, Pagination, Spin, message } from "antd";
 import { useForm } from "react-hook-form";
 import {
-  useAddColor,
-  useColors,
-  useDeleteColor,
-  useUpdateColor,
-} from "../../../Hook/useColor";
+  useAddcateroryBlog,
+  useCateroryBlog,
+  useDeleteCateroryBlog,
+  useUpdateCateroryBlog,
+} from "../../../Hook/useCateroryBlogs";
 
-const Color = () => {
+const Categoryblogs = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const page = parseInt(searchParams.get("page")) || 1;
-  const { colors, isLoading } = useColors(page);
+  const { cateroryblog, isLoading } = useCateroryBlog(page);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idDelete, setIdDelete] = useState("");
   const [idUpdate, setIdUpdate] = useState("");
@@ -22,10 +22,11 @@ const Color = () => {
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
   const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
   const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
-  const { mutate: updateColor, isLoading: isUpdate } =
-    useUpdateColor(setIsModalOpenUpdate);
-  const { mutate: addColor, isLoading: isAdd } = useAddColor(setIsModalOpenAdd);
-  const { mutate, isLoading: isDelete } = useDeleteColor(setIsModalOpen);
+  const { mutate: updatecateroryblog, isLoading: isUpdate } =
+    useUpdateCateroryBlog(setIsModalOpenUpdate);
+  const { mutate: addcateroryblog, isLoading: isAdd } =
+    useAddcateroryBlog(setIsModalOpenAdd);
+  const { mutate, isLoading: isDelete } = useDeleteCateroryBlog(setIsModalOpen);
   const showModal = (id) => {
     setIdDelete(id);
     setIsModalOpen(true);
@@ -51,6 +52,7 @@ const Color = () => {
   const handleCancelDetail = () => {
     setIsModalOpenDetail(false);
   };
+
   const handleOk = () => {
     mutate(idDelete);
     setIdDelete("");
@@ -58,26 +60,30 @@ const Color = () => {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
     reset,
   } = useForm();
   useEffect(() => {
     reset({
       name: idUpdate.name,
+      is_active: idUpdate.is_active,
     });
   }, [idUpdate]);
-  const onSubmit = (data) => {
-    const datares = {
-      name: data.name,
+  const onSubmit = (value) => {
+    const data = {
+      name: value.name,
+      is_active: getValues().is_active == "true" ? true : false,
     };
     reset();
-    addColor(datares);
+    addcateroryblog(data);
   };
   const onSubmitUpdate = (data) => {
     const datares = {
-      name: data.name?.trim(), // loại bỏ khoảng trắng
+      name: data.name?.trim(),
+      is_active: getValues().is_active == "true" ? true : false,
     };
-    updateColor({ id: idUpdate.id, data: datares });
+    updatecateroryblog({ id: idUpdate.id, data: datares });
     reset();
   };
 
@@ -109,7 +115,7 @@ const Color = () => {
                     onClick={() => setIsModalOpenAdd(true)}
                   >
                     <i className="ri-add-line align-bottom me-1" />
-                    Add Color
+                    Add Caterory_blog
                   </button>
                 </div>
               </div>
@@ -125,26 +131,26 @@ const Color = () => {
                 >
                   <thead className="text-muted table-light">
                     <tr className="text-uppercase">
-                      <th className="sort" dangerouslySetInnerHTMLata-sort="id">
-                        #
-                      </th>
-                      <th className="sort" data-sort="id">
-                        Name
-                      </th>
-
-                      <th className="sort" data-sort="city">
-                        Action
-                      </th>
+                      <th dangerouslySetInnerHTMLata-sort="id">#</th>
+                      <th data-sort="id">Name</th>
+                      <th data-sort="id">Active</th>
+                      <th data-sort="city">Action</th>
                     </tr>
                   </thead>
                   <tbody className="list form-check-all">
-                    {colors?.data.map((item, index) => (
+                    {cateroryblog?.categories.data.map((item, index) => (
                       <tr key={item.id}>
                         <td>{index + 1}</td>
                         <td className="id">
                           <p className="fw-medium ">{item.name}</p>
                         </td>
-
+                        <td className="status">
+                          <span
+                            className={`badge ${item.is_active === true ? "text-green-500" : "text-red-500"} text-uppercase`}
+                          >
+                            {item.is_active === true ? "Active" : "Block"}
+                          </span>
+                        </td>
                         <td>
                           <ul className="list-inline hstack gap-2 mb-0">
                             <li className="list-inline-item">
@@ -196,9 +202,9 @@ const Color = () => {
               <Pagination
                 showSizeChanger
                 onChange={onShowSizeChange}
-                current={colors.current_page}
-                total={colors.total}
-                pageSize={colors.per_page}
+                current={cateroryblog?.categories.current_page}
+                total={cateroryblog?.categories.total}
+                pageSize={cateroryblog?.categories.per_page}
                 align="center"
               />
             </div>
@@ -249,7 +255,7 @@ const Color = () => {
       {/* // Modal add */}
       <Modal
         open={isModalOpenAdd}
-        title="Add Color"
+        title="Add Category_Blog"
         footer={[
           <Button key="back" onClick={handleCancelAdd}>
             Cancel
@@ -272,18 +278,35 @@ const Color = () => {
               <div className="">
                 <div className="mb-1">
                   <label htmlFor="customername-field" className="form-label">
-                    Color Name
+                    Categorie_blog Name
                   </label>
                   <input
                     type="text"
                     id="customername-field"
                     className="form-control"
-                    placeholder="Enter color name"
+                    placeholder="Enter categorie_blog name"
                     {...register("name", { required: true })}
                   />
                 </div>
                 <div className="text-red-500 mb-1">
                   {errors.name && "Please enter a customer name."}
+                </div>
+              </div>
+              <div className="">
+                <div className="mb-1">
+                  <label htmlFor="customername-field" className="form-label">
+                    Is_active
+                  </label>
+                  <select
+                    {...register("is_active", { required: true })}
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value={true}>Acive</option>
+                    <option value={false}>Block</option>
+                  </select>
+                </div>
+                <div className="text-red-500 mb-1">
+                  {errors.is_active && "Please enter a is_active"}
                 </div>
               </div>
             </form>
@@ -293,7 +316,6 @@ const Color = () => {
       {/* //update */}
       <Modal
         open={isModalOpenUpdate}
-        title="Update Color"
         footer={[
           <Button key="back" onClick={handleCancelUpdate}>
             Cancel
@@ -308,6 +330,7 @@ const Color = () => {
             OK
           </Button>,
         ]}
+        title="Update Category_Blog"
         // className="modal fade zoomIn"
       >
         <div className="modal-dialog modal-dialog-centered">
@@ -316,18 +339,35 @@ const Color = () => {
               <div className="">
                 <div className="mb-1">
                   <label htmlFor="customername-field" className="form-label">
-                    Color Name
+                    Categorie Name
                   </label>
                   <input
                     type="text"
                     id="customername-field"
                     className="form-control"
-                    placeholder="Enter color name"
+                    placeholder="Enter categorie name"
                     {...register("name", { required: true })}
                   />
                 </div>
                 <div className="text-red-500 mb-1">
                   {errors.name && "Please enter a customer name."}
+                </div>
+              </div>
+              <div className="">
+                <div className="mb-1">
+                  <label htmlFor="customername-field" className="form-label">
+                    Is_active
+                  </label>
+                  <select
+                    {...register("is_active")}
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value={true}>Active</option>
+                    <option value={false}>Block</option>
+                  </select>
+                </div>
+                <div className="text-red-500 mb-1">
+                  {errors.is_active && "Please enter a is_active"}
                 </div>
               </div>
             </form>
@@ -348,11 +388,16 @@ const Color = () => {
               <div className="">
                 <div className="mb-1">
                   <label htmlFor="customername-field" className="form-label">
-                    Color Name : {idDetail.name}
+                    Categorie_Blog Name : {idDetail.name}
                   </label>
                 </div>
-                <div className="text-red-500 mb-1">
-                  {errors.name && "Please enter a customer name."}
+              </div>
+              <div className="">
+                <div className="mb-1">
+                  <label htmlFor="customername-field" className="form-label">
+                    Is_Active:{" "}
+                    {idDetail.is_active === true ? "Active" : "Block"}
+                  </label>
                 </div>
               </div>
             </form>
@@ -363,4 +408,4 @@ const Color = () => {
   );
 };
 
-export default Color;
+export default Categoryblogs;

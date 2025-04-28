@@ -1,84 +1,81 @@
 {
-  "categories": [
-    {
-      "id": 10,
-      "name": "Garrick O'Kon",
+  "product": {
+      "id": 52,
+      "name": "Áo thun nam ngắn tay TORANO chất Cotton mát lạnh thoáng khí,co giãn thoải mái, thấm hút mồ hôi",
+      "slug": "ao-thun-nam-ngan-tay-torano-chat-cotton-mat-lanh-thoang-khico-gian-thoai-mai-tham-hut-mo-hoi",
+      "img_thumb": "http://res.cloudinary.com/dkrcsuwbc/image/upload/v1743949293/gnnetybvfxdd5nmqakhv.webp",
+      "description": "Chất liệu: 95% cotton + 5%Spandex\n\n📍Màu sắc: Trắng, Xám đậm, Đen\n\n📍Phom dáng: Slimfit hơi ôm\n\n📍Size: S-M-L-XL\n\n📍Xuất xứ: Việt Nam\n\n📍Tính năng nổi bật:",
+      "category_id": 9,
+      "view": 0,
       "is_active": true,
       "deleted_at": null,
-      "created_at": "2025-03-02T16:38:36.000000Z",
-      "updated_at": "2025-03-02T16:38:36.000000Z"
-    },
-    {
-      "id": 9,
-      "name": "Mia Carter",
-      "is_active": true,
-      "deleted_at": null,
-      "created_at": "2025-03-02T16:38:36.000000Z",
-      "updated_at": "2025-03-02T16:38:36.000000Z"
-    },
-    {
-      "id": 8,
-      "name": "Dr. Jan Harris",
-      "is_active": true,
-      "deleted_at": null,
-      "created_at": "2025-03-02T16:38:36.000000Z",
-      "updated_at": "2025-03-02T16:38:36.000000Z"
-    },
-    {
-      "id": 7,
-      "name": "Prof. Liliane Rath",
-      "is_active": true,
-      "deleted_at": null,
-      "created_at": "2025-03-02T16:38:36.000000Z",
-      "updated_at": "2025-03-02T16:38:36.000000Z"
-    },
-    {
-      "id": 6,
-      "name": "Taryn Hermann",
-      "is_active": true,
-      "deleted_at": null,
-      "created_at": "2025-03-02T16:38:36.000000Z",
-      "updated_at": "2025-03-02T16:38:36.000000Z"
-    },
-    {
-      "id": 5,
-      "name": "Dr. Candelario Bernier PhD",
-      "is_active": true,
-      "deleted_at": null,
-      "created_at": "2025-03-02T16:38:36.000000Z",
-      "updated_at": "2025-03-02T16:38:36.000000Z"
-    },
-    {
-      "id": 4,
-      "name": "Brenden Powlowski",
-      "is_active": true,
-      "deleted_at": null,
-      "created_at": "2025-03-02T16:38:36.000000Z",
-      "updated_at": "2025-03-02T16:38:36.000000Z"
-    },
-    {
-      "id": 3,
-      "name": "Abby Gaylord MD",
-      "is_active": true,
-      "deleted_at": null,
-      "created_at": "2025-03-02T16:38:36.000000Z",
-      "updated_at": "2025-03-02T16:38:36.000000Z"
-    },
-    {
-      "id": 2,
-      "name": "Vella Schmeler",
-      "is_active": true,
-      "deleted_at": null,
-      "created_at": "2025-03-02T16:38:36.000000Z",
-      "updated_at": "2025-03-02T16:38:36.000000Z"
-    },
-    {
-      "id": 1,
-      "name": "Kattie Pfannerstill",
-      "is_active": true,
-      "deleted_at": null,
-      "created_at": "2025-03-02T16:38:36.000000Z",
-      "updated_at": "2025-03-02T16:38:36.000000Z"
-    }
+      "created_at": "2025-04-06T14:23:10.000000Z",
+      "updated_at": "2025-04-06T14:23:10.000000Z",
+      "category": {
+          "id": 9,
+          "name": "Vivian Oberbrunner V",
+          "is_active": true,
+          "deleted_at": null,
+          "created_at": "2025-03-02T16:38:36.000000Z",
+          "updated_at": "2025-03-02T16:38:36.000000Z"
+      }
+  },
+  "comments": [
+      {
+          "id": 43,
+          "user_id": 24,
+          "product_id": 52,
+          "content": "sdfsd",
+          "parent_id": null,
+          "is_active": true,
+          "created_at": "2025-04-20T15:40:43.000000Z",
+          "updated_at": "2025-04-20T15:40:43.000000Z",
+          "star": 2,
+          "children_count": 0,
+          "user": {
+              "id": 24,
+              "name": "Quang Lương",
+              "email": "quang20042204@gmail.com",
+              "address": "rthrthfghfgh",
+              "phone": "54656456",
+              "avatar": "https://lh3.googleusercontent.com/a/ACg8ocKzh7Ig0L1rwCDyz9DTnJEIpSLqVU-XFKazmmJCr-jf7T3HyQ=s96-c",
+              "role": "1",
+              "points": 0,
+              "is_active": true,
+              "date_of_birth": null,
+              "email_verified_at": "2025-03-10T15:01:50.000000Z",
+              "email_verification_expires_at": null,
+              "created_at": "2025-03-10T15:01:19.000000Z",
+              "updated_at": "2025-04-20T08:40:36.000000Z"
+          }
+      },
+      {
+          "id": 42,
+          "user_id": 1,
+          "product_id": 52,
+          "content": "Sản phẩm rất tốt, giao hàng nhanh!",
+          "parent_id": null,
+          "is_active": true,
+          "created_at": "2025-04-15T08:12:49.000000Z",
+          "updated_at": "2025-04-15T08:12:49.000000Z",
+          "star": 5,
+          "children_count": 0,
+          "user": {
+              "id": 1,
+              "name": "Addie Kuphal",
+              "email": "pfannerstill.donnell@example.net",
+              "address": "554 Cullen Junctions\nRatkeport, IL 05445-7558",
+              "phone": null,
+              "avatar": "https://via.placeholder.com/200x200.png/00ff77?text=people+soluta",
+              "role": "1",
+              "points": 0,
+              "is_active": true,
+              "date_of_birth": "1996-06-22",
+              "email_verified_at": "1997-12-31T01:07:40.000000Z",
+              "email_verification_expires_at": "2026-02-22T19:37:58.000000Z",
+              "created_at": "2025-03-02T16:38:36.000000Z",
+              "updated_at": "2025-03-02T16:38:36.000000Z"
+          }
+      }
   ]
 }

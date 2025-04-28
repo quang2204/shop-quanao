@@ -17,9 +17,6 @@ import {
   useProductGalleries,
   useProductVariants,
 } from "../../../Hook/useDetailProduct.jsx";
-// import { useAddProduct, useAddProductGalleries } from "../../../Hook/useProduct.jsx";
-// import { Link } from "react-router-dom";
-
 const UpdateProduct = () => {
   const section1Ref = useRef(null);
   const section2Ref = useRef(null);
@@ -113,15 +110,6 @@ const UpdateProduct = () => {
       setFileList(images);
     }
   }, [productGallerie]);
-  // useEffect(() => {
-  //   if (detailProduct?.[0]?.category?.id) {
-  //     const defaultCategoryId = productVariant[0].product.category_id;
-  //     setCategoryId(defaultCategoryId);
-  //     form.setFieldsValue({
-  //       categoryId: defaultCategoryId,
-  //     });
-  //   }
-  // }, [detailProduct, form]);
   const navigate = useNavigate();
   const { mutate, isLoading } = useMutation({
     mutationFn: (data) => updateProduct(id, data),
@@ -332,7 +320,9 @@ const UpdateProduct = () => {
     });
   };
 
-  const treeData = transformToTreeData(category?.data);
+  const treeData = transformToTreeData(
+    category?.data.filter((item) => item.is_active == 1)
+  );
   const onPopupScroll = () => {
     // console.log("onPopupScroll", e);
   };
@@ -498,11 +488,8 @@ const UpdateProduct = () => {
       // slug: data.slugName,
       is_active: true,
     };
-    console.log("sds", variants);
-    // console.log(data);
     mutate(product);
   };
-  // console.log(productVariant);
 
   const validateFileList = () => {
     if (fileList.length < 1) {

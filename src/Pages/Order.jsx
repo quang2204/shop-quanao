@@ -18,10 +18,13 @@ const Order = () => {
   // const { data: user, isLoading } = useAuth();
   const { data, isLoading } = UseDetailUser();
   // const { status } = useParams();
-  const [searchParam]=useSearchParams();
-  const status =searchParam.get("status");
-  const { data: order, isLoading: isLoadingOrder } = useDetailOrderByUserId({status});
+  const [searchParam] = useSearchParams();
+  const status = searchParam.get("status");
+  const { data: order, isLoading: isLoadingOrder } = useDetailOrderByUserId({
+    status,
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalConfim, setIsModalConfim] = useState(false);
   const [isid, setId] = useState(false);
   const { mutate: comment, isLoading: isComment } = addComent();
   const { isLoading: isLoadingorder, mutate } = useStatusOrderCline(
@@ -43,7 +46,16 @@ const Order = () => {
   const handleCancelAdd = () => {
     setIsModalOpen(false);
     reset();
-    setId("")
+    setId("");
+  };
+  const handleConfim = (id) => {
+    setId(id);
+    setIsModalConfim(true);
+  };
+  const handleCancelConfim = () => {
+    setIsModalConfim(false);
+    reset();
+    setId("");
   };
   //comment
   const onSubmit = (value) => {
@@ -51,14 +63,21 @@ const Order = () => {
       user_id: order?.[0]?.order?.user_id,
       product_id: isid,
       content: value.content,
-      is_active: true,
+      // is_active: true,
       star: value.star,
     };
 
     comment(data);
     setId("");
-    setIsModalOpen(false)
+    setIsModalOpen(false);
   };
+  const handleSubmitOrder = (e) => {
+    e.preventDefault(); // Ngăn submit reload lại trang
+    mutate({ id: isid, data: 5 }); // Gửi dữ liệu
+    setId("");
+    setIsModalConfim(false);
+  };
+  
   // trạng thái đơn hàng
   const {
     register,
@@ -193,7 +212,7 @@ const Order = () => {
             to="/order?status=5"
             className={`${status == "Successful delivery" && "text-red-600"} px-3`}
           >
-           Hoàn thành
+            Hoàn thành
           </Link>
 
           <Link
@@ -236,7 +255,7 @@ const Order = () => {
                         <p>
                           Phân loại hàng: Size:{" "}
                           {product.product_variant.size.name}, Color:{" "}
-                          {product.product_variant.color.name}
+                          {product?.product_variant?.color?.name}
                         </p>
                         <strong>x {product.quantity}</strong>
                       </div>
@@ -324,7 +343,7 @@ const Order = () => {
                         // color: "white",
                         fontSize: "16px",
                       }}
-                      onClick={() => handleorderstatus(item.order.id, 5)}
+                      onClick={() => handleConfim(item.order.id)}
                       type="button"
                     >
                       Đã nhận hàng
@@ -451,6 +470,71 @@ const Order = () => {
                             Comment
                           </button>
                           {/* <button type="button" className="btn btn-success" id="edit-btn">Update</button> */}
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div
+                className={`modal fade ${isModalConfim ? "block opacity-100" : ""} `}
+                // style={{ background: "rgba(0, 0, 0, 0.5)" }}
+              >
+                <div
+                  className="modal-dialog modal-dialog-centered "
+                  style={{ transform: "none" }}
+                >
+                  <div className="modal-content">
+                    <div className="modal-header bg-light p-3">
+                      <h5 className="modal-title" id="exampleModalLabel">
+                        Confim
+                      </h5>
+                      <button
+                        type="button"
+                        className="btn-close"
+                        onClick={handleCancelConfim}
+                      />
+                    </div>
+                    <form
+                      className="tablelist-form"
+                      onSubmit={handleSubmitOrder}
+                    >
+                      <div className="modal-content border-none">
+                        <div className="modal-body">
+                          <div className="mt-2 text-center">
+                            <div className="flex justify-center">
+                              <img
+                                src="https://media-public.canva.com/4JfLI/MAGPVM4JfLI/1/tl.png"
+                                alt="Confirmation Icon"
+                                width={100}
+                              />
+                            </div>
+                            <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                              <h4>Are you sure?</h4>
+                              <p className="text-muted mx-4 mb-0">
+                                Are you sure you want to confirm this order?
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="modal-footer">
+                        <div className="hstack gap-2 justify-content-end">
+                          <button
+                            type="button"
+                            className="px-3 py-2 mt-2 rounded-md bg-[#F3F6F9]"
+                            onClick={handleCancelConfim}
+                          >
+                            Close
+                          </button>
+                          <button
+                            type="submit"
+                            className="px-3 py-2 mt-2 rounded-md bg-red-500 text-white"
+                            id="confirm-btn"
+                          >
+                            Confirm
+                          </button>
                         </div>
                       </div>
                     </form>

@@ -13,7 +13,6 @@ import { useMutation, useQueryClient } from "react-query";
 import {
   addOrder,
   addOrderDetail,
-  deleteAllCart,
   orderMomo,
 } from "../Apis/Api.jsx";
 import useAuth from "../Hook/useAuth.jsx";
@@ -70,7 +69,6 @@ const Pay = () => {
   const { mutate: momo } = useMutation({
     mutationFn: (data) => orderMomo(data),
     onSuccess: (data) => {
-      console.log(data.payment_url);
       window.location.href = data.payment_url;
     },
     onError: (errors) => {
@@ -141,7 +139,7 @@ const Pay = () => {
             Trang chủ
             <i className="fa fa-angle-right m-l-9 m-r-10" />
           </Link>
-          <span className="stext-109 cl4">Thanh toán</span>
+          <span className="stext-109 cl4" > Thanh toán</span>
         </div>
       </div>
       <form
@@ -305,8 +303,9 @@ const Pay = () => {
               className="flex-c-m text-[18px] cl0 w-full h-12 bg3 bor2 hov-btn4 p-lr-15 trans-04 m-b-10 m-t-20 cursor"
               type="submit"
               onClick={() => onsubmit()}
+              disabled={isLoadingOrder}
             >
-              Thanh toán
+            {isLoadingOrder && <Spin size="small" className="mr-2" />}  Thanh toán
             </button>
 
             <p style={{ fontSize: 15, maxWidth: 660 }}>

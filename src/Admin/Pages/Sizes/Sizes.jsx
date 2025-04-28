@@ -6,7 +6,7 @@ import {
   useDeleteSize,
 } from "../../../Hook/useSize";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Modal, Spin, Pagination, message } from "antd";
+import { Modal, Spin, Pagination, message, Button } from "antd";
 import { useForm } from "react-hook-form";
 
 const Sizes = () => {
@@ -16,9 +16,9 @@ const Sizes = () => {
   const searchParams = new URLSearchParams(location.search);
   const page = parseInt(searchParams.get("page")) || 1; // Quản lý trang hiện tại
   const { size, isSize } = useSize(page); // Lấy dữ liệu size từ hook
-  const { mutate: createSize } = useCreateSize();
-  const { mutate: updateSize } = useUpdateSize();
-  const { mutate: deleteSize } = useDeleteSize();
+  const { mutate: createSize, isLoading: isAdd } = useCreateSize();
+  const { mutate: updateSize, isLoading: isUpdate } = useUpdateSize();
+  const { mutate: deleteSize, isLoading: isDelete } = useDeleteSize();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
   const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
@@ -63,7 +63,6 @@ const Sizes = () => {
       onSuccess: () => {
         setIsModalOpen(false); // Đóng modal
         setIdDelete(""); // Xóa ID đã chọn
-        message.success("Size deleted successfully!"); // Hiển thị thông báo thành công
       },
       onError: (error) => {
         message.error("Failed to delete size!"); // Hiển thị thông báo lỗi
@@ -112,14 +111,12 @@ const Sizes = () => {
   }
 
   return (
-    <div className="row mx-2">
+    <div className="row">
       <div className="col-lg-12">
         <div className="card" id="orderList">
           <div className="card-header border-0 bg-none">
             <div className="row align-items-center gy-3">
-              <div className="col-sm">
-                <h5 className="card-title mb-0 fw-medium">Size Management</h5>
-              </div>
+              <div className="col-sm"></div>
               <div className="col-sm-auto">
                 <button
                   type="button"
@@ -218,17 +215,62 @@ const Sizes = () => {
         onOk={handleOk}
         onCancel={handleCancel}
         title="Delete Size"
+        footer={[
+          <Button key="back" onClick={handleCancel}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleOk}
+            disabled={isDelete}
+          >
+            {isDelete && <Spin size="small" className="mr-2" />}
+            OK
+          </Button>,
+        ]}
       >
-        <h4>Are you sure?</h4>
-        <p>Do you want to delete this size permanently?</p>
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content border-none">
+            <div className="modal-body">
+              <div className="mt-2 text-center ">
+                <div className="flex justify-center">
+                  <img
+                    src="https://media-public.canva.com/de2y0/MAFqwzde2y0/1/tl.png"
+                    alt=""
+                    width={100}
+                  />
+                </div>
+                <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                  <h4>Are you sure ?</h4>
+                  <p className="text-muted mx-4 mb-0">
+                    Are you sure you want to remove this record ?
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </Modal>
 
       {/* Modal Add */}
       <Modal
         open={isModalOpenAdd}
-        onOk={handleSubmit(onSubmit)}
-        onCancel={handleCancelAdd}
         title="Add Size"
+        footer={[
+          <Button key="back" onClick={handleCancelAdd}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleSubmit(onSubmit)}
+            disabled={isAdd}
+          >
+            {isAdd && <Spin size="small" className="mr-2" />}
+            OK
+          </Button>,
+        ]}
       >
         <form>
           <div className="mb-3">
@@ -246,9 +288,21 @@ const Sizes = () => {
       {/* Modal Edit */}
       <Modal
         open={isModalOpenEdit}
-        onOk={handleSubmit(onEditSubmit)}
-        onCancel={handleCancelEdit}
         title="Edit Size"
+        footer={[
+          <Button key="back" onClick={handleCancelEdit}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleSubmit(onEditSubmit)}
+            disabled={isUpdate}
+          >
+            {isUpdate && <Spin size="small" className="mr-2" />}
+            OK
+          </Button>,
+        ]}
       >
         <form>
           <div className="mb-3">

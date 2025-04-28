@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Modal, Pagination, Spin, message } from "antd";
+import { Button, Modal, Pagination, Spin } from "antd";
 import {
   useAddCategory,
   useCategory,
@@ -12,8 +11,6 @@ import { useForm } from "react-hook-form";
 const Categories = () => {
   const [pageProduct, setPageProduct] = useState(1);
   const { category, isCategory } = useCategory(pageProduct);
-  const { mutate: updateCategory } = useUpdateCategory();
-  const { mutate: addCategory } = useAddCategory();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idDelete, setIdDelete] = useState("");
   const [idUpdate, setIdUpdate] = useState("");
@@ -21,6 +18,11 @@ const Categories = () => {
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
   const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
   const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
+  const { mutate: updateCategory, isLoading: isUpdate } =
+    useUpdateCategory(setIsModalOpenUpdate);
+  const { mutate: addCategory, isLoading: isAdd } =
+    useAddCategory(setIsModalOpenAdd);
+  const { mutate, isLoading: isDelete } = useDeleteCategory(setIsModalOpen);
   const showModal = (id) => {
     setIdDelete(id);
     setIsModalOpen(true);
@@ -44,15 +46,11 @@ const Categories = () => {
     setIsModalOpenUpdate(false);
   };
 
-  const { mutate } = useDeleteCategory();
   const handleOk = () => {
     mutate(idDelete);
-    setIsModalOpen(false);
     setIdDelete("");
   };
-  const handleOkAdd = () => {
-    setIsModalOpenAdd(false);
-  };
+
   const handleCancelDetail = () => {
     setIdDetail("");
     setIsModalOpenDetail(false);
@@ -75,7 +73,6 @@ const Categories = () => {
       is_active: data.is_active.toLowerCase() === "true",
     };
     reset();
-    handleOkAdd();
     addCategory(datares);
   };
   const onSubmitUpdate = (data) => {
@@ -86,7 +83,6 @@ const Categories = () => {
           ? data.is_active
           : data?.is_active?.toString().toLowerCase() === "true",
     };
-    setIsModalOpenUpdate(false);
     updateCategory({ id: idUpdate.id, data: datares });
     reset();
   };
@@ -103,28 +99,12 @@ const Categories = () => {
     setPageProduct(current);
   };
   return (
-    <div className="row mx-2">
+    <div className="row">
       <div className="col-lg-12">
         <div className="card " id="orderList">
           <div className="card-header border-0 bg-none">
-            <div className="row align-items-center gy-3 mb-8">
-              <div className="col-sm ">
-                <form>
-                  <div className="row g-3">
-                    <div className="col-xxl-5 col-sm-5">
-                      <div className="search-box">
-                        <input
-                          type="text"
-                          className="form-control search"
-                          placeholder="Search for Categories "
-                        />
-                        <i className="ri-search-line search-icon" />
-                      </div>
-                    </div>
-                  </div>
-                  {/*end row*/}
-                </form>
-              </div>
+            <div className="row align-items-center gy-3 mb-3">
+              <div className="col-sm "></div>
               <div className="col-sm-auto">
                 <div className="d-flex gap-1 flex-wrap">
                   <button
@@ -253,10 +233,20 @@ const Categories = () => {
       {/* //Modal delete */}
       <Modal
         open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-
-        // className="modal fade zoomIn"
+        footer={[
+          <Button key="back" onClick={handleCancel}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleOk}
+            disabled={isDelete}
+          >
+            {isDelete && <Spin size="small" className="mr-2" />}
+            OK
+          </Button>,
+        ]}
       >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content border-none">
@@ -283,9 +273,21 @@ const Categories = () => {
       {/* // Modal add */}
       <Modal
         open={isModalOpenAdd}
-        onOk={handleSubmit(onSubmit)}
-        onCancel={handleCancelAdd}
         title="Add Category"
+        footer={[
+          <Button key="back" onClick={handleCancelAdd}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleSubmit(onSubmit)}
+            disabled={isAdd}
+          >
+            {isAdd && <Spin size="small" className="mr-2" />}
+            OK
+          </Button>,
+        ]}
         // className="modal fade zoomIn"
       >
         <div className="modal-dialog modal-dialog-centered">
@@ -329,9 +331,21 @@ const Categories = () => {
       {/* //update */}
       <Modal
         open={isModalOpenUpdate}
-        onOk={handleSubmit(onSubmitUpdate)}
-        onCancel={handleCancelUpdate}
         title="Add Category"
+        footer={[
+          <Button key="back" onClick={handleCancelUpdate}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleSubmit(onSubmitUpdate)}
+            disabled={isUpdate}
+          >
+            {isUpdate && <Spin size="small" className="mr-2" />}
+            OK
+          </Button>,
+        ]}
         // className="modal fade zoomIn"
       >
         <div className="modal-dialog modal-dialog-centered">

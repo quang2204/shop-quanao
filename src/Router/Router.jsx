@@ -33,11 +33,8 @@ import Customers from "../Admin/Pages/User/Customers.jsx";
 import TwoStep from "../Admin/Pages/User/TwoStep.jsx";
 import Order_Detail from "../Admin/Pages/Orders/Order_Detail.jsx";
 import Profile from "../Admin/Pages/Profile.jsx";
-import Login from "../Admin/Pages/Login.jsx";
-import SignIn from "../Admin/Pages/SignIn.jsx";
 import Orders from "../Admin/Pages/Orders/Orders.jsx";
 import Categories from "../Admin/Pages/Categories/Categories.jsx";
-import Categories_Detail from "../Admin/Pages/Categories/Categories_Detail.jsx";
 import ColorList from "../Admin/Pages/Colors/ColorList.jsx";
 import VoucherList from "../Admin/Pages/Vouchers/VoucherList.jsx";
 import FullScreenButton from "../Admin/Ui/FullScreen.jsx";
@@ -53,6 +50,12 @@ import CommentList from "../Admin/Pages/Comment/CommentList.jsx";
 import Blogs from "../Admin/Pages/Blogs/Blogs.jsx";
 import AddBlog from "../Admin/Pages/Blogs/AddBlog.jsx";
 import UpdateBlog from "../Admin/Pages/Blogs/UpdateBlog.jsx";
+import Categoryblogs from "../Admin/Pages/Category_blogs/Categoryblogs.jsx";
+import Harddelete from "../Admin/Pages/Products/Harddelete.jsx";
+import HarddeleteBlog from "../Admin/Pages/Blogs/Harddelete.jsx";
+import HarddeleteCategories from "../Admin/Pages/Categories/HarddeleteCategories.jsx";
+import ColorTrashed from "../Admin/Pages/Colors/ColorTrashed.jsx";
+import SizeTrashed from "../Admin/Pages/Sizes/SizeTrashed.jsx";
 
 const Router = () => {
   ScrollToTop();
@@ -95,27 +98,30 @@ const Router = () => {
       >
         <Route index element={<Dashboards />} />
         <Route path="products" element={<Products />} />
+        <Route path="hard-delete-product" element={<Harddelete />} />
+        <Route path="hard-delete-blog" element={<HarddeleteBlog />} />
+        <Route path="hard-delete-caterory" element={<HarddeleteCategories />} />
+        <Route path="hard-delete-color" element={<ColorTrashed />} />
+        <Route path="hard-delete-size" element={<SizeTrashed />} />
         <Route path="uppdateproduct/:id" element={<UpdateProduct />} />
         <Route path="addproduct" element={<AddProduct />} />
         <Route path="categories" element={<Categories />} />
-        <Route path="categories/:id" element={<Categories_Detail />} />
         <Route path="banners" element={<Banner />} />
         <Route path="blogs" element={<Blogs />} />
         <Route path="addblog" element={<AddBlog />} />
         <Route path="updateblog/:id" element={<UpdateBlog />} />
         <Route path="sizes" element={<Sizes />} />
         <Route path="product_detail/:id" element={<Detail_Product />} />
-        <Route path="signin" element={<SignIn />} />
         <Route path="customers" element={<Customers />} />
         <Route path="customers/:id" element={<Customers />} />
         <Route path="order" element={<Orders />} />
         <Route path="order_detail/:id" element={<Order_Detail />} />
         <Route path="profile" element={<Profile />} />
-        <Route path="login" element={<Login />} />
         <Route path="colors" element={<ColorList />} />
         <Route path="vouchers" element={<VoucherList />} />
         <Route path="comments" element={<CommentListProduct />} />
         <Route path="comment-list/:id" element={<CommentList />} />
+        <Route path="categoryblogs" element={<Categoryblogs />} />
         <Route path="fullscreen" element={<FullScreenButton />} />
         <Route path="login/callback" element={<LoginCallback />} />
       </Route>

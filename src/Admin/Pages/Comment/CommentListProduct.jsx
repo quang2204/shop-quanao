@@ -22,16 +22,10 @@ const CommentListProduct = () => {
   }
 
   return (
-    <div className="row mx-2">
+    <div className="row">
       <div className="col-lg-12">
         <div className="card" id="commentList">
-          <div className="card-header border-0 bg-none">
-            <div className="row align-items-center gy-3 mb-8">
-              <div className="col-sm">
-                <h5 className="mb-0">Comment List Product</h5>
-              </div>
-            </div>
-          </div>
+          <div className="card-header border-0 bg-none"></div>
 
           <div className="card-body pt-0">
             <div>

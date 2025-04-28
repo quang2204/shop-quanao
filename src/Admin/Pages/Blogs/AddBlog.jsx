@@ -42,7 +42,6 @@ const AddBlog = () => {
       user_id:user.id,
       is_active:Boolean(value.is_active),
     };
-    console.log(data);
     mutate(data)
   };
   if (isLoading) {
@@ -191,14 +190,6 @@ const AddBlog = () => {
               {
                 required: true,
                 message: "Is_active là bắt buộc!",
-              },
-              {
-                min: 3,
-                message: "Is_active phải có ít nhất 3 ký tự!",
-              },
-              {
-                max: 255,
-                message: "Is_active không được vượt quá 255 ký tự!",
               },
             ]}
           >

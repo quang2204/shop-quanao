@@ -1,14 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { CloseOutlined } from "@ant-design/icons";
+import { FormatPrice } from "../Format";
+import { Link } from "react-router-dom";
 
 const ChatApp = ({ close }) => {
   const [messages, setMessages] = useState([]);
+  const [productmess, setProductmess] = useState();
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
-
+  console.log(productmess);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -51,6 +54,7 @@ const ChatApp = ({ close }) => {
           timestamp: new Date(),
           safetyRatings: res.data.safetyRatings,
         };
+        setProductmess(res.data.products);
         setMessages((prev) => [...prev, aiMessage]);
       } else {
         throw new Error(res.data.message || "Lỗi không xác định từ server");
@@ -82,64 +86,6 @@ const ChatApp = ({ close }) => {
   };
 
   return (
-    // <div className="chat-container">
-    //   <div style={{ boxShadow: " 2px 7px 14px 1px #cfc9c9" }}>
-    //     {error && <div className="error-message">{error}</div>}
-    //     <div className="flex gap-2 items-center bg-blue-400 rounded-t px-3 py-2 justify-between">
-    //       <div className="flex gap-2 items-center">
-    //         <img
-    //           src="https://media-public.canva.com/r4Rpw/MAGLXGr4Rpw/1/tl.png"
-    //           width={40}
-    //           alt="img"
-    //         />
-    //         <h4 className="text-lg text-white">Trợ lý của Coza Store</h4>
-    //       </div>
-    //       <CloseOutlined
-    //         onClick={close}
-    //         className="text-white cursor-pointer"
-    //       />
-    //     </div>
-    //     <div className="chat-messages">
-    //       {messages.map((msg, idx) => (
-    //         <div
-    //           key={idx}
-    //           className={`message ${msg.role} ${msg.isError ? "error" : ""}`}
-    //         >
-    //           <div className="message-header">
-    //             <b>{msg.role === "user" ? "Bạn" : "Gemini"}</b>
-    //             <span className="message-time">
-    //               {formatTime(msg.timestamp)}
-    //             </span>
-    //           </div>
-    //           <div className="message-content">{msg.text}</div>
-    //         </div>
-    //       ))}
-    //       {loading && (
-    //         <div className="message ai">
-    //           <div className="message-header">
-    //             <b>Gemini</b>
-    //           </div>
-    //           <div className="message-content loading">Đang trả lời...</div>
-    //         </div>
-    //       )}
-    //       <div ref={messagesEndRef} />
-    //     </div>
-
-    //     <div className="chat-input">
-    //       <input
-    //         type="text"
-    //         value={input}
-    //         onChange={(e) => setInput(e.target.value)}
-    //         onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-    //         placeholder="Nhập nội dung..."
-    //         disabled={loading}
-    //       />
-    //       <button onClick={sendMessage} disabled={loading || !input.trim()}>
-    //         {loading ? "Đang gửi..." : "Gửi"}
-    //       </button>
-    //     </div>
-    //   </div>
-    // </div>
     <div className="chatbot">
       <div className="chat-header">
         <div className="flex gap-2 items-center">
@@ -160,6 +106,22 @@ const ChatApp = ({ close }) => {
             className={`message ${msg.role} ${msg.isError ? "error" : ""}`}
           >
             <div className="message-content">{msg.text}</div>
+            {productmess?.map((item) => (
+              <div className="product-card">
+                <img src={item.image} alt={item.name} />
+                <h4>{item.name}</h4>
+                <p>
+                  <strong>Giá:</strong>
+                  {<FormatPrice price={item.price} />}
+                </p>
+                <p>{item.description}</p>
+                <div className="buttons">
+                  <Link to={`/product/${item.id}`} className="detail-btn">
+                    🔍 Xem chi tiết
+                  </Link>
+                </div>
+              </div>
+            ))}
           </div>
         ))}
 

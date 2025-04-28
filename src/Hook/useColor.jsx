@@ -4,10 +4,12 @@ import { message } from "antd";
 import {
   getColors,
   deleteColor,
-  forceDeleteColor,
   getColorDetail,
   updateColor,
   createColor,
+  getColorsTrashed,
+  Colorsrestore,
+  Colorsforcedelete,
 } from "../Apis/Api";
 
 export const useColors = (page) => {
@@ -16,6 +18,13 @@ export const useColors = (page) => {
     queryFn: () => getColors(page || 1),
   });
   return { colors, isLoading };
+};
+export const useColorsapiTrashed = () => {
+  const { data: colorsTrashed, isLoadingTrashed } = useQuery({
+    queryKey: ["colorsTrashed"],
+    queryFn: () => getColorsTrashed(),
+  });
+  return { colorsTrashed, isLoadingTrashed };
 };
 
 export const useColorDetail = (id) => {
@@ -28,53 +37,52 @@ export const useColorDetail = (id) => {
   return { color, isLoading };
 };
 
-export const useAddColor = () => {
+export const useAddColor = (setIsModalOpenAdd) => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
-
   const { mutate, isLoading } = useMutation({
     mutationFn: (data) => createColor(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["colors"] });
-      message.success("Thêm màu sắc thành công");
+      message.success("Add color to success");
+      setIsModalOpenAdd(false)
     },
-    onError: () => {
-      message.error("Thêm màu sắc thất bại");
+    onError: (error) => {
+      message.error(error.response.data.message);
     },
   });
 
   return { mutate, isLoading };
 };
 
-export const useUpdateColor = () => {
+export const useUpdateColor = (setIsModalOpenUpdate) => {
   const queryClient = useQueryClient();
 
   const { mutate, isLoading } = useMutation({
     mutationFn: ({ id, data }) => updateColor(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["colors"] });
-      message.success("Cập nhật màu sắc thành công");
+      message.success("Color update successful");
+      setIsModalOpenUpdate(false)
     },
     onError: (error) => {
-      console.error("Error updating color:", error); // Thêm dòng này để kiểm tra lỗi
-      message.error("Cập nhật màu sắc thất bại");
+      message.error(error.response.data.message);
     },
   });
 
   return { mutate, isLoading };
 };
 
-export const useDeleteColor = () => {
+export const useDeleteColor = (setIsModalOpen) => {
   const queryClient = useQueryClient();
-
   const { mutate, isLoading } = useMutation({
     mutationFn: (id) => deleteColor(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["colors"] });
-      message.success("Xóa màu sắc thành công");
+      message.success("Color removal successful");
+      setIsModalOpen(false)
     },
-    onError: () => {
-      message.error("Xóa màu sắc thất bại");
+    onError: (error) => {
+      message.error(error.response.data.message);
     },
   });
 
@@ -83,15 +91,28 @@ export const useDeleteColor = () => {
 
 export const useForceDeleteColor = () => {
   const queryClient = useQueryClient();
-
   const { mutate, isLoading } = useMutation({
-    mutationFn: (id) => forceDeleteColor(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["colors"] });
-      message.success("Xóa vĩnh viễn màu sắc thành công");
+    mutationFn: (id) => Colorsforcedelete(id),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["colorsTrashed"] });
+      message.success(data.message);
     },
-    onError: () => {
-      message.error("Xóa vĩnh viễn màu sắc thất bại");
+    onError: (error) => {
+      message.error(error.response.data.message);
+    },
+  });
+  return { mutate, isLoading };
+};
+export const useRestoreColor = () => {
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (id) => Colorsrestore(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["colorsTrashed"] });
+      message.success("Color restoration successful");
+    },
+    onError: (error) => {
+      message.error(error.response.data.message);
     },
   });
 

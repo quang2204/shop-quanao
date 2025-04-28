@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { useBlogs, useBlogsAdmin, useDeletBlog } from "../../../Hook/useBlog";
-import { Empty, Image, Modal, Pagination, Spin } from "antd";
+import { Button, Empty, Image, Modal, Pagination, Spin } from "antd";
 import { div } from "framer-motion/client";
 import { Link } from "react-router-dom";
 
 const Blogs = () => {
   const { data, isLoading } = useBlogsAdmin();
-  console.log(data);
-  const { mutate, isLoading: isDelete } = useDeletBlog();
   const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
   const [currentDetail, setCurrentDetail] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idDelete, setIdDelete] = useState("");
+  const { mutate, isLoading: isDelete } = useDeletBlog(setIsModalOpen);
   const showDetailModal = (banner) => {
     setCurrentDetail(banner);
     setIsModalOpenDetail(true);
@@ -26,7 +25,6 @@ const Blogs = () => {
   };
   const handleOk = () => {
     mutate(idDelete);
-    setIsModalOpen(false);
     setIdDelete("");
   };
   if (isLoading) {
@@ -38,7 +36,7 @@ const Blogs = () => {
     );
   }
   return (
-    <div className="row mx-2">
+    <div className="row">
       <div className="col-lg-12">
         <div className="card" id="orderList">
           <div className="card-header border-0 bg-none">
@@ -164,6 +162,20 @@ const Blogs = () => {
         onOk={handleOk}
         onCancel={handleCancel}
         title="Delete Size"
+        footer={[
+          <Button key="back" onClick={handleCancel}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleOk}
+            disabled={isDelete}
+          >
+            {isDelete && <Spin size="small" className="mr-2" />}
+            OK
+          </Button>,
+        ]}
       >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content border-none">
@@ -187,47 +199,6 @@ const Blogs = () => {
           </div>
         </div>
       </Modal>
-
-      {/* Modal Add */}
-      {/* <Modal
-        open={isModalOpenAdd}
-        onOk={handleSubmit(onSubmit)}
-        onCancel={handleCancelAdd}
-        title="Add Size"
-      >
-        <form>
-          <div className="mb-3">
-            <label className="form-label">Size Name</label>
-            <input
-              type="text"
-              className="form-control"
-              {...register("name", { required: true })}
-            />
-            {errors.name && <p className="text-danger">Name is required</p>}
-          </div>
-        </form>
-      </Modal> */}
-
-      {/* Modal Edit */}
-      {/* <Modal
-        open={isModalOpenEdit}
-        onOk={handleSubmit(onEditSubmit)}
-        onCancel={handleCancelEdit}
-        title="Edit Size"
-      >
-        <form>
-          <div className="mb-3">
-            <label className="form-label">Size Name</label>
-            <input
-              type="text"
-              className="form-control"
-              defaultValue={currentSize?.name}
-              {...register("name", { required: true })}
-            />
-            {errors.name && <p className="text-danger">Name is required</p>}
-          </div>
-        </form>
-      </Modal> */}
 
       {/* Modal Detail */}
       <Modal

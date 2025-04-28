@@ -109,17 +109,17 @@ const VoucherList = () => {
       message.error("Max Money phải lớn hơn Min Money.");
       return;
     }
-  
+
     if (new Date(data.end_date) <= new Date(data.start_date)) {
       message.error("End Date phải lớn hơn Start Date.");
       return;
     }
-  
+
     const formattedData = {
       ...data,
       is_active: data.is_active === "true" || data.is_active === true,
     };
-  
+
     setIsSubmitting(true);
     addVoucher(formattedData, {
       onSuccess: () => {
@@ -133,18 +133,18 @@ const VoucherList = () => {
       },
     });
   };
-  
+
   const onUpdate = (data) => {
     if (parseFloat(data.max_money) <= parseFloat(data.min_money)) {
       message.error("Max Money phải lớn hơn Min Money.");
       return;
     }
-  
+
     if (new Date(data.end_date) <= new Date(data.start_date)) {
       message.error("End Date phải lớn hơn Start Date.");
       return;
     }
-  
+
     const datares = {
       code: data?.code,
       discount: data?.discount,
@@ -158,7 +158,7 @@ const VoucherList = () => {
           ? data.is_active
           : data?.is_active?.toString().toLowerCase() === "true",
     };
-  
+
     setIsSubmitting(true);
     updateVoucher(
       { id: voucherToUpdate.id, ...datares },
@@ -198,32 +198,17 @@ const VoucherList = () => {
   }
 
   return (
-    <div className="row mx-2">
+    <div className="row">
       <div className="col-lg-12">
         <div className="card">
           <div className="card-header border-0 bg-none">
             <div className="row align-items-center gy-3 mb-1">
               <div className="col-sm">
-                <form>
-                  <div className="row g-3">
-                    <div className="col-xxl-5 col-sm-5">
-                      <div className="search-box">
-                        <input
-                          type="text"
-                          className="form-control search"
-                          placeholder="Search for Categories "
-                        />
-                        <i className="ri-search-line search-icon" />
-                      </div>
-                    </div>
-                  </div>
-                  {/*end row*/}
-                </form>
               </div>
               <div className="col-sm-auto">
                 <button
                   type="button"
-                  className="px-3 py-2 rounded-md btn-success"
+                  className="text-white text-[0.9rem] bg-[#03A9F4] px-4 py-2 rounded-md"
                   onClick={() => setIsModalOpenAdd(true)}
                 >
                   <i className="ri-add-line align-bottom me-1" /> Add Voucher
@@ -298,14 +283,14 @@ const VoucherList = () => {
                 </tbody>
               </table>
             </div>
-          <Pagination
-            showSizeChanger
-            onChange={onShowSizeChange}
-            current={vouchers.current_page}
-            total={vouchers.total}
-            pageSize={vouchers.per_page}
-            align="center"
-          />
+            <Pagination
+              showSizeChanger
+              onChange={onShowSizeChange}
+              current={vouchers.current_page}
+              total={vouchers.total}
+              pageSize={vouchers.per_page}
+              align="center"
+            />
           </div>
         </div>
       </div>

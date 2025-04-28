@@ -4,8 +4,11 @@ import {
   // addProductGalleries,
   categoryProduct,
   deleteProduct,
+  forceDeleteProduct,
   getProducts,
+  harddeleteProduct,
   productsPagination,
+  restoreProduct,
 } from "../Apis/Api";
 import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
@@ -18,7 +21,13 @@ export const useProduct = (page, filters = {}) => {
   });
   return { products, isProducts };
 };
-
+export const harddeleteProducts = () => {
+  const { data: products, isLoading: isProducts } = useQuery({
+    queryKey: ["harddeleteproducts"],
+    queryFn: () => harddeleteProduct(),
+  });
+  return { products, isProducts };
+};
 export const useProducts = () => {
   const { data: products, isLoading: isProducts } = useQuery({
     queryKey: ["products"],
@@ -43,11 +52,44 @@ export const useDeleteProduct = (onSuccessCallback) => {
     mutationFn: (id) => deleteProduct(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      message.success("Xóa sản phẩm thành công");
+      message.success("Product deleted successfully");
       onSuccessCallback?.();
     },
-    onError: () => {
-      message.error("Xóa sản phẩm không thành công");
+    onError: (error) => {
+      message.error(error.response.data.message);
+    },
+  });
+
+  return { mutate, isLoading };
+};
+export const useforceDeleteProduct = (onSuccessCallback) => {
+  const queryClient = useQueryClient();
+
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (id) => forceDeleteProduct(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["harddeleteproducts"] });
+      message.success("Product deleted successfully");
+      onSuccessCallback?.();
+    },
+    onError: (error) => {
+      message.error(error.response.data.message);
+    },
+  });
+
+  return { mutate, isLoading };
+};
+export const userestoreProduct = (onSuccessCallback) => {
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (id) => restoreProduct(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["harddeleteproducts"] });
+      message.success("Product restore successful");
+      onSuccessCallback?.();
+    },
+    onError: (error) => {
+      message.error(error.response.data.message);
     },
   });
 

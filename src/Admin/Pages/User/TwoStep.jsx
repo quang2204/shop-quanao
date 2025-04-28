@@ -74,8 +74,7 @@ const TwoStep = () => {
       navigate("/signin");
     },
     onError: (errors) => {
-      // message.success(errors.response.data.message);
-      console.log(errors);
+      message.success(errors.response.data.message);
     },
   });
   const onSubmit = (value) => {

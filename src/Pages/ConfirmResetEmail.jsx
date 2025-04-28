@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 
 const ConfirmResetEmail = () => {
   const location = useLocation();
-  console.log(location);
   return (
     <div className="m-t-200 container d-flex justify-content-center m-b-100">
       <form

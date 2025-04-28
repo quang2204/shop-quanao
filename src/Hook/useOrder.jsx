@@ -58,7 +58,7 @@ const useStatusOrder = (page) => {
   const { mutate, isLoading } = useMutation({
     mutationFn: ({ id, data }) => udateStatusOrder(id, data),
     onSuccess: () => {
-      message.success("Cập nhật trạng thái thành công");
+      message.success("Status update successful");
       queryClient.invalidateQueries({ queryKey: ["order", page] });
     },
     onError: (error) => {
@@ -72,7 +72,7 @@ const useStatusOrderCline = (id_user) => {
   const { mutate, isLoading } = useMutation({
     mutationFn: ({ id, data }) => udateStatusOrder(id, data),
     onSuccess: () => {
-      message.success("Cập nhật trạng thái thành công");
+      message.success("Status update successful");
       queryClient.invalidateQueries({ queryKey: ["orderbyuserid", id_user] });
     },
     onError: (error) => {
@@ -86,7 +86,7 @@ const useStatusOrderAdmin= (id) => {
   const { mutate, isLoading } = useMutation({
     mutationFn: ({ id, data }) => udateStatusOrder(id, data),
     onSuccess: () => {
-      message.success("Cập nhật trạng thái thành công");
+      message.success("Status update successful");
       queryClient.invalidateQueries({ queryKey: ["order_id", id] });
     },
     onError: (error) => {

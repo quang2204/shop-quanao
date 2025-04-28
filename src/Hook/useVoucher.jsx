@@ -37,11 +37,11 @@ export const useAddVoucher = () => {
     mutationFn: (data) => createVoucher(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vouchers"] });
-      message.success("Thêm voucher thành công");
+      message.success("Voucher added successfully");
       navigate("/admin/vouchers");
     },
-    onError: () => {
-      message.error("Thêm voucher thất bại");
+    onError: (error) => {
+      message.error(error.response.data.message);
     },
   });
 
@@ -55,11 +55,10 @@ export const useUpdateVoucher = () => {
     mutationFn: ({ id, ...data }) => updateVoucher(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vouchers"] });
-      message.success("Cập nhật voucher thành công");
+      message.success("Voucher update successful");
     },
     onError: (error) => {
-      console.error("Lỗi cập nhật voucher:", error);
-      message.error("Cập nhật voucher thất bại");
+      message.error(error.response.data.message);
     },
   });
 
@@ -73,10 +72,10 @@ export const useDeleteVoucher = () => {
     mutationFn: (id) => deleteVoucher(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vouchers"] });
-      message.success("Xóa voucher thành công");
+      message.success("Voucher deleted successfully");
     },
-    onError: () => {
-      message.error("Xóa voucher thất bại");
+    onError: (error) => {
+      message.error(error.response.data.message);
     },
   });
 

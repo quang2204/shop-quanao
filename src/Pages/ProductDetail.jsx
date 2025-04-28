@@ -6,11 +6,10 @@ import {
 } from "../Hook/useDetailProduct.jsx";
 import { Image, message, Select, Spin, Tabs } from "antd";
 import { Link } from "react-router-dom";
-import { FormatPrice } from "../Format.jsx";
+import { FormatDate, FormatDateTime, FormatPrice } from "../Format.jsx";
 import useQuantity from "../Hook/useQuantity.jsx";
 import { useMutation, useQueryClient } from "react-query";
-import { addCart, addCartItem } from "../Apis/Api.jsx";
-import useAuth from "../Hook/useAuth.jsx";
+import { addCartItem } from "../Apis/Api.jsx";
 import { useCart } from "../Hook/useCart.jsx";
 import { getCommentProduct } from "./useComent.jsx";
 import StarRating from "../Ui/StarRating.jsx";
@@ -19,9 +18,11 @@ const ProductDetail = () => {
   const { detailProduct, isDetailProduct } = useDetailProduct();
   const { isProductVariants, productVariant } = useProductVariants();
   const { productGallerie, isproductGalleries } = useProductGalleries();
-  const { data, isLoading } = getCommentProduct();
   const [color, setColor] = useState();
   const [size, setSize] = useState();
+  const [star, setStar] = useState([]);
+  const [filterStart, setfilterStart] = useState();
+  const { data, isLoading } = getCommentProduct(filterStart);
   const [idVariants, setidVariants] = useState();
   const checkuser = localStorage.getItem("auth_token") || null;
   const {
@@ -31,8 +32,15 @@ const ProductDetail = () => {
     inputValue,
     handleBlur,
   } = useQuantity();
+  useEffect(() => {
+    setStar(
+      data?.comments
+        ?.filter((item) => item.is_active == 1)
+        .map((item) => item.star)
+    );
+  }, []);
   const [indexImg, setindexImg] = useState(0);
-  const { data: cart } = useCart();
+  const { data: cart, isLoading: isCart } = useCart();
 
   const { mutate } = useMutation({
     mutationFn: (data) => addCartItem(data),
@@ -81,6 +89,14 @@ const ProductDetail = () => {
   const handleColor = (color) => {
     setColor(color);
   };
+
+  const totalStar = data?.comments
+    ?.filter((item) => item.is_active == 1)
+    .reduce((acc, cur) => acc + cur.star, 0);
+  const starPercentage =
+    totalStar / data?.comments?.filter((item) => item.is_active == 1).length ||
+    0;
+  const roundNumber = Math.round(starPercentage) || 0;
   if (isDetailProduct || isProductVariants || isproductGalleries || isLoading) {
     return (
       <Spin
@@ -180,7 +196,19 @@ const ProductDetail = () => {
                 <h4 className="mtext-105 cl2 js-name-detail p-b-14">
                   {productVariant[0]?.product?.name}
                 </h4>
-                <div className="flex items-center gap-2">
+                <div className="flex gap-2">
+                  <div className="flex gap-2 items-center border-r-2 ">
+                    <span className="text-[18px]">{starPercentage}</span>
+                    <span className="cl11 pr-2">
+                      <StarRating rating={roundNumber} />
+                    </span>
+                  </div>
+                  <div className="flex gap-2 items-center border-r-2 ">
+                    <span className="text-[18px]">{data?.comments.length}</span>
+                    <span className="pr-2 text-[#767676]">Đánh giá</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 mt-3">
                   <span className="text-3xl text-red-500">
                     {
                       <FormatPrice
@@ -245,16 +273,18 @@ const ProductDetail = () => {
                           options={Array.from(
                             new Map(
                               productVariant
-                                ?.flatMap((variant) => variant.color) // Lấy tất cả size từ các biến thể
-                                ?.map((item) => [
-                                  item.id,
+                                ?.flatMap((variant) => variant.color || []) // đề phòng variant.color là undefined
+                                ?.filter((item) => item?.id && item?.name) // loại bỏ item không hợp lệ
+                                .map((item) => [
+                                  String(item.id),
                                   { value: item.id, label: item.name },
-                                ]) // Tạo key-value cho Map
-                            ).values() // Lấy các giá trị duy nhất
+                                ])
+                            ).values()
                           )}
                           onChange={handleColor}
                           className="w-[135px]"
                         />
+
                         <div className="dropDownSelect2" />
                       </div>
                     </div>
@@ -301,8 +331,10 @@ const ProductDetail = () => {
                       <button
                         className="flex-c-m stext-101 cl0 size-101 bg1 bor1 -ml-[20px] hov-btn1 trans-04 "
                         onClick={addToCart}
+                        disabled={isCart}
                       >
-                        Add to cart
+                        {isCart && <Spin size="small" className="mr-2" />} Add
+                        to cart
                       </button>
                     </div>
                   </div>
@@ -343,7 +375,7 @@ const ProductDetail = () => {
               </div>
             </div>
           </div>
-          <div className="bor10 m-t-50 p-t-20 p-b-40 p-l-15 p-r-15">
+          <div className="bor10 m-t-50 p-t-20 p-b-40 p-l-25 p-r-25">
             <div className="tab01">
               <Tabs
                 defaultActiveKey="1"
@@ -356,37 +388,88 @@ const ProductDetail = () => {
                     children: `${detailProduct[0]?.description}`,
                   },
                   {
-                    label: "Đánh giá",
+                    label: "Đánh giá sản phẩm",
                     key: "2",
-                    children: data?.comments?.map((item) => (
-                      <div className="flex-w flex-t p-b-20" key={item.id}>
-                        <div className="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
-                          <img src={item.user.avatar} alt="AVATAR" />
-                        </div>
-                        <div className="size-207">
-                          <div className="flex-w flex-sb-m p-b-17">
-                            <span className="mtext-107 cl2 p-r-20">
-                              {item.user.name}
-                            </span>
-                            <span className="fs-18 cl11">
-                              <StarRating rating={item.star} />
-                            </span>
+                    children:
+                      data?.comments?.length > 0 ? (
+                        <div>
+                          <div className="flex items-center gap-4">
+                            <div className="mb-7">
+                              <div className="text-red-500">
+                                <span className="text-[1.875rem] pr-1">
+                                  {starPercentage}
+                                </span>
+                                <span className="text-[1.125rem] ">/ 5</span>
+                              </div>
+                              <div className="cl11">
+                                <StarRating rating={roundNumber} />
+                              </div>
+                            </div>
+                            <div className="product-rating-overview__filters">
+                              <div
+                                className="product-rating-overview__filter product-rating-overview__filter--active"
+                                onClick={() => setfilterStart()}
+                              >
+                                Tất cả
+                              </div>
+                              {star?.map((item) => (
+                                <div
+                                  className="product-rating-overview__filter"
+                                  onClick={() => setfilterStart(item)}
+                                >
+                                  {item} Sao
+                                </div>
+                              ))}
+                            </div>
                           </div>
-                          <p className="stext-102 cl6">{item.content}</p>
+                          {data?.comments
+                            ?.filter((item) => item.is_active == 1)
+                            ?.map((item) => (
+                              <div
+                                className="flex-w flex-t p-b-20"
+                                key={item.id}
+                              >
+                                <div className="wrap-pic-s size-108 bor0 of-hidden m-r-18 m-t-6">
+                                  <img
+                                    src={item.user.avatar}
+                                    width={30}
+                                    alt="AVATAR"
+                                  />
+                                </div>
+
+                                <div className="size-207">
+                                  <div className="flex-w flex-sb-m">
+                                    <span className="mtext-107 cl2 p-r-20 pb-2">
+                                      {item.user.name} <br />
+                                      <span className="!text-[#0000008A] cl2 p-r-20 flex gap-1">
+                                        {<FormatDate date={item.created_at} />}
+                                        {
+                                          <FormatDateTime
+                                            dateString={item.created_at}
+                                          />
+                                        }
+                                      </span>
+                                    </span>
+
+                                    <span className="fs-18 cl11">
+                                      <StarRating rating={item.star} />
+                                    </span>
+                                  </div>
+                                  <p className="stext-101 cl6">
+                                    {item.content}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
                         </div>
-                      </div>
-                    )),
+                      ) : (
+                        "Không có comment nào"
+                      ),
                   },
                 ]}
               />
             </div>
           </div>
-        </div>
-        <div className="bg6 flex-c-m flex-w size-302 m-t-73 p-tb-15">
-          <span className="stext-107 cl6 p-lr-25"> SKU: JAK-01 </span>
-          <span className="stext-107 cl6 p-lr-25">
-            {/* Categories : {detailProduct?.caterori.name} */}
-          </span>
         </div>
       </section>
       {/* <section className="sec-relate-product bg0 p-t-45 p-b-105">

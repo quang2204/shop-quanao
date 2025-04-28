@@ -1,4 +1,4 @@
-import { getSize } from "../Apis/Api";
+import { Sizesforcedelete, Sizesrestore, getSize, getSizesTrashed } from "../Apis/Api";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { getSizes, createSize, updateSize, deleteSize } from "../Apis/Api";
 import { message } from "antd";
@@ -24,7 +24,20 @@ const useSize = (currentPage) => {
   });
   return { size, isSize, error };
 };
-
+ export const useSizeTrashed = () => {
+  const {
+    data: size,
+    isLoading: isSize,
+    error,
+  } = useQuery({
+    queryKey: ["sizeTrashed"],
+    queryFn: () => getSizesTrashed(),
+    onError: () => {
+      message.error("Failed to fetch sizes");
+    },
+  });
+  return { size, isSize, error };
+};
 const useCreateSize = () => {
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useMutation({
@@ -69,5 +82,32 @@ const useDeleteSize = () => {
   });
   return { mutate, isLoading };
 };
-
+export const useForceDeleteSize = () => {
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (id) => Sizesforcedelete(id),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["sizeTrashed"] });
+      message.success(data.message);
+    },
+    onError: (error) => {
+      message.error(error.response.data.message);
+    },
+  });
+  return { mutate, isLoading };
+};
+export const useRestoreDeleteSize = () => {
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (id) => Sizesrestore(id),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["sizeTrashed"] });
+      message.success(data.message);
+    },
+    onError: (error) => {
+      message.error(error.response.data.message);
+    },
+  });
+  return { mutate, isLoading };
+};
 export { useSize, useCreateSize, useUpdateSize, useDeleteSize, useSizes };

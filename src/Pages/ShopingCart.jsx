@@ -124,9 +124,7 @@ const ShopingCart = () => {
   const handleBlur = (id, index) => {
     const item = cartItem.find((item) => item.id === id);
     const check = counts.find((item) => item.id === id);
-    console.log(index);
     if (!item || !check) return;
-    console.log(pre[index]);
     // Lấy giá trị cũ từ inputValues
     const prevQuantity = inputValues?.[index]?.quantity;
 
@@ -160,8 +158,6 @@ const ShopingCart = () => {
       };
       return updatedValues;
     });
-
-    // console.log("Updated quantity:", finalQuantity);
   };
 
   const total = cartItem?.reduce(
@@ -357,7 +353,11 @@ const ShopingCart = () => {
                     <span className="mtext-110 cl2 xoa">
                       <FormatPrice
                         price={
-                          voucher ? total - voucher + 30000 : total + 30000
+                          total + 30000 > voucher
+                            ? voucher
+                              ? total - voucher + 30000
+                              : total + 30000
+                            : 0
                         }
                       />
                     </span>
@@ -367,9 +367,12 @@ const ShopingCart = () => {
                   onClick={() =>
                     navigate("/pay", {
                       state: {
-                        totalPrice: voucher
-                          ? total - voucher + 30000
-                          : total + 30000,
+                        totalPrice:
+                          total + 30000 > voucher
+                            ? voucher
+                              ? total - voucher + 30000
+                              : total + 30000
+                            : 0,
                         voucher: voucherid,
                         voucherToal: voucher,
                       },
@@ -463,76 +466,79 @@ const Voucher = ({
       }
     >
       <div className="my-10 max-h-[500px] overflow-y-scroll">
-        {data?.data?.map((item) => {
-          const isExpired = new Date(item.end_date) < date;
-          const isInvalidAmount = !(
-            total >= item.min_money && total <= item.max_money
-          );
-          const isDisabled = isExpired || isInvalidAmount||item.quantity<1;
-          const handleClick = () => {
-            if (isExpired) {
-              message.error("Voucher này đã hết hạn!");
-            } else if (isInvalidAmount) {
-              message.error("Không đủ điều kiện để sử dụng voucher này!");
-            } else if(item.quantity<1){
-              message.error("Số lượng đã hết !");
-            } else {
-              handleVoucherId(item.discount, item.id);
-            }
-          };
-          return (
-            <div
-              key={item.id}
-              onClick={
-                isDisabled
-                  ? () => {
-                      handleClick();
-                    }
-                  : ""
+        {data?.data
+          .filter((item) => item.is_active == 1)
+          ?.map((item) => {
+            const isExpired = new Date(item.end_date) < date;
+            const isInvalidAmount = !(
+              total >= item.min_money && total <= item.max_money
+            );
+            const isDisabled =
+              isExpired || isInvalidAmount || item.quantity < 1;
+            const handleClick = () => {
+              if (isExpired) {
+                message.error("Voucher này đã hết hạn!");
+              } else if (isInvalidAmount) {
+                message.error("Không đủ điều kiện để sử dụng voucher này!");
+              } else if (item.quantity < 1) {
+                message.error("Số lượng đã hết !");
+              } else {
+                handleVoucherId(item.discount, item.id);
               }
-              className={`xl:w-[480px] md:w-full ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-              <div className="d-flex justify-content-between align-items-center bor10 m-b-20">
-                <div className="d-flex align-items-center">
-                  <div
-                    className="icon"
-                    style={{ padding: "40px 20px", backgroundColor: "red" }}
-                  >
-                    <img src={logo} alt="logo" style={{ width: 100 }} />
+            };
+            return (
+              <div
+                key={item.id}
+                onClick={
+                  isDisabled
+                    ? () => {
+                        handleClick();
+                      }
+                    : ""
+                }
+                className={`xl:w-[480px] md:w-full ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+              >
+                <div className="d-flex justify-content-between align-items-center bor10 m-b-20">
+                  <div className="d-flex align-items-center">
+                    <div
+                      className="icon"
+                      style={{ padding: "40px 20px", backgroundColor: "red" }}
+                    >
+                      <img src={logo} alt="logo" style={{ width: 100 }} />
+                    </div>
+                    <div className="conten p-l-20 fs-20">
+                      <p className="mb-1">
+                        Giảm tối đa <FormatPrice price={item.discount} />
+                      </p>
+                      <p className="text-muted text-lg">
+                        Giảm cho đơn từ <FormatPrice price={item.min_money} /> -
+                        <FormatPrice price={item.max_money} />
+                      </p>
+                      <p className="text-muted text-lg">
+                        Hạn sử dụng:
+                        {new Date(item.end_date).toLocaleDateString("vi-VN")}
+                      </p>
+                      <p className="text-muted text-lg">
+                        Số lượng:
+                        {item.quantity}
+                      </p>
+                    </div>
                   </div>
-                  <div className="conten p-l-20 fs-20">
-                    <p className="mb-1">
-                      Giảm tối đa <FormatPrice price={item.discount} />
-                    </p>
-                    <p className="text-muted text-lg">
-                      Giảm cho đơn từ <FormatPrice price={item.min_money} /> -
-                      <FormatPrice price={item.max_money} />
-                    </p>
-                    <p className="text-muted text-lg">
-                      Hạn sử dụng:
-                      {new Date(item.end_date).toLocaleDateString("vi-VN")}
-                    </p>
-                    <p className="text-muted text-lg">
-                      Số lượng:
-                      {item.quantity}
-                    </p>
+                  <div className="radio-inputs">
+                    <input
+                      className="input-voucher"
+                      style={isDisabled ? { cursor: "no-drop" } : {}}
+                      type="radio"
+                      checked={voucherid === item.id}
+                      onChange={() => handleVoucherId(item.discount, item.id)}
+                      name="radio"
+                      disabled={isDisabled}
+                    />
                   </div>
-                </div>
-                <div className="radio-inputs">
-                  <input
-                    className="input-voucher"
-                    style={isDisabled ? { cursor: "no-drop" } : {}}
-                    type="radio"
-                    checked={voucherid === item.id}
-                    onChange={() => handleVoucherId(item.discount, item.id)}
-                    name="radio"
-                    disabled={isDisabled}
-                  />
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
       </div>
     </Modal>
   );

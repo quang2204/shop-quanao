@@ -1,18 +1,11 @@
 import React from "react";
 const StarRating = ({ rating, maxStars = 5 }) => {
-  console.log(rating);
   return (
     <div>
       {[...Array(maxStars)].map((_, index) => (
         <i
           key={index}
-          className={
-            index < rating ? (
-             "fa-solid fa-star"
-            ) : (
-             "fa-regular fa-star"
-            )
-          }
+          className={index < rating ? "fa-solid fa-star" : "fa-regular fa-star"}
         ></i>
       ))}
     </div>

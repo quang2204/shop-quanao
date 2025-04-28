@@ -40,7 +40,6 @@ const UpdatePassWord = () => {
   } = useForm({
     resolver: zodResolver(schema),
   });
-  console.log(errors);
   const { mutate, isLoading: isLoading1 } = useMutation({
     mutationFn: (data) => updatePassword(data),
     onSuccess: () => {

@@ -16,16 +16,12 @@ import {
   Upload,
   Select,
   Form,
+  Button,
 } from "antd";
 import { useForm } from "react-hook-form";
-import { set } from "nprogress";
-
 const Banners = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { banner, isBanner } = useBanner(currentPage);
-  const { mutate: createBanner } = useCreateBanner();
-  const { mutate: updateBanner } = useUpdateBanner();
-  const { mutate: deleteBanner } = useDeleteBanner();
   const [fileList, setFileList] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -37,6 +33,12 @@ const Banners = () => {
   const [currentBannerDetail, setCurrentBannerDetail] = useState(null);
   const [currentBanner, setCurrentBanner] = useState(null);
   const [status, setStatus] = useState();
+  const { mutate: createBanner, isLoading } =
+    useCreateBanner(setIsModalOpenAdd);
+  const { mutate: updateBanner, isLoading: isUpdate } =
+    useUpdateBanner(setIsModalOpenEdit);
+  const { mutate: deleteBanner, isLoading: isDelete } =
+    useDeleteBanner(setIsModalOpen);
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -97,7 +99,7 @@ const Banners = () => {
 
   const handleOk = () => {
     deleteBanner(idDelete);
-    setIsModalOpen(false);
+    // setIsModalOpen(false);
   };
 
   const onSubmit = () => {
@@ -107,7 +109,6 @@ const Banners = () => {
         is_active: status,
       };
       createBanner(data);
-      setIsModalOpenAdd(false);
       setFileList([]);
     } else {
       message.error("Thêm ảnh");
@@ -133,12 +134,10 @@ const Banners = () => {
         image: fileList[0].url,
         is_active: status === undefined ? currentBanner.is_active : status,
       };
-      console.log(data);
       updateBanner({
         id: currentBanner.id,
         updatedBanner: data,
       });
-      setIsModalOpenEdit(false);
       setFileList([]);
     } else {
       message.error("Thêm ảnh");
@@ -159,7 +158,7 @@ const Banners = () => {
   }
 
   return (
-    <div className="row mx-2">
+    <div className="row">
       <div className="col-lg-12">
         <div className="card" id="orderList">
           <div className="card-header border-0 bg-none">
@@ -255,9 +254,21 @@ const Banners = () => {
       {/* Modal Add */}
       <Modal
         open={isModalOpenAdd}
-        onOk={onSubmit}
-        onCancel={handleCancelAdd}
         title="Add Banner"
+        footer={[
+          <Button key="back" onClick={handleCancelAdd}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={onSubmit}
+            disabled={isLoading}
+          >
+            {isLoading && <Spin size="small" className="mr-2" />}
+            OK
+          </Button>,
+        ]}
       >
         <form>
           <div className="mb-3">
@@ -306,8 +317,8 @@ const Banners = () => {
               style={{ width: 120 }}
               onChange={handleChange}
               options={[
-                { value: true, label: "true" },
-                { value: false, label: "false" },
+                { value: true, label: "Active" },
+                { value: false, label: "Block" },
               ]}
             />
           </div>
@@ -317,9 +328,21 @@ const Banners = () => {
       {/* Modal Edit */}
       <Modal
         open={isModalOpenEdit}
-        onOk={handleSubmit(onEditSubmit)}
-        onCancel={handleCancelEdit}
         title="Edit Banner"
+        footer={[
+          <Button key="back" onClick={handleCancelEdit}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleSubmit(onEditSubmit)}
+            disabled={isUpdate}
+          >
+            {isUpdate && <Spin size="small" className="mr-2" />}
+            OK
+          </Button>,
+        ]}
       >
         <form>
           <div className="mb-3">
@@ -369,8 +392,8 @@ const Banners = () => {
               style={{ width: 120 }}
               onChange={handleChange}
               options={[
-                { value: true, label: "true" },
-                { value: false, label: "false" },
+                { value: true, label: "Active" },
+                { value: false, label: "Block" },
               ]}
             />
           </div>
@@ -410,9 +433,23 @@ const Banners = () => {
       {/* Modal Delete */}
       <Modal
         open={isModalOpen}
-        onOk={handleOk} // Gọi hàm handleOk khi nhấn "OK"
-        onCancel={handleCancel} // Đóng modal khi nhấn "Cancel"
+        // onOk={handleOk}
+        onCancel={handleCancel}
         title="Delete Banner"
+        footer={[
+          <Button key="back" onClick={handleCancel}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleOk}
+            disabled={isDelete}
+          >
+            {isDelete && <Spin size="small" className="mr-2" />}
+            OK
+          </Button>,
+        ]}
       >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content border-none">

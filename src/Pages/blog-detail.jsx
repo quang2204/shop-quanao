@@ -5,7 +5,6 @@ import { FormatDate, FormatPrice } from "../Format";
 
 const BlogDetail = () => {
   const { data, isLoading } = useBlogDetail();
-  console.log(data);
   if (isLoading) {
     return (
       <Spin
