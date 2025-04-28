@@ -129,7 +129,7 @@ const Portfolio = () => {
                     291.7 90.3z"
                     />
                   </svg>
-                  Sửa hồ sơ
+                  Edit profile
                 </p>
               </Link>
             </span>
@@ -137,19 +137,18 @@ const Portfolio = () => {
         </div>
         <div className="user">
           <h5>
-            <i className="fa fa-user" style={{ color: "blue" }} /> Tài khoản của
-            tôi
+            <i className="fa fa-user" style={{ color: "blue" }} /> My Account
           </h5>
         </div>
         <div className="dropdown p-l-16 m-t-15">
           <div className="m-b-15">
             <Link to="">
-              <span>Hồ sơ</span>
+              <span>Profile</span>
             </Link>
           </div>
           <div className="m-b-20  ">
             <Link to="/verify/password">
-              <span>Đổi mật khẩu</span>
+              <span>Change password</span>
             </Link>
           </div>
         </div>
@@ -168,8 +167,8 @@ const Portfolio = () => {
       >
         <div className="bor6">
           <div className="p-b-30 bor12">
-            <h2 className="m-b-10 text-[1.85rem]">Hồ sơ của tôi</h2>
-            <p>Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
+            <h2 className="m-b-10 text-[1.85rem]">My profile</h2>
+            <p>Manage profile information to keep your account secure</p>
           </div>
           <div>
             <table>

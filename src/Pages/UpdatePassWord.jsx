@@ -43,7 +43,7 @@ const UpdatePassWord = () => {
   const { mutate, isLoading: isLoading1 } = useMutation({
     mutationFn: (data) => updatePassword(data),
     onSuccess: () => {
-      message.success("Thay đổi thành công");
+      message.success("Successful change password");
     },
     onError: (error) => {
       message.error(error.response.data.message);
@@ -90,19 +90,18 @@ const UpdatePassWord = () => {
         </div>
         <div className="user">
           <h5>
-            <i className="fa fa-user" style={{ color: "blue" }} /> Tài khoản của
-            tôi
+            <i className="fa fa-user" style={{ color: "blue" }} /> My Account
           </h5>
         </div>
         <div className="dropdown p-l-16 m-t-15">
           <div className="m-b-15">
             <Link to="/portfolio">
-              <span>Hồ sơ</span>
+              <span>File</span>
             </Link>
           </div>
           <div className="m-b-20  ">
             <Link to="">
-              <span>Đổi mật khẩu</span>
+              <span>Change password</span>
             </Link>
           </div>
         </div>
@@ -121,10 +120,9 @@ const UpdatePassWord = () => {
       >
         <div className="bor6">
           <div className="p-b-30 bor12">
-            <h2 className="m-b-10 text-3xl font-medium">Đổi mật khẩu</h2>
+            <h2 className="m-b-10 text-3xl font-medium">Change password</h2>
             <p>
-              Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu cho người
-              khác
+            To keep your account secure, please do not share your password with others.
             </p>
           </div>
           <div className="hs m-t-40">
@@ -133,7 +131,7 @@ const UpdatePassWord = () => {
               style={{ gap: 38 }}
             >
               <h6 style={{ fontSize: 16, color: "rgba(0, 0, 0, .65)" }}>
-                Mật khẩu hiện tại{" "}
+              Current Password{" "}
               </h6>
               <input
                 type="password"
@@ -151,7 +149,7 @@ const UpdatePassWord = () => {
               style={{ gap: 60 }}
             >
               <h6 style={{ fontSize: 16, color: "rgba(0, 0, 0, .65)" }}>
-                Mật khẩu mới
+              New Password
               </h6>
               <input
                 type="password"
@@ -170,7 +168,7 @@ const UpdatePassWord = () => {
               style={{ gap: 20 }}
             >
               <h6 style={{ fontSize: 16, color: "rgba(0, 0, 0, .65)" }}>
-                Xác nhận mật khẩu
+              Confirm Password
               </h6>
               <input
                 type="password"
@@ -198,7 +196,7 @@ const UpdatePassWord = () => {
                   className="flex items-center justify-center"
                 />
               ) : (
-                "Xác nhân"
+                "Confirm"
               )}
             </button>
           </div>

@@ -297,12 +297,12 @@ const VoucherList = () => {
 
       {/* Modal Delete */}
       <Modal
-        title="Xác nhận xóa voucher"
+        title="Confirm voucher deletion"
         open={isConfirmDeleteOpen}
         onOk={handleConfirmDelete}
         onCancel={handleCancelDelete}
-        okText="Xóa"
-        cancelText="Hủy"
+        okText="Ok"
+        cancelText="Cancel"
       >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content border-none">

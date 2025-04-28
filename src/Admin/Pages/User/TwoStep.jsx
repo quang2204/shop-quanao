@@ -110,7 +110,7 @@ const TwoStep = () => {
                 </div>
               </a>
               <h4 className="m-b-50 text-[1.6rem] font-medium">
-                Đặt lại mật khẩu
+              Reset Password
               </h4>
             </div>
             <div className="px-4">

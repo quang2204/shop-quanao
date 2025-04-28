@@ -58,7 +58,7 @@ const Order_Detail = () => {
       5: "Completed",
       6: "Cancelled",
     };
-    return statusMapping[status] || "Trạng thái không xác định";
+    return statusMapping[status] || "Status Unknown";
   };
   if (isLoading || isLoadingUser) {
     return (

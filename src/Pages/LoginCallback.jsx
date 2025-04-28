@@ -18,7 +18,7 @@ const LoginCallback = () => {
         }
     }, [navigate, searchParams]);
 
-    return <div>Đang xử lý đăng nhập...</div>;
+    return <div>Processing login...</div>;
 };
 
 export default LoginCallback;

@@ -42,17 +42,17 @@ const Bill = () => {
   }
   const getOrderStatus = (status) => {
     const statusMapping = {
-      1: "Chờ xử lý",
-      2: "Đang xử lý",
-      3: "Đang vận chuyển",
-      4: "Đã giao hàng",
-      5: "Hoàn thành",
-      6: "Đã hủy",
-      7: "Trả hàng",
-      8: "Hoàn tiền",
+      1: "Pending processing",
+      2: "Processing",
+      3: "In transit",
+      4: "Delivered",
+      5: "Complete",
+      6: "Canceled",
+      7: "Returns",
+      8: "Refund",
     };
 
-    return statusMapping[status] || "Trạng thái không xác định";
+    return statusMapping[status] || "Status Unknown";
   };
   return (
     <div
@@ -60,15 +60,15 @@ const Bill = () => {
       style={{ gap: 30 }}
     >
       <div>
-        <h3 className="text-[1.75rem]">Chi tiết sản phẩm </h3>
+        <h3 className="text-[1.75rem]">Product details </h3>
         <table className="table m-t-30 ">
           <thead>
             <tr>
               <th scope="col" style={{ width: 500 }} className="th ">
-                Sản phẩm
+                Product
               </th>
               <th scope="col" className="text-right">
-                Tổng
+                Total
               </th>
             </tr>
           </thead>
@@ -117,13 +117,13 @@ const Bill = () => {
               <td className="text-right">30.000 đ</td>
             </tr>
             <tr>
-              <th scope="row">Phương thức thanh toán : </th>
+              <th scope="row">Payment method : </th>
               {data[0]?.order.payment_method && (
                 <td className="text-right">{data[0].order.payment_method}</td>
               )}
             </tr>
             <tr>
-              <th scope="row">Tổng cộng : </th>
+              <th scope="row">Total : </th>
               {data[0]?.order?.total_amount && (
                 <td className="text-right">
                   <FormatPrice price={data[0].order.total_amount} />
@@ -134,21 +134,21 @@ const Bill = () => {
         </table>
         <Link to="/">
           <button className="m-b-100 bor11 hov-btn3 bor10 p-l-20 p-r-20 p-t-6 p-b-6 ">
-            Quay lại trang chủ
+          Back to home page
           </button>
         </Link>
       </div>
       <div className="bor4 p-l-40 p-r-110 h-25 ct mb-4">
-        <h4 className="m-t-20 m-b-20 text-[1.5rem]">Cảm ơn bạn đã mua hàng</h4>
+        <h4 className="m-t-20 m-b-20 text-[1.5rem]">Thank you for your purchase.</h4>
         <ul className="dh ">
           <li>
-            Mã đơn hàng :
+          Order code :
             <strong style={{ textTransform: "uppercase" }} className="ml-1">
               {data[0]?.order.order_code && data[0]?.order.order_code}
             </strong>
           </li>
           <li>
-            Ngày :
+          Day :
             <strong className="ml-1">
               {data[0]?.order.created_at && (
                 <span>
@@ -161,7 +161,7 @@ const Bill = () => {
             </strong>
           </li>
           <li>
-            Tổng cộng :
+            Total :
             <strong className="ml-1">
               {data[0]?.order.total_amount && (
                 <FormatPrice price={data[0].order.total_amount} />
@@ -169,19 +169,19 @@ const Bill = () => {
             </strong>
           </li>
           <li>
-            Phương thức thanh toán :{" "}
+          Payment method :{" "}
             <strong style={{ textTransform: "uppercase" }}>
               {data[0]?.order.payment_method && data[0]?.order.payment_method}
             </strong>
           </li>
           <li>
-            Trạng thái đơn hàng :{" "}
+          Order Status :{" "}
             <strong style={{ textTransform: "uppercase" }}>
               {data[0]?.order.status && getOrderStatus(data[0]?.order.status)}
             </strong>
           </li>
           <li>
-            Trạng thái thanh toán :
+          Payment Status :
             <strong style={{ textTransform: "uppercase" }} className="ml-1">
               {data[0]?.order.payment_status && data[0]?.order.payment_status}
             </strong>

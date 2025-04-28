@@ -17,11 +17,11 @@ const ConfirmResetEmail = () => {
               <i className="fa fa-arrow-left " />
             </div>
           </a>
-          <h4 className="m-b-50 text-[1.4rem] font-medium">Đặt lại mật khẩu</h4>
+          <h4 className="m-b-50 text-[1.4rem] font-medium">Reset Password</h4>
         </div>
-        <p className="m-b-5">Mã xác minh đã được gửi đến địa chỉ email</p>
+        <p className="m-b-5">Verification code has been sent to email address</p>
         <p className="text-red-500 m-b-5">{location.state.email}</p>
-        <p className="m-b-40">Vui lòng xác minh.</p>
+        <p className="m-b-40">Please verify.</p>
         <button
           className="hov-btn4 m-b-40"
           type="submit"

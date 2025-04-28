@@ -136,10 +136,10 @@ const Pay = () => {
       <div className="container m-b-30 con m-t-100">
         <div className="bread-crumb flex-w  p-t-30 p-lr-0-lg">
           <Link to={"/"} className="stext-109 cl8 hov-cl1 trans-04">
-            Trang chủ
+          Home
             <i className="fa fa-angle-right m-l-9 m-r-10" />
           </Link>
-          <span className="stext-109 cl4" > Thanh toán</span>
+          <span className="stext-109 cl4" > Pay</span>
         </div>
       </div>
       <form
@@ -158,14 +158,14 @@ const Pay = () => {
                 lineHeight: "1.1",
               }}
             >
-              Thông tin thanh toán
+              Payment information
             </h3>
-            <label htmlFor="name">Họ và tên * </label>
+            <label htmlFor="name">Full name * </label>
             <input
               type="text"
               id="product-name"
               {...register("user_name")}
-              placeholder="Họ và tên"
+              placeholder="Full name"
               className="input "
             />
             {errors.user_name && (
@@ -173,11 +173,11 @@ const Pay = () => {
             )}
 
             <label htmlFor="dc" className="mt-3">
-              Địa chỉ *
+            Address *
             </label>
             <input
               type="text"
-              placeholder="Địa chỉ"
+              placeholder="Address"
               id="product-dc"
               {...register("user_address")}
               className="input "
@@ -186,38 +186,38 @@ const Pay = () => {
               <p className="text-red-500">{errors.user_address.message}</p>
             )}
             <label htmlFor="name" className="mt-3">
-              Số điện thoại *
+            Phone number *
             </label>
             <input
               type="text"
               id="product-sdt"
               {...register("user_phone")}
-              placeholder="Số điện thoại "
+              placeholder="Phone number "
               className="input"
             />
             {errors.user_phone && (
               <p className="text-red-500">{errors.user_phone.message}</p>
             )}
             <h3 className="text-[27px] font-medium mt-4 mb-3">
-              Thông tin bổ sung
+            Additional information
             </h3>
-            <label htmlFor="">Ghi chú bổ sung</label>
+            <label htmlFor="">Additional Notes</label>
             <textarea
               id="textt"
               cols={2}
               rows={5}
-              placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."
+              placeholder="Notes about the order, e.g. more detailed delivery time or location instructions."
               className="input"
               {...register("note")}
             />
           </div>
           <div className="donhang">
-            <h3 className="text-[27px] font-medium mb-3">ĐƠN HÀNG CỦA BẠN</h3>
+            <h3 className="text-[27px] font-medium mb-3">YOUR ORDER</h3>
             <table>
               <thead>
                 <tr className="">
-                  <th className="product-sp product">Sản phẩm</th>
-                  <th className="product-total product">Tổng</th>
+                  <th className="product-sp product">Product</th>
+                  <th className="product-total product">TOTAL</th>
                 </tr>
               </thead>
               <tbody className="cart1">
@@ -249,16 +249,16 @@ const Pay = () => {
               </tbody>
               <tfoot>
                 <tr className="tvc m-b-10">
-                  <th className="left">Tiền vận chuyển</th>
+                  <th className="left">Shipping cost</th>
                   <td className="right">30.000 đ</td>
                 </tr>
                 <tr className="tvc m-b-10">
-                  <th className="left">Tổng tiền hàng</th>
+                  <th className="left">Total cost of goods</th>
                   <td className="right">{<FormatPrice price={total} />}</td>
                 </tr>
                 {location.state?.voucherToal > 0 && (
                   <tr className="tvc m-b-10">
-                    <th className="left">Tổng số tiền giảm giá</th>
+                    <th className="left">Total discount amount</th>
                     <td className="right">
                       - {<FormatPrice price={location.state.voucherToal} />}
                     </td>
@@ -269,7 +269,7 @@ const Pay = () => {
                   className="tvc m-b-10"
                   style={{ borderBottom: "1px solid #ccc" }}
                 >
-                  <th>Tổng thanh toán</th>
+                  <th>Total payment</th>
                   <td id="product-totals">
                     {
                       <FormatPrice
@@ -286,14 +286,14 @@ const Pay = () => {
                   className="tvc m-b-10"
                   style={{ borderBottom: "1px solid #ccc" }}
                 >
-                  <th>Phương thức thanh toán</th>
+                  <th>Payment method</th>
                   <td id="product-totals " className="flex items-center">
                     <div className="text-[17px]">{pay}</div>
                     <span
                       className="text-blue-700 pl-2 cursor-pointer"
                       onClick={showModal}
                     >
-                      Thay đổi
+                      Change
                     </span>
                   </td>
                 </tr>
@@ -305,7 +305,7 @@ const Pay = () => {
               onClick={() => onsubmit()}
               disabled={isLoadingOrder}
             >
-            {isLoadingOrder && <Spin size="small" className="mr-2" />}  Thanh toán
+            {isLoadingOrder && <Spin size="small" className="mr-2" />}  Pay
             </button>
 
             <p style={{ fontSize: 15, maxWidth: 660 }}>
@@ -340,7 +340,7 @@ const Modelpay = ({ show, setShow, pay, setPay }) => {
     <Modal
       open={show}
       onCancel={handleCancel}
-      title={<h2>Chọn phương thức thanh toán </h2>}
+      title={<h2>Select payment method </h2>}
       // loading={isLoading}
       footer={
         <>

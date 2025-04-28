@@ -7,10 +7,10 @@ const addComent = () => {
   const { mutate, isLoading } = useMutation({
     mutationFn: (data) => addComents(data),
     onSuccess: () => {
-      message.success("Comment thành công");
+      message.success("Comment successful");
     },
     onError: () => {
-      message.error("Comment thất bại");
+      message.error("Comment failed");
     },
   });
   return { mutate, isLoading };

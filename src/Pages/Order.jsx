@@ -89,14 +89,14 @@ const Order = () => {
   });
   const getOrderStatus = (status) => {
     const statusMapping = {
-      1: "Chờ xử lý",
-      2: "Đang xử lý",
-      3: "Đang vận chuyển",
-      4: "Đã giao hàng",
-      5: "Hoàn thành",
-      6: "Đã hủy",
+      1: "Pending",
+      2: "Processing",
+      3: "Shipping",
+      4: "Delivered",
+      5: "Completed",
+      6: "Cancelled",
     };
-    return statusMapping[status] || "Trạng thái không xác định";
+    return statusMapping[status] || "Status Unknown";
   };
   const handleorderstatus = (id, status) => {
     mutate({ id: id, data: status });
@@ -137,7 +137,7 @@ const Order = () => {
                     291.7 90.3z"
                     />
                   </svg>
-                  Sửa hồ sơ
+                  Edit profile
                 </p>
               </Link>
             </span>
@@ -145,19 +145,18 @@ const Order = () => {
         </div>
         <div className="user">
           <h5>
-            <i className="fa fa-user" style={{ color: "blue" }} /> Tài khoản của
-            tôi
+            <i className="fa fa-user" style={{ color: "blue" }} /> My Account
           </h5>
         </div>
         <div className="dropdown p-l-16 m-t-15">
           <div className="m-b-15">
             <Link to="">
-              <span>Hồ sơ</span>
+              <span>File</span>
             </Link>
           </div>
           <div className="m-b-20  ">
             <Link to="">
-              <span>Đổi mật khẩu</span>
+              <span>Change password</span>
             </Link>
           </div>
         </div>
@@ -182,44 +181,44 @@ const Order = () => {
           }}
         >
           <Link to="/order" className={`${status ? "" : "text-red-600"} px-3`}>
-            Tất cả{" "}
+            All{" "}
           </Link>
           <Link
             to="/order?status=1"
             className={`${status == "Wait for confirmation" && "text-red-600"} px-3`}
           >
-            Chờ xử lý
+            Pending processing
           </Link>
           <Link
             to="/order?status=2"
             className={`${status == "Wait for confirmation" && "text-red-600"} px-3`}
           >
-            Đang xử lý
+            Processing
           </Link>
           <Link
             to="/order?status=3"
             className={`${status == "Confirm" && "text-red-600"} px-3`}
           >
-            Đang vận chuyển
+            In transit
           </Link>
           <Link
             to="/order?status=4"
             className={`${status == "Confirm" && "text-red-600"} px-3`}
           >
-            Đã giao hàng
+            Delivered
           </Link>
           <Link
             to="/order?status=5"
             className={`${status == "Successful delivery" && "text-red-600"} px-3`}
           >
-            Hoàn thành
+            Complete
           </Link>
 
           <Link
             to="/order?status=6"
             className={`${status == "Canceled" && "text-red-600"} px-3`}
           >
-            Đã hủy
+            Canceled
           </Link>
         </div>
         {order.length > 0 ? (
@@ -253,7 +252,7 @@ const Order = () => {
                           {product.product_variant.product.name}
                         </Link>
                         <p>
-                          Phân loại hàng: Size:{" "}
+                        Product Classification: Size:{" "}
                           {product.product_variant.size.name}, Color:{" "}
                           {product?.product_variant?.color?.name}
                         </p>
@@ -285,7 +284,7 @@ const Order = () => {
                           }
                           type="button"
                         >
-                          Bình luận
+                          Comment
                         </button>
                       )}
                     </div>
@@ -303,7 +302,7 @@ const Order = () => {
                   </div>
                 </div>
                 <div className="d-flex justify-content-end align-items-center ">
-                  <h6 className="text-right m-t-30 m-b-30">Thành Tiền:</h6>
+                  <h6 className="text-right m-t-30 m-b-30">Total amount:</h6>
                   <div
                     className="text-[1.7rem] p-l-10"
                     style={{ color: "red" }}
@@ -328,7 +327,7 @@ const Order = () => {
                       type="button"
                       onClick={() => handleorderstatus(item.order.id, 6)}
                     >
-                      Hủy đơn hàng
+                      Cancel order
                     </button>
                   )}
 
@@ -346,7 +345,7 @@ const Order = () => {
                       onClick={() => handleConfim(item.order.id)}
                       type="button"
                     >
-                      Đã nhận hàng
+                      Received
                     </button>
                   )}
                   {/* <button

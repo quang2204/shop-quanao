@@ -36,7 +36,7 @@ const AddProduct = () => {
     mutationFn: (data) => addProduct(data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      message.success("Thêm sản phẩm thành công");
+      message.success("Product added successfully");
       addProductGalleries(data.product.id);
       addProductVariant(data.product.id);
       navigate("/admin/products");
@@ -210,7 +210,7 @@ const AddProduct = () => {
   const beforeUpload = (file) => {
     const isImage = file.type.startsWith("image/");
     if (!isImage) {
-      message.error("Chỉ được tải lên định dạng ảnh!");
+      message.error("Upload only image formats!");
     }
     return isImage || Upload.LIST_IGNORE;
   };
@@ -304,13 +304,13 @@ const AddProduct = () => {
     if (variants.length > 0) {
       mutate(product);
     } else {
-      message.error("Vui lòng thêm biến thể");
+      message.error("Please add variation");
     }
   };
 
   const validateFileList = () => {
     if (fileList.length < 1) {
-      return Promise.reject(new Error("Vui lòng tải lên ít nhất 5 hình ảnh"));
+      return Promise.reject(new Error("Please upload at least 5 images"));
     }
     return Promise.resolve();
   };
@@ -340,7 +340,7 @@ const AddProduct = () => {
                   className={`${tabs === "section1" ? "active" : ""} tab`}
                   onClick={() => handleScroll(section1Ref)}
                 >
-                  Thông tin cơ bản
+                  Basic information
                 </button>
 
                 <button
@@ -349,7 +349,7 @@ const AddProduct = () => {
                   className={`${tabs === "section2" ? "active" : ""} tab`}
                   onClick={() => handleScroll(section2Ref)}
                 >
-                  Thông tin bán hàng
+                  Sales information
                 </button>
               </div>
               <div
@@ -367,11 +367,11 @@ const AddProduct = () => {
                 className={`bg-white mt-10 px-4 rounded-xl  py-2 text-left`}
                 style={{ boxShadow: "0px 0px 4px 1px #d1d1d1" }}
               >
-                <div className=" text-[1.5rem] font-bold">Thông tin cơ bản</div>
+                <div className=" text-[1.5rem] font-bold">Basic information</div>
                 <div className="grid grid-cols-12 gap-4 ">
                   <div className="flex gap-1 mt-4 mb-2 col-span-2 justify-end">
                     <span className="text-red-500 h-[17px] ">*</span>
-                    <div className="text-[1rem] ">Hình ảnh sản phẩm</div>
+                    <div className="text-[1rem] ">Product Image</div>
                   </div>
                   <Form.Item
                     name="ablumImg"
@@ -420,7 +420,7 @@ const AddProduct = () => {
                 <div className="grid grid-cols-12 mb-4 gap-4">
                   <div className="flex gap-1  mb-2 col-span-2 justify-end">
                     <span className="text-red-500 h-[17px] ">*</span>
-                    <div className="text-[1rem]">Ảnh bìa</div>
+                    <div className="text-[1rem]">Cover photo</div>
                   </div>
                   <Upload
                     className="col-span-10"
@@ -458,7 +458,7 @@ const AddProduct = () => {
                 <div className="grid grid-cols-12 gap-4 mb-2">
                   <div className="text-[1rem] col-span-2 text-right">
                     <span className="text-red-500 h-[17px] ">*</span>
-                    Tên sản phẩm
+                    Product Name
                   </div>
                   <Form.Item
                     className="col-span-10"
@@ -467,21 +467,21 @@ const AddProduct = () => {
                     rules={[
                       {
                         required: true,
-                        message: "Tên sản phẩm là bắt buộc!",
+                        message: "Product name is required!",
                       },
                       {
                         min: 3,
-                        message: "Tên sản phẩm phải có ít nhất 3 ký tự!",
+                        message: "Product name must be at least 3 characters!",
                       },
                       {
                         max: 255,
-                        message: "Tên sản phẩm không được vượt quá 255 ký tự!",
+                        message: "Product name cannot exceed 255 characters!",
                       },
                     ]}
                   >
                     <Input
                       size="large"
-                      placeholder="Tên sản phẩm"
+                      placeholder="Product Name"
                       className="col-span-10"
                     />
                   </Form.Item>
@@ -528,7 +528,7 @@ const AddProduct = () => {
                     rules={[
                       {
                         required: true,
-                        message: "Vui lòng chọn một mục!",
+                        message: "Please select an item!",
                       },
                     ]}
                   >
@@ -538,7 +538,7 @@ const AddProduct = () => {
                       showSearch
                       value={value}
                       dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
-                      placeholder="Vui lòng chọn ngành hàng"
+                      placeholder="Please select industry"
                       allowClear
                       treeDefaultExpandAll
                       onChange={onChange}
@@ -559,21 +559,21 @@ const AddProduct = () => {
                     rules={[
                       {
                         required: true,
-                        message: "Mô tả là bắt buộc!",
+                        message: "Description is required!",
                       },
                       {
                         min: 100,
-                        message: "Mô tả phải có ít nhất 100 ký tự!",
+                        message: "Description must be at least 100 characters!",
                       },
                       {
                         max: 250,
-                        message: "Mô tả phải có không quá 250 ký tự!",
+                        message: "Description must be no more than 250 characters!",
                       },
                     ]}
                   >
                     <TextArea
                       rows={5}
-                      placeholder="Mô tả"
+                      placeholder="Description"
                       style={{ resize: "none" }}
                     />
                   </Form.Item>
@@ -589,7 +589,7 @@ const AddProduct = () => {
             >
               <div>
                 <div className=" text-[1.5rem] font-bold">
-                  Thông tin bán hàng
+                Sales information
                 </div>
                 <div className="mt-7">
                   <div className="grid grid-cols-12 gap-4 items-start">
@@ -599,21 +599,21 @@ const AddProduct = () => {
                         <div className="eds-badge-x-static"></div>
                       </div>
                       <div className="text-[0.99rem] -mt-3 ">
-                        Phân loại hàng
+                      Product Classification
                       </div>
                     </div>
                     <div className="col-span-10">
                       <div className="bg-[#f5f5f5] p-4 rounded-lg mb-4">
                         <div className="flex items-center gap-4 justify-content-between mb-3">
                           <div className="flex gap-4">
-                            <div className="text-[1.04rem]">Phân loại 1</div>
+                            <div className="text-[1.04rem]">Category 1</div>
                             <Form.Item
                               name="select1"
                               initialValue="color"
                               rules={[
                                 {
                                   required: true,
-                                  message: "Vui lòng chọn một mục!",
+                                  message: "Please select an item!",
                                 },
                               ]}
                             >
@@ -628,7 +628,7 @@ const AddProduct = () => {
                                 options={[
                                   {
                                     value: "color",
-                                    label: "Màu sắc",
+                                    label: "Color",
 
                                     disabled: select1 === "color",
                                   },
@@ -647,7 +647,7 @@ const AddProduct = () => {
                         </div>
 
                         <div className="flex gap-10">
-                          <div className="text-[1rem]">Tùy chọn</div>
+                          <div className="text-[1rem]">Options</div>
                           <div className="grid grid-cols-2 gap-6">
                             {classifys.map((item, index) => (
                               <div
@@ -692,7 +692,7 @@ const AddProduct = () => {
                       <div className="bg-[#f5f5f5] p-4 rounded-lg mb-10">
                         <div className="flex items-center gap-4 justify-content-between mb-3">
                           <div className="flex  gap-4">
-                            <div className="text-[1.04rem]">Phân loại 2</div>
+                            <div className="text-[1.04rem]">Category 2</div>
 
                             <Form.Item
                               name="select2"
@@ -700,7 +700,7 @@ const AddProduct = () => {
                               rules={[
                                 {
                                   required: true,
-                                  message: "Vui lòng chọn một mục!",
+                                  message: "Please select an item!",
                                 },
                               ]}
                             >
@@ -731,7 +731,7 @@ const AddProduct = () => {
                         </div>
 
                         <div className="flex gap-10">
-                          <div className="text-[1rem]">Tùy chọn</div>
+                          <div className="text-[1rem]">Options</div>
                           <div className="grid grid-cols-2 gap-4">
                             {classifys1.map((item, index) => (
                               <div key={index}>
@@ -849,7 +849,7 @@ const AddProduct = () => {
                   {(classify === true || classify1 === true) && (
                     <div className="grid grid-cols-12 gap-4 items-center">
                       <div className="col-span-2 text-right text-[1rem]">
-                        Danh sách phân loại hàng
+                      List of product categories
                       </div>
                       <div className="col-span-7 flex">
                         <Input
@@ -884,7 +884,7 @@ const AddProduct = () => {
                           className=" px-[13px] text-white bg-[#ee4d2d] py-2 rounded-md  text-[0.99rem]"
                           type="button"
                         >
-                          Áp dụng cho tất cả phân loại
+                          Applies to all categories
                         </button>
                       </div>
                     </div>
@@ -917,13 +917,13 @@ const AddProduct = () => {
                             className="flex-[1_0_202px] rounded-none flex justify-center border-y-[1px]
                          p-3 rounded-s border-[#EBEBEB] border-solid"
                           >
-                            Giá <span className="text-red-500">*</span>
+                            Price <span className="text-red-500">*</span>
                           </div>
                           <div
                             className="flex-[1_0_202px] rounded-none flex justify-center border-y-[1px]
                          p-3 rounded-s border-[#EBEBEB] border-solid"
                           >
-                            Giá sale<span className="text-red-500">*</span>
+                            Sale price<span className="text-red-500">*</span>
                           </div>
                           <div
                             className="flex-[1_0_202px] flex justify-center border-[1px]
@@ -932,7 +932,7 @@ const AddProduct = () => {
                               borderTopRightRadius: "10px",
                             }}
                           >
-                            Kho hàng <span className="text-red-500">*</span>
+                            Warehouse <span className="text-red-500">*</span>
                           </div>
                         </div>
                       </div>
@@ -1037,7 +1037,7 @@ const AddProduct = () => {
                                                   if (Number(value) <= 1000) {
                                                     return Promise.reject(
                                                       new Error(
-                                                        "Giá sale phải lớn hơn 1.000"
+                                                        "Sale price must be greater 1.000"
                                                       )
                                                     );
                                                   }
@@ -1050,7 +1050,7 @@ const AddProduct = () => {
                                                   ) {
                                                     return Promise.reject(
                                                       new Error(
-                                                        "Giá sale phải nhỏ hơn hoặc bằng giá gốc"
+                                                        "Sale price must be less than or equal to original price"
                                                       )
                                                     );
                                                   }
@@ -1078,7 +1078,7 @@ const AddProduct = () => {
                                               {
                                                 required: true,
                                                 message:
-                                                  "Vui lòng nhập số lượng",
+                                                  "Please enter quantity",
                                               },
                                               {
                                                 validator: (_, value) =>
@@ -1086,7 +1086,7 @@ const AddProduct = () => {
                                                     ? Promise.resolve()
                                                     : Promise.reject(
                                                         new Error(
-                                                          "Số lượng phải lớn hơn 1"
+                                                          "Quantity must be greater than 1"
                                                         )
                                                       ),
                                               },
@@ -1097,7 +1097,7 @@ const AddProduct = () => {
                                               size="large"
                                               className="w-full max-h-[40px]"
                                               min={0}
-                                              placeholder="Kho hàng"
+                                              placeholder="Warehouse"
                                             />
                                           </Form.Item>
                                         </div>
@@ -1118,16 +1118,16 @@ const AddProduct = () => {
               style={{ boxShadow: "rgb(209, 209, 209) 0px 0px 4px 1px" }}
             >
               <button className="py-2 px-4 bg-white border-2 border-[#EBEBEB] rounded-lg border-solid text-black">
-                Hủy
+              Cancel
               </button>
               <button className="py-2 px-4 bg-white border-2 border-red-400 rounded-lg border-solid text-black">
-                Lưu và ẩn
+              Save and hide
               </button>
               <button
                 type="submit"
                 className="py-2 px-4 bg-red-600 border-2 border-red-400 rounded-lg border-solid text-white"
               >
-                Lưu và hiển thị
+                Save and display
               </button>
             </div>
           </Form>

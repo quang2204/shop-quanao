@@ -65,7 +65,7 @@ const Banners = () => {
   const beforeUpload = (file) => {
     const isImage = file.type.startsWith("image/");
     if (!isImage) {
-      message.error("Chỉ được tải lên định dạng ảnh!");
+      message.error("Upload only image formats!");
     }
     return isImage || Upload.LIST_IGNORE;
   };
@@ -111,7 +111,7 @@ const Banners = () => {
       createBanner(data);
       setFileList([]);
     } else {
-      message.error("Thêm ảnh");
+      message.error("Add photo");
     }
   };
 
@@ -140,7 +140,7 @@ const Banners = () => {
       });
       setFileList([]);
     } else {
-      message.error("Thêm ảnh");
+      message.error("Add photo");
     }
   };
   const showDetailModal = (banner) => {

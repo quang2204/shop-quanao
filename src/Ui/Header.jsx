@@ -151,14 +151,14 @@ const Header = () => {
                       to={"/signin"}
                       className="flex-c-m stext-104 cl0 size-104 bg1 bor2 hov-btn2 p-lr-15 trans-04 "
                     >
-                      Đăng nhập
+                      Login
                     </Link>
                     <Link
                       to={"signup"}
                       className="flex-c-m stext-104 cl0 size-104  bor2 hov-btn2 p-lr-15 trans-04 m-r-10"
                       style={{ border: "3px solid #717fe0" }}
                     >
-                      Đăng ký
+                      Register
                     </Link>
                     {/* */}
                   </div>

@@ -100,7 +100,7 @@ const Footer = () => {
                     className="input1 bg-none plh1 stext-107 cl7"
                     type="text"
                     name="email"
-                    placeholder="email@example.com"
+                    placeholder="cozastore@gmail.com"
                   />
                   <div className="focus-input1 trans-04"></div>
                 </div>

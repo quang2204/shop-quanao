@@ -26,13 +26,13 @@ const Email_Password = () => {
   const { mutate, isLoading } = useMutation({
     mutationFn: emailPassword,
     onSuccess: (response, variables) => {
-      message.success("Email khôi phục đã được gửi!");
+      message.success("Recovery email has been sent!");
       navigate("/confirmemail", {
         state: { email: variables.email }, // truyền email làm state
       });
     },
     onError: (error) => {
-      message.error("Có lỗi xảy ra. Vui lòng thử lại.");
+      message.error("An error occurred. Please try again..");
     },
   });
 
@@ -59,12 +59,12 @@ const Email_Password = () => {
               <i className="fa fa-arrow-left " />
             </div>
           </Link>
-          <h4 className="m-b-50 text-[1.6rem] font-medium">Đặt lại mật khẩu</h4>
+          <h4 className="m-b-50 text-[1.6rem] font-medium">Reset Password</h4>
         </div>
         <div className="mb-3">
           <input
             type="email"
-            placeholder="Nhập email"
+            placeholder="Enter email"
             className="bor4 w-[16rem] mb-2 py-2 pl-2"
             {...register("email")}
           />
@@ -79,7 +79,7 @@ const Email_Password = () => {
           type="submit"
           style={{ width: "240px", height: 40 }}
         >
-          {isLoading && <Spin />} Tiếp theo
+          {isLoading && <Spin />} Next
         </button>
       </form>
     </div>

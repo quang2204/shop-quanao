@@ -93,7 +93,7 @@ const Home = () => {
       <section className="bg0 p-t-23">
         <div className="container mt-10">
           <div className="p-b-10">
-            <h3 className="ltext-102 cl5">Sản phẩm bán chạy</h3>
+            <h3 className="ltext-102 cl5">Best Seller</h3>
           </div>
 
           <div className="row isotope-grid mt-4">
@@ -140,7 +140,7 @@ const Home = () => {
       <section className="bg0 p-t-23 pb-10">
         <div className="container mt-">
           <div className="p-b-10">
-            <h3 className="ltext-102 cl5">Sản phẩm mới</h3>
+            <h3 className="ltext-102 cl5">New products</h3>
           </div>
 
           <div className="row isotope-grid mt-4">

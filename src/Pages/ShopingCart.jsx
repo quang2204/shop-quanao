@@ -67,7 +67,7 @@ const ShopingCart = () => {
     if (check) {
       const maxQuantity = item.product_variant.quantity;
       if (check.quantity + 1 > maxQuantity) {
-        message.error("Số lượng tối đa chỉ còn " + maxQuantity);
+        message.error("Maximum quantity left only " + maxQuantity);
       } else {
         const newCount = check.quantity + 1;
         mutate({ data: { quantity: newCount }, id: check.id });
@@ -105,7 +105,7 @@ const ShopingCart = () => {
     // Kiểm tra xem người dùng nhập quá số lượng tối đa
     if (value > maxQuantity) {
       // Hiển thị thông báo lỗi nếu giá trị vượt quá
-      message.error(`Số lượng tối đa là ${maxQuantity}`);
+      message.error(`The maximum quantity is ${maxQuantity}`);
       return; // Không lưu giá trị vào state
     }
 
@@ -199,12 +199,12 @@ const ShopingCart = () => {
                     <tbody>
                       <tr className="table_head">
                         <th className="column-1 " style={{ paddingLeft: 30 }}>
-                          Sản phẩm
+                        Product
                         </th>
                         <th className="column-2" />
-                        <th className="column-3">Giá</th>
-                        <th className="column-4">Số lượng</th>
-                        <th className="column-5">Tổng cộng</th>
+                        <th className="column-3">Price</th>
+                        <th className="column-4">Number</th>
+                        <th className="column-5">Total</th>
                       </tr>
                       {cartItem &&
                         cartItem?.map((item, index) => (
@@ -315,7 +315,7 @@ const ShopingCart = () => {
                     <Link to="/">
                       <div className="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5">
                         <i className="fa fa-arrow-left p-r-10" />
-                        Quay lại trang chủ
+                        Back to home page
                       </div>
                     </Link>
                   </div>
@@ -324,10 +324,10 @@ const ShopingCart = () => {
             </div>
             <div className="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
               <div className="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
-                <h4 className="mtext-109 cl2 p-b-30">Tổng số</h4>
+                <h4 className="mtext-109 cl2 p-b-30">Total</h4>
                 <div className="flex-w flex-t bor12 p-b-13 items-center">
                   <div className="size-208">
-                    <span className="mtext-101 cl2">Vận chuyển</span>
+                    <span className="mtext-101 cl2">Transport</span>
                   </div>
                   <div className="size-209 text-right">
                     <span className="mtext-110 cl2 ">30.000đ</span>
@@ -336,7 +336,7 @@ const ShopingCart = () => {
                 {voucher > 0 && (
                   <div className="flex-w flex-t bor12 p-b-13 p-t-13 items-center">
                     <div className="size-208">
-                      <span className="mtext-101 cl2">Mã giảm giá</span>
+                      <span className="mtext-101 cl2">Voucher</span>
                     </div>
                     <div className="size-209 text-right">
                       <span className="mtext-110 cl2 ">
@@ -347,7 +347,7 @@ const ShopingCart = () => {
                 )}
                 <div className="flex-w flex-t p-t-27 pb-3 bor12">
                   <div className="size-208">
-                    <span className="mtext-101 cl2">Tổng cộng</span>
+                    <span className="mtext-101 cl2">Total</span>
                   </div>
                   <div className="size-209 p-t-1 text-right">
                     <span className="mtext-110 cl2 xoa">
@@ -380,14 +380,14 @@ const ShopingCart = () => {
                   }
                   className="flex-c-m stext-101 cl0 size-107 bg3 bor1 hov-btn3 p-lr-15 trans-04 m-b-10 m-t-20 cursor"
                 >
-                  Tiến hành thanh toán
+                  Make payment
                 </div>
                 <div className="flex-w flex-t p-b-20 sale mt-3">
                   <button
                     className="flex-c-m stext-101 mb-3 size-111  bor14 hov-btn3 p-lr-15 trans-04 pointer"
                     onClick={showModal}
                   >
-                    Mã Giảm Giá
+                    Discount Code
                   </button>
                 </div>
               </div>
@@ -395,11 +395,11 @@ const ShopingCart = () => {
           </div>
         ) : (
           <div className="text-center m-t-140 m-b-100 ">
-            <h3>Chưa có sản phẩm nào trong giỏ hàng </h3>
+            <h3>There are no products in the cart. </h3>
             <br />
             <Link to={"/product"} id="productLink">
               <button className="btn w-25 d-flex ml-auto mr-auto hov-btn2">
-                Quay lại cửa hàng
+              Back to store
               </button>
             </Link>
           </div>
@@ -477,11 +477,11 @@ const Voucher = ({
               isExpired || isInvalidAmount || item.quantity < 1;
             const handleClick = () => {
               if (isExpired) {
-                message.error("Voucher này đã hết hạn!");
+                message.error("This voucher has expired!");
               } else if (isInvalidAmount) {
-                message.error("Không đủ điều kiện để sử dụng voucher này!");
+                message.error("Not eligible to use this voucher!");
               } else if (item.quantity < 1) {
-                message.error("Số lượng đã hết !");
+                message.error("Quantity out of stock !");
               } else {
                 handleVoucherId(item.discount, item.id);
               }

@@ -16,7 +16,7 @@ const AuthSuccess = () => {
     }
   }, [navigate]);
 
-  return <p>Đang xác thực, vui lòng chờ...</p>;
+  return <p>Verifying, please wait...</p>;
 };
 
 export default AuthSuccess;

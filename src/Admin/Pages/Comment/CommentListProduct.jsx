@@ -98,7 +98,7 @@ const CommentListProduct = () => {
                     ) : (
                       <tr>
                         <td colSpan="7" className="text-center">
-                          không có sản phẩm nào có bình luận
+                        There are no products with comments.
                         </td>
                       </tr>
                     )}

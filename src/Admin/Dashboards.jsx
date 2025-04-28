@@ -33,7 +33,7 @@ const Dashboards = () => {
       6: "Cancelled",
     };
 
-    return statusMapping[status] || "Trạng thái không xác định";
+    return statusMapping[status] || "Status Unknown";
   };
   if (isLoading || isLoadingAuth) {
     return (

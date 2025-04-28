@@ -65,7 +65,7 @@ const Signin = () => {
         style={{ textAlign: "center", marginBottom: 30 }}
         className="text-[29px]"
       >
-        Đăng Ký
+        Register
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -166,9 +166,9 @@ const Signin = () => {
           {isLoading && <Spin />} Sign Up
         </button>
         <p className="p text-center">
-          Bạn đã có tài khoản?
+        You already have an account?
           <Link to={"/signin"} className="span">
-            Đăng nhập
+            Login
           </Link>
         </p>
       </form>

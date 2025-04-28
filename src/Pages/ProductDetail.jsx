@@ -46,7 +46,7 @@ const ProductDetail = () => {
     mutationFn: (data) => addCartItem(data),
     onSuccess: () => {
       queryCline.invalidateQueries(["cartItem"]);
-      message.success("Thành công");
+      message.success("Success");
     },
     onError: (error) => {
       message.error(error.response);
@@ -54,13 +54,13 @@ const ProductDetail = () => {
   });
   const addToCart = () => {
     if (checkuser === null) {
-      message.error("Đăng nhập để thêm vào giỏ hàng");
+      message.error("Login to add to cart");
     } else if (color == undefined) {
-      message.error("Thêm màu sản phẩm");
+      message.error("Add product color");
     } else if (size == undefined) {
-      message.error("Thêm size sản phẩm");
+      message.error("Add product size");
     } else if (inputValue > idVariants.quantity) {
-      message.error(`Số lượng chỉ còn ${idVariants.quantity}`);
+      message.error(`Quantity left only ${idVariants.quantity}`);
     } else {
       const data = {
         quantity: Number(inputValue),
@@ -205,7 +205,7 @@ const ProductDetail = () => {
                   </div>
                   <div className="flex gap-2 items-center border-r-2 ">
                     <span className="text-[18px]">{data?.comments.length}</span>
-                    <span className="pr-2 text-[#767676]">Đánh giá</span>
+                    <span className="pr-2 text-[#767676]">Evaluate</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 mt-3">
@@ -319,7 +319,7 @@ const ProductDetail = () => {
                             (acc, item) => acc + item.quantity,
                             0
                           )}
-                        <span> sản phẩm có sẵn</span>
+                        <span>Products available</span>
                       </div>
                     </div>
                   </div>
@@ -383,12 +383,12 @@ const ProductDetail = () => {
                 centered
                 items={[
                   {
-                    label: "Chi tiết sản phẩm",
+                    label: "Product details",
                     key: "1",
                     children: `${detailProduct[0]?.description}`,
                   },
                   {
-                    label: "Đánh giá sản phẩm",
+                    label: "Product Reviews",
                     key: "2",
                     children:
                       data?.comments?.length > 0 ? (
@@ -463,7 +463,7 @@ const ProductDetail = () => {
                             ))}
                         </div>
                       ) : (
-                        "Không có comment nào"
+                        "No comments"
                       ),
                   },
                 ]}

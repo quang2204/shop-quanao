@@ -28,7 +28,7 @@ const AddBlog = () => {
   const beforeUpload = (file) => {
     const isImage = file.type.startsWith("image/");
     if (!isImage) {
-      message.error("Chỉ được tải lên định dạng ảnh!");
+      message.error("Upload only image formats!");
     }
     return isImage || Upload.LIST_IGNORE;
   };
@@ -69,15 +69,15 @@ const AddBlog = () => {
             rules={[
               {
                 required: true,
-                message: "Title là bắt buộc!",
+                message: "Title is required!",
               },
               {
                 min: 3,
-                message: "Title phải có ít nhất 3 ký tự!",
+                message: "Title must be at least 3 characters!",
               },
               {
                 max: 255,
-                message: "Title không được vượt quá 255 ký tự!",
+                message: "Title must not exceed 255 characters!",
               },
             ]}
           >
@@ -95,7 +95,7 @@ const AddBlog = () => {
             rules={[
               {
                 required: true,
-                message: "Image là bắt buộc!",
+                message: "Image is required!",
               },
             ]}
           >
@@ -135,15 +135,15 @@ const AddBlog = () => {
             rules={[
               {
                 required: true,
-                message: "content là bắt buộc!",
+                message: "content is required!",
               },
               {
                 min: 3,
-                message: "content phải có ít nhất 3 ký tự!",
+                message: "Content must be at least 3 characters!",
               },
               {
                 max: 255,
-                message: "content không được vượt quá 255 ký tự!",
+                message: "Content must not exceed 255 characters!",
               },
             ]}
           >
@@ -165,7 +165,7 @@ const AddBlog = () => {
             rules={[
               {
                 required: true,
-                message: "category_blog là bắt buộc!",
+                message: "category_blog is required!",
               },
             ]}
           >
@@ -189,7 +189,7 @@ const AddBlog = () => {
             rules={[
               {
                 required: true,
-                message: "Is_active là bắt buộc!",
+                message: "Is_active is required!",
               },
             ]}
           >
@@ -201,16 +201,16 @@ const AddBlog = () => {
         </div>
         <div className="flex gap-4 justify-content-end p-3 rounded-lg text-[1rem]  ">
           <button className="py-2 px-4 bg-white border-2 border-[#EBEBEB] rounded-lg border-solid text-black">
-            Hủy
+          Cancel
           </button>
           <button className="py-2 px-4 bg-white border-2 border-red-400 rounded-lg border-solid text-black">
-            Lưu và ẩn
+          Save and hide
           </button>
           <button
             type="submit"
             className="py-2 px-4 bg-red-600 border-2 border-red-400 rounded-lg border-solid text-white"
           >
-            Lưu và hiển thị
+            Save and hide
           </button>
         </div>
       </Form>

@@ -53,7 +53,7 @@ const Signin = () => {
         style={{ textAlign: "center", marginBottom: 30 }}
         className="text-[29px]"
       >
-        Đăng Nhập
+        Login
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -106,19 +106,19 @@ const Signin = () => {
         <div className="flex-row ">
           <div className="d-flex gap ">
             <input type="checkbox" />
-            <label className="m-t-5">Nhớ mật khẩu </label>
+            <label className="m-t-5">remember password </label>
           </div>
           <Link to={"/emailpassword"}>
-            <span className="span">Quên mật khẩu</span>
+            <span className="span">forgot password</span>
           </Link>
         </div>
         <button className="button-submit" type="submit">
           {isLoading && <Spin />} Sign In
         </button>
         <p className="p text-center">
-          Bạn chưa có tài khoản?
+        You already have an account?
           <Link to={"/signup"} className="span">
-            Đăng ký
+          Register
           </Link>
         </p>
         <p className="p line text-center">Or With</p>

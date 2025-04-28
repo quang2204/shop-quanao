@@ -48,15 +48,15 @@ const Orders = () => {
   };
   const getOrderStatus = (status) => {
     const statusMapping = {
-      1: "Chờ xử lý",
-      2: "Đang xử lý",
-      3: "Đang vận chuyển",
-      4: "Đã giao hàng",
-      5: "Hoàn thành",
-      6: "Đã hủy",
+      1: "Pending",
+      2: "Processing",
+      3: "Shipping",
+      4: "Delivered",
+      5: "Completed",
+      6: "Cancelled",
     };
 
-    return statusMapping[status] || "Trạng thái không xác định";
+    return statusMapping[status] || "Status Unknown";
   };
   const onShowSizeChange = (current, pageSize) => {
     const searchParams = new URLSearchParams(location.search);
@@ -75,7 +75,7 @@ const Orders = () => {
       8: "#F44336",
     };
 
-    return statusMapping[status] || "Trạng thái không xác định";
+    return statusMapping[status] || "Status Unknown";
   };
   const handleFilter = () => {
     setFilters({
@@ -124,12 +124,12 @@ const Orders = () => {
                       <option value="" selected="">
                         All
                       </option>
-                      <option value="1">Chờ xử lý</option>
-                      <option value="2">Đang xử lý</option>
-                      <option value="3">Đang vận chuyển</option>
-                      <option value="4">Đã giao hàng</option>
-                      <option value="5">Hoàn thành</option>
-                      <option value="6">Đã hủy</option>
+                      <option value="1">Pending</option>
+                      <option value="2">Processing</option>
+                      <option value="3">Shipping</option>
+                      <option value="4">Delivered</option>
+                      <option value="5">Completed</option>
+                      <option value="6">Cancelled</option>
                     </select>
                   </div>
                 </div>
@@ -553,12 +553,12 @@ const Orders = () => {
         <>
           <div className="radio-inputs-order my-6">
             {[
-              { label: "Chờ xử lý", value: 1 },
-              { label: "Đang xử lý", value: 2 },
-              { label: "Đang vận chuyển", value: 3 },
-              { label: "Đã giao hàng", value: 4 },
-              { label: "Hoàn thành", value: 5 },
-              { label: "Đã hủy", value: 6 },
+              { label: "Pending", value: 1 },
+              { label: "Processing", value: 2 },
+              { label: "Shipping", value: 3 },
+              { label: "Delivered", value: 4 },
+              { label: "Completed", value: 5 },
+              { label: "Cancelled", value: 6 },
             ]
               .filter((item) => {
                 if (item.value === 6) {

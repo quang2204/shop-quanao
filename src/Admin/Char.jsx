@@ -10,7 +10,7 @@ export function NumberOrder({ chart }) {
       5: "Completed",
       6: "Cancelled",
     };
-    return statusMapping[status] || "Trạng thái không xác định";
+    return statusMapping[status] || "Status Unknown";
   };
 
   const dates = chart.dates;
