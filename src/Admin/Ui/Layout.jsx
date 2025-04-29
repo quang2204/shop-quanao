@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import img from "../../images/icons/logo-02.png";
+import img from "../../images/icons/logo1.png";
 import { Spin } from "antd";
 import FullScreenButton from "./FullScreen";
 import useAuth from "../../Hook/useAuth";
@@ -206,14 +206,10 @@ const Layout = () => {
             </div>
             {/* /.modal-dialog */}
           </div>
-          {/* /.modal */}
           {/*=== App Menu=== */}
           <div className="app-menu navbar-menu bg-[#405189]">
-            {/* LOGO */}
-            <div className="navbar-brand-box py-4 ml-9">
-              {/* Dark Logo*/}
 
-              {/* Light Logo*/}
+            <div className="navbar-brand-box py-4 ml-9">
               <Link to={""} className="logo">
                 <span className="logo-lg ">
                   <img src={img} alt="" />

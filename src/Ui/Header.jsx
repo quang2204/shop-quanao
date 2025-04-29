@@ -1,9 +1,8 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { useCart, useCartItem } from "../Hook/useCart";
+import { useCartItem } from "../Hook/useCart";
 import { useState } from "react";
-import logo from "../images/icons/logo-02.png";
-import logo1 from "../images/icons/logo-01.png";
-import useQuantity from "../Hook/useQuantity";
+import logo from "../images/icons/logo1.png";
+import logo1 from "../images/icons/logo.png";
 import { useMutation } from "react-query";
 import { logout } from "../Apis/Api";
 import { Spin, message } from "antd";
@@ -47,7 +46,7 @@ const Header = () => {
           <div className="wrap-menu-desktop top-0 ">
             <nav className="limiter-menu-desktop container">
               <Link to="/" className="logo">
-                <img src={logo} alt="IMG-LOGO" />
+                <img src={logo} alt="IMG-LOGO" width={200} />
               </Link>
               <div className="menu-desktop">
                 <ul className="main-menu">
