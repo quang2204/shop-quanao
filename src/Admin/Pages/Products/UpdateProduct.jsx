@@ -117,8 +117,7 @@ const UpdateProduct = () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       updateProductGalleries();
       updateProductVariant();
-      message.success("Cập nhật sản phẩm thành công");
-      // navigate("/admin/products");
+      message.success("Product update successful");
     },
     onError: (error) => {
       message.error(error.response.data.error);
@@ -133,7 +132,6 @@ const UpdateProduct = () => {
   const itemproductGalleries = {
     galleries: productGalleries,
   };
-
   const { mutate: updateProductGalleries, isLoading: isAddingGalleries } =
     useMutation({
       mutationFn: () => updateProductGallerie(id, itemproductGalleries),
@@ -588,7 +586,9 @@ const UpdateProduct = () => {
                 className={`bg-white mt-10 px-4 rounded-xl  py-2 text-left`}
                 style={{ boxShadow: "0px 0px 4px 1px #d1d1d1" }}
               >
-                <div className=" text-[1.5rem] font-bold">Basic information</div>
+                <div className=" text-[1.5rem] font-bold">
+                  Basic information
+                </div>
                 <div className="grid grid-cols-12 gap-4 ">
                   <div className="flex gap-1 mt-4 mb-2 col-span-2 justify-end">
                     <span className="text-red-500 h-[17px] ">*</span>
@@ -790,7 +790,8 @@ const UpdateProduct = () => {
                       },
                       {
                         max: 250,
-                        message: "Description must be no more than 250 characters!",
+                        message:
+                          "Description must be no more than 250 characters!",
                       },
                     ]}
                   >
@@ -812,7 +813,7 @@ const UpdateProduct = () => {
             >
               <div>
                 <div className=" text-[1.5rem] font-bold">
-                Sales information
+                  Sales information
                 </div>
                 <div className="mt-7">
                   <div className="grid grid-cols-12 gap-4 items-start">
@@ -822,7 +823,7 @@ const UpdateProduct = () => {
                         <div className="eds-badge-x-static"></div>
                       </div>
                       <div className="text-[0.99rem] -mt-3 ">
-                      Product Classification
+                        Product Classification
                       </div>
                     </div>
                     <div className="col-span-10">
@@ -1314,10 +1315,10 @@ const UpdateProduct = () => {
               style={{ boxShadow: "rgb(209, 209, 209) 0px 0px 4px 1px" }}
             >
               <button className="py-2 px-4 bg-white border-2 border-[#EBEBEB] rounded-lg border-solid text-black">
-              Cancel
+                Cancel
               </button>
               <button className="py-2 px-4 bg-white border-2 border-red-400 rounded-lg border-solid text-black">
-              Save and hide
+                Save and hide
               </button>
               <button
                 type="submit"
