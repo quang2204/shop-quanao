@@ -151,7 +151,7 @@ const Order = () => {
         <div className="dropdown p-l-16 m-t-15">
           <div className="m-b-15">
             <Link to="/portfolio">
-              <span>File</span>
+              <span>Profile</span>
             </Link>
           </div>
           <div className="m-b-20  ">

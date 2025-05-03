@@ -35,7 +35,7 @@ const Header = () => {
     return (
       <Spin
         size="large"
-        className="h-[50vh] mt-[100px] flex items-center justify-center w-full "
+        className="h-[100vh] mt-[100px] flex items-center justify-center w-full absolute top-0 left-0 z-30"
       />
     );
   }
