@@ -41,10 +41,10 @@ const Orders = () => {
   };
   const onSubmitUpdate = () => {
     mutate({ id: idOpen.id, data: status });
-    if (!isLoadingorder) {
+
       setIdOpen("");
       setIsOpen(false);
-    }
+
   };
   const getOrderStatus = (status) => {
     const statusMapping = {
@@ -560,12 +560,7 @@ const Orders = () => {
               { label: "Completed", value: 5 },
               { label: "Cancelled", value: 6 },
             ]
-              .filter((item) => {
-                if (item.value === 6) {
-                  return status === 1 || status === 2 || status == 6; // chỉ hiển thị 'Đã hủy' khi status là 1 hoặc 2
-                }
-                return true; // các item khác luôn hiển thị
-              })
+
               .map((item) => (
                 <label className="radio" key={item.value}>
                   <input

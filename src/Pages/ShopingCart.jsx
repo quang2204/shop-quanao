@@ -5,18 +5,17 @@ import { FormatPrice } from "../Format.jsx";
 import { useCartItem } from "../Hook/useCart.jsx";
 import logo from "../images/icons/logo-02.png";
 import {
+  deleteAllCartitem,
   deleteCart,
   getVouchers,
-  updateCart,
   updateCartItem,
 } from "../Apis/Api.jsx";
 import { useEffect, useState } from "react";
-import { useProductVariants } from "../Hook/useDetailProduct.jsx";
+import { useVouchers_User } from "../Hook/useVoucher.jsx";
 const ShopingCart = () => {
   const [voucherid, setVoucherId] = useState(0);
   const [voucher, setVoucher] = useState(0);
-  // const { isProductVariants, productVariant } = useProductVariants();
-
+  const { vouchers, isLoading } = useVouchers_User();
   const queryCline = useQueryClient();
   const { mutate, isLoading: isLoadingCart } = useMutation({
     mutationFn: ({ data, id }) => updateCartItem(data, id),
@@ -37,6 +36,14 @@ const ShopingCart = () => {
       message.success("Xóa thành công");
     },
   });
+  const { mutate: mutateDeleteAllitem, isLoading: isDeleteAllitem } =
+    useMutation({
+      mutationFn: (id) => deleteAllCartitem(id),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["cartItem"] });
+        message.success("Xóa thành công");
+      },
+    });
   const [counts, setCounts] = useState();
   const [inputValues, setInputValues] = useState();
 
@@ -142,11 +149,6 @@ const ShopingCart = () => {
 
     const maxQuantity = item.product_variant.quantity;
     const finalQuantity = Math.min(newQuantity, maxQuantity);
-
-    const cart = {
-      quantity: finalQuantity,
-    };
-
     mutate({ data: { quantity: newQuantity }, id: check.id });
 
     // Cập nhật lại giá trị trong state
@@ -170,7 +172,7 @@ const ShopingCart = () => {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  if (isCartItem) {
+  if (isCartItem || isLoading) {
     return (
       <Spin
         size="large"
@@ -189,222 +191,232 @@ const ShopingCart = () => {
           <span className="stext-109 cl4"> Shoping Cart </span>
         </div>
       </div>
-      <div className="container" style={{ marginTop: 20 }}>
-        {cartItem && cartItem?.length > 0 ? (
-          <div className="row">
-            <div className="col-lg-10 col-xl-7 m-lr-auto m-b-50">
-              <div className="m-l-25 m-r--38 m-lr-0-xl">
-                <div className="wrap-table-shopping-cart">
-                  <table className="table-shopping-cart">
-                    <tbody>
-                      <tr className="table_head">
-                        <th className="column-1 " style={{ paddingLeft: 30 }}>
-                        Product
-                        </th>
-                        <th className="column-2" />
-                        <th className="column-3">Price</th>
-                        <th className="column-4">Number</th>
-                        <th className="column-5">Total</th>
-                      </tr>
-                      {cartItem &&
-                        cartItem?.map((item, index) => (
-                          <tr className="table_row" key={index + 1}>
-                            <td className="column-1">
-                              <div
-                                className=" d-flex align-items-center "
-                                style={{ gap: 15 }}
-                              >
+     
+        <div className="container" style={{ marginTop: 20 }}>
+          {cartItem && cartItem?.length > 0 ? (
+            <div className="row">
+              <div className="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+                <div className="m-l-25 m-r--38 m-lr-0-xl">
+                  <div className="wrap-table-shopping-cart">
+                    <table className="table-shopping-cart">
+                      <tbody>
+                        <tr className="table_head">
+                          <th className="column-1 " style={{ paddingLeft: 30 }}>
+                            Product
+                          </th>
+                          <th className="column-2" />
+                          <th className="column-3">Price</th>
+                          <th className="column-4">Number</th>
+                          <th className="column-5">Total</th>
+                        </tr>
+                        {cartItem &&
+                          cartItem?.map((item, index) => (
+                            <tr className="table_row" key={index + 1}>
+                              <td className="column-1">
                                 <div
-                                  className="cursor m-l--30 "
-                                  onClick={() => mutateDelete(item.id)}
+                                  className=" d-flex align-items-center "
+                                  style={{ gap: 15 }}
                                 >
-                                  <p
-                                    className=" bor0 bor10 d-flex justify-content-center align-items-center p-b-3 hov-btn3
-                                 "
-                                    style={{ width: 25, height: 25 }}
+                                  <div
+                                    className="cursor m-l--30 "
+                                    onClick={() => mutateDelete(item.id)}
                                   >
-                                    x
+                                    <p
+                                      className=" bor0 bor10 d-flex justify-content-center align-items-center p-b-3 hov-btn3
+                                 "
+                                      style={{ width: 25, height: 25 }}
+                                    >
+                                      x
+                                    </p>
+                                  </div>
+
+                                  <img
+                                    src={
+                                      item?.product_variant?.product?.img_thumb
+                                    }
+                                    alt="IMG"
+                                    style={{ width: 100, marginRight: 50 }}
+                                  />
+                                </div>
+                              </td>
+                              <td className="pl-8 ">
+                                <Link
+                                  to={`/product/${item?.product_variant?.product?.id}`}
+                                  style={{ color: "black" }}
+                                >
+                                  <p className="m-b-4 text-[15px] font-normal">
+                                    {item?.product_variant?.product?.name
+                                      .length > 20
+                                      ? item?.product_variant?.product?.name.slice(
+                                          0,
+                                          20
+                                        ) + "..."
+                                      : item?.product_variant?.product?.name}
                                   </p>
-                                </div>
-
-                                <img
-                                  src={
-                                    item?.product_variant?.product?.img_thumb
-                                  }
-                                  alt="IMG"
-                                  style={{ width: 100, marginRight: 50 }}
-                                />
-                              </div>
-                            </td>
-                            <td className="pl-8 ">
-                              <Link
-                                to={`/product/${item?.product_variant?.product?.id}`}
-                                style={{ color: "black" }}
-                              >
-                                <p className="m-b-4 text-[15px] font-normal">
-                                  {item?.product_variant?.product?.name.length >
-                                  20
-                                    ? item?.product_variant?.product?.name.slice(
-                                        0,
-                                        20
-                                      ) + "..."
-                                    : item?.product_variant?.product?.name}
+                                </Link>
+                                <p className="text-gray-500 text-[14px]">
+                                  Size :{item.product_variant.color.name}
                                 </p>
-                              </Link>
-                              <p className="text-gray-500 text-[14px]">
-                                Size :{item.product_variant.color.name}
-                              </p>
-                              <p className="text-gray-500 text-[14px]">
-                                Color :{item.product_variant.size.name}
-                              </p>
-                            </td>
+                                <p className="text-gray-500 text-[14px]">
+                                  Color :{item.product_variant.size.name}
+                                </p>
+                              </td>
 
-                            <td className="column-3 text-center subtotal-for-product-116 font-bold">
-                              {
-                                <FormatPrice
-                                  price={item.product_variant.price_sale}
-                                />
-                              }
-                            </td>
-                            <td className="column-4">
-                              <div className="wrap-num-product flex-w m-r-20 m-tb-10">
-                                <div
-                                  className="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m"
-                                  onClick={() => decreaseNumber(item.id)}
-                                >
-                                  <i className="fs-16 zmdi zmdi-minus" />
-                                </div>
-                                <input
-                                  className="mtext-104 cl3 txt-center num-product"
-                                  type="number"
-                                  disabled={isLoadingCart}
-                                  onChange={(e) =>
-                                    numberDirectly(
-                                      e.target.value,
-                                      item.id,
-                                      index
-                                    )
-                                  }
-                                  value={inputValues?.[index]?.quantity}
-                                  onBlur={() => handleBlur(item.id, index)}
-                                />
-
-                                <div
-                                  className="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"
-                                  onClick={() => increaseNumber(item.id)}
-                                >
-                                  <i className="fs-16 zmdi zmdi-plus" />
-                                </div>
-                              </div>
-                            </td>
-                            <td className="column-5 font-bold">
-                              <FormatPrice
-                                price={
-                                  item.product_variant.price_sale *
-                                  item.quantity
+                              <td className="column-3 text-center subtotal-for-product-116 font-bold">
+                                {
+                                  <FormatPrice
+                                    price={item.product_variant.price_sale}
+                                  />
                                 }
-                              />
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div className="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
-                  <div className="flex-w flex-m m-r-20 m-tb-5">
-                    <Link to="/">
-                      <div className="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5">
-                        <i className="fa fa-arrow-left p-r-10" />
-                        Back to home page
+                              </td>
+                              <td className="column-4">
+                                <div className="wrap-num-product flex-w m-r-20 m-tb-10">
+                                  <div
+                                    className="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m"
+                                    onClick={() => decreaseNumber(item.id)}
+                                  >
+                                    <i className="fs-16 zmdi zmdi-minus" />
+                                  </div>
+                                  <input
+                                    className="mtext-104 cl3 txt-center num-product"
+                                    type="number"
+                                    disabled={isLoadingCart}
+                                    onChange={(e) =>
+                                      numberDirectly(
+                                        e.target.value,
+                                        item.id,
+                                        index
+                                      )
+                                    }
+                                    value={inputValues?.[index]?.quantity}
+                                    onBlur={() => handleBlur(item.id, index)}
+                                  />
+
+                                  <div
+                                    className="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"
+                                    onClick={() => increaseNumber(item.id)}
+                                  >
+                                    <i className="fs-16 zmdi zmdi-plus" />
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="column-5 font-bold">
+                                <FormatPrice
+                                  price={
+                                    item.product_variant.price_sale *
+                                    item.quantity
+                                  }
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-20 p-lr-15-sm">
+                    <div className="flex-w flex-m m-r-20 m-tb-5">
+                      <Link to="/">
+                        <div className="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5">
+                          <i className="fa fa-arrow-left p-r-10" />
+                          Back to home page
+                        </div>
+                      </Link>
+                    </div>
+                    <div className="flex-w flex-m m-tb-5">
+                      <div
+                        className="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn4 p-lr-15 trans-04 pointer m-tb-5"
+                        onClick={() => mutateDeleteAllitem(cartItem[0].cart_id)}
+                      >
+                        {isDeleteAllitem && <Spin size="small" />} X Delete Cart
                       </div>
-                    </Link>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
-              <div className="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
-                <h4 className="mtext-109 cl2 p-b-30">Total</h4>
-                <div className="flex-w flex-t bor12 p-b-13 items-center">
-                  <div className="size-208">
-                    <span className="mtext-101 cl2">Transport</span>
-                  </div>
-                  <div className="size-209 text-right">
-                    <span className="mtext-110 cl2 ">30.000đ</span>
-                  </div>
-                </div>
-                {voucher > 0 && (
-                  <div className="flex-w flex-t bor12 p-b-13 p-t-13 items-center">
+              <div className="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
+                <div className="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
+                  <h4 className="mtext-109 cl2 p-b-30">Total</h4>
+                  <div className="flex-w flex-t bor12 p-b-13 items-center">
                     <div className="size-208">
-                      <span className="mtext-101 cl2">Voucher</span>
+                      <span className="mtext-101 cl2">Transport</span>
                     </div>
                     <div className="size-209 text-right">
-                      <span className="mtext-110 cl2 ">
-                        - <FormatPrice price={voucher} />
+                      <span className="mtext-110 cl2 ">30.000đ</span>
+                    </div>
+                  </div>
+                  {voucher > 0 && (
+                    <div className="flex-w flex-t bor12 p-b-13 p-t-13 items-center">
+                      <div className="size-208">
+                        <span className="mtext-101 cl2">Voucher</span>
+                      </div>
+                      <div className="size-209 text-right">
+                        <span className="mtext-110 cl2 ">
+                          - <FormatPrice price={voucher} />
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  <div className="flex-w flex-t p-t-27 pb-3 bor12">
+                    <div className="size-208">
+                      <span className="mtext-101 cl2">Total</span>
+                    </div>
+                    <div className="size-209 p-t-1 text-right">
+                      <span className="mtext-110 cl2 xoa">
+                        <FormatPrice
+                          price={
+                            total + 30000 > voucher
+                              ? voucher
+                                ? total - voucher + 30000
+                                : total + 30000
+                              : 0
+                          }
+                        />
                       </span>
                     </div>
                   </div>
-                )}
-                <div className="flex-w flex-t p-t-27 pb-3 bor12">
-                  <div className="size-208">
-                    <span className="mtext-101 cl2">Total</span>
-                  </div>
-                  <div className="size-209 p-t-1 text-right">
-                    <span className="mtext-110 cl2 xoa">
-                      <FormatPrice
-                        price={
-                          total + 30000 > voucher
-                            ? voucher
-                              ? total - voucher + 30000
-                              : total + 30000
-                            : 0
-                        }
-                      />
-                    </span>
-                  </div>
-                </div>
-                <div
-                  onClick={() =>
-                    navigate("/pay", {
-                      state: {
-                        totalPrice:
-                          total + 30000 > voucher
-                            ? voucher
-                              ? total - voucher + 30000
-                              : total + 30000
-                            : 0,
-                        voucher: voucherid,
-                        voucherToal: voucher,
-                      },
-                    })
-                  }
-                  className="flex-c-m stext-101 cl0 size-107 bg3 bor1 hov-btn3 p-lr-15 trans-04 m-b-10 m-t-20 cursor"
-                >
-                  Make payment
-                </div>
-                <div className="flex-w flex-t p-b-20 sale mt-3">
-                  <button
-                    className="flex-c-m stext-101 mb-3 size-111  bor14 hov-btn3 p-lr-15 trans-04 pointer"
-                    onClick={showModal}
+                  <div
+                    onClick={() =>
+                      navigate("/pay", {
+                        state: {
+                          totalPrice:
+                            total + 30000 > voucher
+                              ? voucher
+                                ? total - voucher + 30000
+                                : total + 30000
+                              : 0,
+                          voucher: voucherid,
+                          voucherToal: voucher,
+                        },
+                      })
+                    }
+                    className="flex-c-m stext-101 cl0 size-107 bg3 bor1 hov-btn3 p-lr-15 trans-04 m-b-10 m-t-20 cursor"
                   >
-                    Discount Code
-                  </button>
+                    Make payment
+                  </div>
+                  <div className="flex-w flex-t p-b-20 sale mt-3">
+                    <button
+                      className="flex-c-m stext-101 mb-3 size-111  bor14 hov-btn3 p-lr-15 trans-04 pointer"
+                      onClick={showModal}
+                    >
+                      Discount Code
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ) : (
-          <div className="text-center m-t-140 m-b-100 ">
-            <h3>There are no products in the cart. </h3>
-            <br />
-            <Link to={"/product"} id="productLink">
-              <button className="btn w-25 d-flex ml-auto mr-auto hov-btn2">
-              Back to store
-              </button>
-            </Link>
-          </div>
-        )}
-      </div>
+          ) : (
+            <div className="text-center m-t-140 m-b-100 ">
+              <h3>There are no products in the cart. </h3>
+              <br />
+              <Link to={"/product"} id="productLink">
+                <button className="btn w-25 d-flex ml-auto mr-auto hov-btn2">
+                  Back to store
+                </button>
+              </Link>
+            </div>
+          )}
+        </div>
+     
       <Voucher
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
@@ -412,6 +424,7 @@ const ShopingCart = () => {
         setVoucherId={setVoucherId}
         voucherid={voucherid}
         total={total}
+        vouchers={vouchers}
       />
     </div>
   );
@@ -423,6 +436,7 @@ const Voucher = ({
   setVoucherId,
   voucherid,
   total,
+  vouchers,
 }) => {
   const [check, setCheck] = useState(false);
   const [beforeVoucher, setBeforeVoucher] = useState(0);
@@ -432,7 +446,6 @@ const Voucher = ({
     queryFn: getVouchers,
   });
   const date = new Date();
-
   const handleVoucherId = (discount, id) => {
     setBeforeVoucher(discount);
     setVoucherId(id);
@@ -467,7 +480,11 @@ const Voucher = ({
     >
       <div className="my-10 max-h-[500px] overflow-y-scroll">
         {data?.data
-          .filter((item) => item.is_active == 1)
+          .filter(
+            (item) =>
+              item.is_active == 1 &&
+              vouchers.vouchers.some((obj2) => item.id !== obj2.id)
+          )
           ?.map((item) => {
             const isExpired = new Date(item.end_date) < date;
             const isInvalidAmount = !(

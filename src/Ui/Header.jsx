@@ -314,7 +314,7 @@ const Header = () => {
                   onClick={() => setShow(false)}
                   className="stext-102 cl2 hov-cl1 trans-04"
                 >
-                  Portfolio
+                  Profile
                 </Link>
               </li>
               <li className="p-b-13">

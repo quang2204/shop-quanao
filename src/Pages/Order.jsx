@@ -77,7 +77,7 @@ const Order = () => {
     setId("");
     setIsModalConfim(false);
   };
-  
+
   // trạng thái đơn hàng
   const {
     register,
@@ -121,7 +121,7 @@ const Order = () => {
           <div className="name">
             <span>
               <strong>{data?.name} </strong>
-              <Link to="">
+              <Link to="/portfolio">
                 <p style={{ color: "black" }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -150,12 +150,12 @@ const Order = () => {
         </div>
         <div className="dropdown p-l-16 m-t-15">
           <div className="m-b-15">
-            <Link to="">
+            <Link to="/portfolio">
               <span>File</span>
             </Link>
           </div>
           <div className="m-b-20  ">
-            <Link to="">
+            <Link to="/verify/password">
               <span>Change password</span>
             </Link>
           </div>
@@ -252,7 +252,7 @@ const Order = () => {
                           {product.product_variant.product.name}
                         </Link>
                         <p>
-                        Product Classification: Size:{" "}
+                          Product Classification: Size:{" "}
                           {product.product_variant.size.name}, Color:{" "}
                           {product?.product_variant?.color?.name}
                         </p>

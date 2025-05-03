@@ -163,6 +163,10 @@ export const deleteCart = async (id) => {
   const res = await Axios.delete(`api/admin/cart-items/${id}`);
   return res.data.data;
 };
+export const deleteAllCartitem = async (id) => {
+  const res = await Axios.delete(`api/admin/cart-items/cart/${id}`);
+  return res.data.data;
+};
 export const deleteAllCart = async (id) => {
   const res = await Axios.delete(`/cart/${id}`);
   return res.data.data;
@@ -178,6 +182,10 @@ export const updateCart = async (data, id) => {
 
 export const getVouchers = async (page) => {
   const res = await Axios.get(`api/admin/vouchers?page=${page}`);
+  return res.data;
+};
+export const getVouchers_User = async (id) => {
+  const res = await Axios.get(`api/admin/users/${id}/vouchers`);
   return res.data;
 };
 export const user = async (page, filter = {}) => {

@@ -8,7 +8,9 @@ import {
   getVoucherDetail,
   updateVoucher,
   createVoucher,
+  getVouchers_User,
 } from "../Apis/Api";
+import useAuth from "./useAuth";
 
 export const useVouchers = (page) => {
   const { data: vouchers, isLoading } = useQuery({
@@ -18,7 +20,15 @@ export const useVouchers = (page) => {
 
   return { vouchers, isLoading };
 };
+export const useVouchers_User = () => {
+  const { data } = useAuth();
+  const { data: vouchers, isLoading } = useQuery({
+    queryKey: ["vouchers_user", data?.id],
+    queryFn: () => getVouchers_User(data?.id),
+  });
 
+  return { vouchers, isLoading };
+};
 export const useVoucherDetail = (id) => {
   const { data: voucher, isLoading } = useQuery({
     queryKey: ["voucher", id],

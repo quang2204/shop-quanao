@@ -126,7 +126,7 @@ const Products = () => {
 
             <div className="card-body pt-0">
               <div>
-                <div className="table-responsive table-card mb-1 mt-3">
+                <div className="table-responsive table-card mb-1 mt-3 overflow-hidden">
                   <table
                     className="table table-nowrap align-middle"
                     id="orderTable"

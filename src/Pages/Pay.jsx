@@ -10,21 +10,15 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "react-query";
-import {
-  addOrder,
-  addOrderDetail,
-  orderMomo,
-} from "../Apis/Api.jsx";
+import { addOrder, addOrderDetail, orderMomo } from "../Apis/Api.jsx";
 import useAuth from "../Hook/useAuth.jsx";
 const Pay = () => {
   const navigate = useNavigate();
-  const queryCline = useQueryClient();
   const location = useLocation();
   const [pay, setPay] = useState("COD");
   const { cartItem: data, isCartItem: isLoading } = useCartItem();
   const { data: user, isLoading: isLoading1 } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [id, setId] = useState();
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -33,7 +27,6 @@ const Pay = () => {
   const { mutate, isLoading: isLoadingOrder } = useMutation({
     mutationFn: (data) => addOrder(data),
     onSuccess: (data) => {
-      message.success(data.message);
       // Gọi orderdetail sau khi đơn hàng đã được tạo thành công
       orderdetail({
         order_id: data.order.id,
@@ -45,7 +38,6 @@ const Pay = () => {
           };
         }),
       });
-      setId(data.order.id);
     },
     onError: (error) => {
       message.error(error.response?.data?.error || "Có lỗi xảy ra");
@@ -55,6 +47,7 @@ const Pay = () => {
     mutationFn: (data) => addOrderDetail(data),
     onSuccess: (data) => {
       if (pay === "COD") {
+        message.success("Đặt đơn hàng thành công");
         navigate("/bill/" + data.orderDetails[0].order_id);
       } else if (pay === "MOMO") {
         momo({
@@ -78,10 +71,14 @@ const Pay = () => {
   const schema = z.object({
     user_name: z.string().min(1, "Name is required"),
     total_amount: z.number().min(1, "Total price is required"),
-    user_phone: z.string().min(1, "Phone is required"),
+    user_phone: z
+      .string()
+      .min(1, "Phone is required")
+      .regex(/^0\d{9}$/, "Invalid phone number format"),
     user_address: z.string().min(1, "Address is required"),
-    user_id: z.string(),
-    voucher_id: z.string().optional().nullable(),
+    user_email: z.string().nullable(),
+    user_id: z.number().nullable(),
+    voucher_id: z.number().optional().nullable(),
     note: z.string().optional().nullable(),
   });
   const total = data?.reduce(
@@ -99,10 +96,16 @@ const Pay = () => {
     resolver: zodResolver(schema),
   });
   const orderid = "ord" + Math.floor(Math.random() * 10000);
-  const onsubmit = () => {
-    mutate(getValues());
-  };
-
+  const onsubmit = handleSubmit((formData) => {
+    const data = {
+      ...formData,
+      payment_method: pay,
+      order_code: orderid,
+      payment_status: "unpaid",
+      discount: location.state.voucherToal,
+    };
+    mutate(data);
+  });
   useEffect(() => {
     if (data) {
       // if (user) {
@@ -136,16 +139,16 @@ const Pay = () => {
       <div className="container m-b-30 con m-t-100">
         <div className="bread-crumb flex-w  p-t-30 p-lr-0-lg">
           <Link to={"/"} className="stext-109 cl8 hov-cl1 trans-04">
-          Home
+            Home
             <i className="fa fa-angle-right m-l-9 m-r-10" />
           </Link>
-          <span className="stext-109 cl4" > Pay</span>
+          <span className="stext-109 cl4"> Pay</span>
         </div>
       </div>
       <form
         className="thongtin container m-b-60 "
         id="myForm"
-        onSubmit={handleSubmit(onsubmit)}
+        onSubmit={onsubmit}
       >
         <div id="t">
           <div className="form ">
@@ -171,9 +174,22 @@ const Pay = () => {
             {errors.user_name && (
               <p className="text-red-500">{errors.user_name.message}</p>
             )}
-
+            <input
+              type="text"
+              id="product-name"
+              {...register("user_id")}
+              placeholder="Full name"
+              className="input hidden"
+            />
+            <input
+              type="text"
+              id="product-name"
+              {...register("user_email")}
+              placeholder="Full name"
+              className="input hidden"
+            />
             <label htmlFor="dc" className="mt-3">
-            Address *
+              Address *
             </label>
             <input
               type="text"
@@ -186,7 +202,7 @@ const Pay = () => {
               <p className="text-red-500">{errors.user_address.message}</p>
             )}
             <label htmlFor="name" className="mt-3">
-            Phone number *
+              Phone number *
             </label>
             <input
               type="text"
@@ -199,7 +215,7 @@ const Pay = () => {
               <p className="text-red-500">{errors.user_phone.message}</p>
             )}
             <h3 className="text-[27px] font-medium mt-4 mb-3">
-            Additional information
+              Additional information
             </h3>
             <label htmlFor="">Additional Notes</label>
             <textarea
@@ -305,7 +321,7 @@ const Pay = () => {
               onClick={() => onsubmit()}
               disabled={isLoadingOrder}
             >
-            {isLoadingOrder && <Spin size="small" className="mr-2" />}  Pay
+              {isLoadingOrder && <Spin size="small" className="mr-2" />} Pay
             </button>
 
             <p style={{ fontSize: 15, maxWidth: 660 }}>
