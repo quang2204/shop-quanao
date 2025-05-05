@@ -21,13 +21,13 @@ const Order = () => {
   const { data: order, isLoading: isLoadingOrder } = useDetailOrderByUserId({
     status,
   });
-  console.log(order);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalConfim, setIsModalConfim] = useState(false);
+  const [isModalCanel, setIsModalCanel] = useState(false);
   const [isid, setId] = useState(false);
-  const { mutate: comment, isLoading: isComment } = addComent();
-  const { isLoading: isLoadingorder, mutate } = useStatusOrderCline(
-    order?.[0]?.order?.user_id
+  const { mutate: comment } = addComent(setIsModalOpen);
+  const { mutate } = useStatusOrderCline(
+    order?.[0]?.order?.user_id,setIsModalCanel
   );
   const schema = z.object({
     content: z.string().min(1, "Please enter a content."),
@@ -56,6 +56,11 @@ const Order = () => {
     reset();
     setId("");
   };
+  const handleCancelCanel = () => {
+    setIsModalCanel(false);
+    reset();
+    setId("");
+  };
   //comment
   const onSubmit = (value) => {
     const data = {
@@ -68,7 +73,6 @@ const Order = () => {
 
     comment(data);
     setId("");
-    setIsModalOpen(false);
   };
   const handleSubmitOrder = (e) => {
     e.preventDefault(); // Ngăn submit reload lại trang
@@ -97,9 +101,15 @@ const Order = () => {
     };
     return statusMapping[status] || "Status Unknown";
   };
-  const handleorderstatus = (id, status) => {
-    mutate({ id: id, data: status });
+  const handleorderstatus = () => {
+    mutate({ id: isid, data: 6 });
+    setId("");
   };
+  const handleopenCanel=(id)=>{
+    setId(id);
+    setIsModalCanel(true);
+
+  }
   if (isLoading || isLoadingOrder) {
     return (
       <Spin
@@ -184,38 +194,38 @@ const Order = () => {
           </Link>
           <Link
             to="/order?status=1"
-            className={`${status == "Wait for confirmation" && "text-red-600"} px-3`}
+            className={`${status == "1" && "text-red-600"} px-3`}
           >
             Pending processing
           </Link>
           <Link
             to="/order?status=2"
-            className={`${status == "Wait for confirmation" && "text-red-600"} px-3`}
+            className={`${status == "2" && "text-red-600"} px-3`}
           >
             Processing
           </Link>
           <Link
             to="/order?status=3"
-            className={`${status == "Confirm" && "text-red-600"} px-3`}
+            className={`${status == "3" && "text-red-600"} px-3`}
           >
             In transit
           </Link>
           <Link
             to="/order?status=4"
-            className={`${status == "Confirm" && "text-red-600"} px-3`}
+            className={`${status == "4" && "text-red-600"} px-3`}
           >
             Delivered
           </Link>
           <Link
             to="/order?status=5"
-            className={`${status == "Successful delivery" && "text-red-600"} px-3`}
+            className={`${status == "5" && "text-red-600"} px-3`}
           >
             Complete
           </Link>
 
           <Link
             to="/order?status=6"
-            className={`${status == "Canceled" && "text-red-600"} px-3`}
+            className={`${status == "6" && "text-red-600"} px-3`}
           >
             Canceled
           </Link>
@@ -322,7 +332,7 @@ const Order = () => {
                         fontSize: "16px",
                       }}
                       type="button"
-                      onClick={() => handleorderstatus(item.order.id, 6)}
+                      onClick={() => handleopenCanel(item.order.id)}
                     >
                       Cancel order
                     </button>
@@ -508,7 +518,7 @@ const Order = () => {
                             <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
                               <h4>Are you sure?</h4>
                               <p className="text-muted mx-4 mb-0">
-                                Are you sure you want to confirm this order?
+                                Are you sure you want to cancel this order?
                               </p>
                             </div>
                           </div>
@@ -529,7 +539,72 @@ const Order = () => {
                             className="px-3 py-2 mt-2 rounded-md bg-red-500 text-white"
                             id="confirm-btn"
                           >
-                            Confirm
+                            Confim
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div
+                className={`modal fade ${isModalCanel ? "block opacity-100" : ""} `}
+                // style={{ background: "rgba(0, 0, 0, 0.5)" }}
+              >
+                <div
+                  className="modal-dialog modal-dialog-centered "
+                  style={{ transform: "none" }}
+                >
+                  <div className="modal-content">
+                    <div className="modal-header bg-light p-3">
+                      <h5 className="modal-title" id="exampleModalLabel">
+                        Cancel Order
+                      </h5>
+                      <button
+                        type="button"
+                        className="btn-close"
+                        onClick={handleCancelCanel}
+                      />
+                    </div>
+                    <form
+                      className="tablelist-form"
+                      onSubmit={handleSubmitOrder}
+                    >
+                      <div className="modal-content border-none">
+                        <div className="modal-body">
+                          <div className="mt-2 text-center">
+                            <div className="flex justify-center">
+                              <img
+                                src="https://media-public.canva.com/l6z3o/MAGZEOl6z3o/1/tl.png"
+                                alt="Confirmation Icon"
+                                width={100}
+                              />
+                            </div>
+                            <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                              <h4>Are you sure?</h4>
+                              <p className="text-muted mx-4 mb-0">
+                                Are you sure you want to confirm this order?
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="modal-footer">
+                        <div className="hstack gap-2 justify-content-end">
+                          <button
+                            type="button"
+                            className="px-3 py-2 mt-2 rounded-md bg-[#F3F6F9]"
+                            onClick={handleorderstatus}
+                          >
+                            Close
+                          </button>
+                          <button
+                            type="submit"
+                            className="px-3 py-2 mt-2 rounded-md bg-red-500 text-white"
+                            id="confirm-btn"
+                          >
+                            Cancel
                           </button>
                         </div>
                       </div>

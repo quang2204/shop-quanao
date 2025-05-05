@@ -67,13 +67,14 @@ const useStatusOrder = (page) => {
   });
   return { mutate, isLoading };
 };
-const useStatusOrderCline = (id_user) => {
+const useStatusOrderCline = (id_user,setIsModalCanel) => {
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useMutation({
     mutationFn: ({ id, data }) => udateStatusOrder(id, data),
     onSuccess: () => {
       message.success("Status update successful");
       queryClient.invalidateQueries({ queryKey: ["orderbyuserid", id_user] });
+      setIsModalCanel(false)
     },
     onError: (error) => {
       message.error(error.response.data.message);

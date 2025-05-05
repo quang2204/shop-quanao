@@ -3,7 +3,7 @@ import { Form, Input, Select, Spin, TreeSelect, Upload, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useCategory } from "../../../Hook/useCategory.jsx";
 import TextArea from "antd/es/input/TextArea";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   updateProduct,
   updateProductGallerie,
@@ -490,35 +490,6 @@ const UpdateProduct = () => {
   return (
     <>
       <section className="grid grid-cols-12 gap-4 px-4">
-        {/* <div
-          className="col-span-3 bg-white rounded-xl h-[220px] "
-          style={{ boxShadow: "0px 0px 4px 1px #d1d1d1" }}
-        >
-          <div
-            className="text-[1.1rem] rounded-t-xl py-3 px-2 bg-[#E5EEFB] "
-            style={{ boxShadow: "inset 0 3px 0 #2673dd" }}
-          >
-            Gợi ý điền Thông tin
-          </div>
-          <div className="mt-3">
-            <div className="flex items-center mb-2 px-3 gap-2">
-              <i className="fa fa-check-circle text-[#d1d2d4] text-xl"></i>
-              <div className="text-[1rem]"> Thêm ít nhất 5 hình ảnh</div>
-            </div>
-            <div className="flex items-center mb-2 px-3 gap-2">
-              <i className="fa fa-check-circle text-[#d1d2d4] text-xl"></i>
-              <div className="text-[1rem]">
-                Tên sản phẩm có ít nhất 15~100 kí tự
-              </div>
-            </div>
-            <div className="flex items-center mb-2 px-3 gap-2">
-              <i className="fa fa-check-circle text-[#d1d2d4] text-xl"></i>
-              <div className="text-[1rem] text-left">
-                Thêm ít nhất 100 kí tự hoặc 1 hình ảnh trong mô tả sản phẩm
-              </div>
-            </div>
-          </div>
-        </div> */}
         <section className="col-span-12" ref={section1Ref} id="section1">
           <div
             className="  bg-white rounded-xl z-50 "
@@ -1288,17 +1259,14 @@ const UpdateProduct = () => {
               className="flex gap-4 justify-content-end bg-white p-3 rounded-lg mb-1 text-[1rem] fixed bottom-0 w-[82.5%]"
               style={{ boxShadow: "rgb(209, 209, 209) 0px 0px 4px 1px" }}
             >
-              <button className="py-2 px-4 bg-white border-2 border-[#EBEBEB] rounded-lg border-solid text-black">
+              <Link to='/admin/products'  className="py-2 px-4 bg-white border-2 border-[#EBEBEB] rounded-lg border-solid text-black">
                 Cancel
-              </button>
-              <button className="py-2 px-4 bg-white border-2 border-red-400 rounded-lg border-solid text-black">
-                Save and hide
-              </button>
+              </Link>
               <button
                 type="submit"
                 className="py-2 px-4 bg-red-600 border-2 border-red-400 rounded-lg border-solid text-white"
               >
-                Save and display
+              {isLoading?<Spin/>:"Save"}  
               </button>
             </div>
           </Form>

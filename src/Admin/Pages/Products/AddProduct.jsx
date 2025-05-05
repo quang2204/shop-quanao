@@ -3,7 +3,7 @@ import { Form, Input, Select, Spin, TreeSelect, Upload, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useCategory } from "../../../Hook/useCategory.jsx";
 import TextArea from "antd/es/input/TextArea";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   addProduct,
   addProductGallerie,
@@ -354,7 +354,9 @@ const AddProduct = () => {
                 className={`bg-white mt-10 px-4 rounded-xl  py-2 text-left`}
                 style={{ boxShadow: "0px 0px 4px 1px #d1d1d1" }}
               >
-                <div className=" text-[1.5rem] font-bold">Basic information</div>
+                <div className=" text-[1.5rem] font-bold">
+                  Basic information
+                </div>
                 <div className="grid grid-cols-12 gap-4 ">
                   <div className="flex gap-1 mt-4 mb-2 col-span-2 justify-end">
                     <span className="text-red-500 h-[17px] ">*</span>
@@ -554,7 +556,8 @@ const AddProduct = () => {
                       },
                       {
                         max: 250,
-                        message: "Description must be no more than 250 characters!",
+                        message:
+                          "Description must be no more than 250 characters!",
                       },
                     ]}
                   >
@@ -576,7 +579,7 @@ const AddProduct = () => {
             >
               <div>
                 <div className=" text-[1.5rem] font-bold">
-                Sales information
+                  Sales information
                 </div>
                 <div className="mt-7">
                   <div className="grid grid-cols-12 gap-4 items-start">
@@ -586,7 +589,7 @@ const AddProduct = () => {
                         <div className="eds-badge-x-static"></div>
                       </div>
                       <div className="text-[0.99rem] -mt-3 ">
-                      Product Classification
+                        Product Classification
                       </div>
                     </div>
                     <div className="col-span-10">
@@ -836,7 +839,7 @@ const AddProduct = () => {
                   {(classify === true || classify1 === true) && (
                     <div className="grid grid-cols-12 gap-4 items-center">
                       <div className="col-span-2 text-right text-[1rem]">
-                      List of product categories
+                        List of product categories
                       </div>
                       <div className="col-span-7 flex">
                         <Input
@@ -1104,17 +1107,15 @@ const AddProduct = () => {
               className="flex gap-4 justify-content-end bg-white p-3 rounded-lg mb-1 text-[1rem] fixed bottom-0 w-[77.6%] "
               style={{ boxShadow: "rgb(209, 209, 209) 0px 0px 4px 1px" }}
             >
-              <button className="py-2 px-4 bg-white border-2 border-[#EBEBEB] rounded-lg border-solid text-black">
-              Cancel
-              </button>
-              <button className="py-2 px-4 bg-white border-2 border-red-400 rounded-lg border-solid text-black">
-              Save and hide
-              </button>
+              <Link to='/admin/products' className="py-2 px-4 bg-white border-2 border-[#EBEBEB] rounded-lg border-solid text-black">
+                Cancel
+              </Link>
               <button
                 type="submit"
+                disabled={isLoading}
                 className="py-2 px-4 bg-red-600 border-2 border-red-400 rounded-lg border-solid text-white"
               >
-                Save and display
+               {isLoading?<Spin/>:"Save"} 
               </button>
             </div>
           </Form>

@@ -3,11 +3,12 @@ import { addComents, getCommentIdProduct } from "../Apis/Api";
 import { message } from "antd";
 import { useParams } from "react-router-dom";
 
-const addComent = () => {
+const addComent = (setIsModalOpen) => {
   const { mutate, isLoading } = useMutation({
     mutationFn: (data) => addComents(data),
     onSuccess: () => {
       message.success("Comment successful");
+      setIsModalOpen(false);
     },
     onError: () => {
       message.error("Comment failed");

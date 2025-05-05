@@ -371,7 +371,7 @@ const Dashboards = () => {
                           </span>
                         </td>
                         <td>
-                          <span className="text-success">
+                          <span className="text-red-500">
                             {<FormatPrice price={item.total_amount} />}
                           </span>
                         </td>

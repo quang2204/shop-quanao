@@ -5,12 +5,13 @@ import TextArea from "antd/es/input/TextArea";
 import { usecateroryBlogs } from "../../../Hook/useCateroryBlog";
 import { useAddBlog } from "../../../Hook/useBlog";
 import useAuth from "../../../Hook/useAuth";
+import { Link } from "react-router-dom";
 
 const AddBlog = () => {
   const [fileList, setFileList] = useState([]);
   const { data, isLoading } = usecateroryBlogs();
   const { mutate, isLoading: isAddBlog } = useAddBlog();
-  const {data:user}=useAuth();
+  const { data: user } = useAuth();
   const onhandluploadimg = (e) => {
     let newFileList = [...e.fileList];
 
@@ -35,14 +36,14 @@ const AddBlog = () => {
   const onChange = () => {};
   const onSubmit = (value) => {
     const data = {
-      title:value.title,
-      img_avt:fileList[0].url,
-      content:value.content,
-      category_blog_id:Number(value.category_blog_id) ,
-      user_id:user.id,
-      is_active:Boolean(value.is_active),
+      title: value.title,
+      img_avt: fileList[0].url,
+      content: value.content,
+      category_blog_id: Number(value.category_blog_id),
+      user_id: user.id,
+      is_active: Boolean(value.is_active),
     };
-    mutate(data)
+    mutate(data);
   };
   if (isLoading) {
     return (
@@ -194,23 +195,23 @@ const AddBlog = () => {
             ]}
           >
             <Select onChange={onChange}>
-              <Select.Option value="true">True</Select.Option>
-              <Select.Option value="false">false</Select.Option>
+              <Select.Option value="true">Active</Select.Option>
+              <Select.Option value="false">Block</Select.Option>
             </Select>
           </Form.Item>
         </div>
         <div className="flex gap-4 justify-content-end p-3 rounded-lg text-[1rem]  ">
-          <button className="py-2 px-4 bg-white border-2 border-[#EBEBEB] rounded-lg border-solid text-black">
-          Cancel
-          </button>
-          <button className="py-2 px-4 bg-white border-2 border-red-400 rounded-lg border-solid text-black">
-          Save and hide
-          </button>
+          <Link
+            to="/admin/Blogs"
+            className="py-2 px-4 bg-white border-2 border-[#EBEBEB] rounded-lg border-solid text-black"
+          >
+            Cancel
+          </Link>
           <button
             type="submit"
             className="py-2 px-4 bg-red-600 border-2 border-red-400 rounded-lg border-solid text-white"
           >
-            Save and hide
+            {isAddBlog ? <Spin /> : "Save"}
           </button>
         </div>
       </Form>

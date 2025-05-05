@@ -68,17 +68,19 @@ const Product = () => {
               All Products
             </button>
             {category &&
-              category.data.filter(item=>item.is_active==1).map((item, index) => (
-                <Link to={`/product?category_id=${item.id}`} key={index}>
-                  <button
-                    className={`stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 ${
-                      categoryId == item.id && "how-active1"
-                    }`}
-                  >
-                    {item.name}
-                  </button>
-                </Link>
-              ))}
+              category.data
+                .filter((item) => item.is_active == 1)
+                .map((item, index) => (
+                  <Link to={`/product?category_id=${item.id}`} key={index}>
+                    <button
+                      className={`stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 ${
+                        categoryId == item.id && "how-active1"
+                      }`}
+                    >
+                      {item.name}
+                    </button>
+                  </Link>
+                ))}
           </div>
           <div className="flex-w flex-c-m m-tb-10">
             <div
@@ -232,7 +234,9 @@ const Product = () => {
                           className="stext-107 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
                           to={`/product/${item.id}`}
                         >
-                          {item.name}
+                          {item.name.length > 60
+                            ? item.name.slice(0, 60) + "..."
+                            : item.name}
                         </Link>
                         <span className="stext-107 cl3">
                           {<FormatPrice price={item.variants_min_price_sale} />}

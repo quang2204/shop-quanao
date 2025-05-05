@@ -3,12 +3,7 @@ import React, { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import { usecateroryBlogs } from "../../../Hook/useCateroryBlog";
-import {
-  useAddBlog,
-  useBlogDetail,
-  useBlogDetailAdmin,
-  useupdateBlog,
-} from "../../../Hook/useBlog";
+import { useBlogDetailAdmin, useupdateBlog } from "../../../Hook/useBlog";
 import useAuth from "../../../Hook/useAuth";
 import { useParams } from "react-router-dom";
 
@@ -29,7 +24,7 @@ const UpdateBlog = () => {
   }, [detailBlog, id]);
   useEffect(() => {
     // Chỉ set ảnh mặc định nếu fileList đang rỗng (chưa có ảnh nào được chọn)
-    if (detailBlog &&fileList.length === 0) {
+    if (detailBlog && fileList.length === 0) {
       const image = [
         {
           uid: "-1",
@@ -240,14 +235,12 @@ const UpdateBlog = () => {
           <button className="py-2 px-4 bg-white border-2 border-[#EBEBEB] rounded-lg border-solid text-black">
             Cancel
           </button>
-          <button className="py-2 px-4 bg-white border-2 border-red-400 rounded-lg border-solid text-black">
-          Save and hide
-          </button>
           <button
             type="submit"
+            disabled={isUpdate}
             className="py-2 px-4 bg-red-600 border-2 border-red-400 rounded-lg border-solid text-white"
           >
-            Save and display
+            {isUpdate ? <Spin /> : "Save"}
           </button>
         </div>
       </Form>
