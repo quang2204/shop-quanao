@@ -20,16 +20,9 @@ const Bill = () => {
             payment_status: "paid",
           },
         });
-      } else {
-        mutate({
-          id: id,
-          data: {
-            payment_status: "paid",
-          },
-        });
       }
     }
-  }, [id, resultCode]); // Add resultCode to the dependency array
+  }, [id, resultCode]);
 
   const { data, isLoading } = UseDetailOrder(id);
   if (isLoading || !data || (Array.isArray(data) && data.length === 0)) {
@@ -76,30 +69,21 @@ const Bill = () => {
             {data?.map((item) => (
               <tr key={item.id}>
                 <th scope="row">
-                  {item.product_variant.product.name.slice(0, 30) + "..."} X{" "}
-                  {item.quantity}
+                  {item.product_name.slice(0, 30) + "..."} X {item.quantity}
                   <br />
                   <div className="flex gap-2">
                     <div>
                       Color:{" "}
-                      <span className="text-gray-500">
-                        {item.product_variant.color.name}
-                      </span>{" "}
+                      <span className="text-gray-500">{item.color_name}</span>{" "}
                     </div>
                     <div>
                       Size:{" "}
-                      <span className="text-gray-500">
-                        {item.product_variant.size.name}
-                      </span>{" "}
+                      <span className="text-gray-500">{item.size_name}</span>{" "}
                     </div>
                   </div>
                 </th>
                 <td className="text-right">
-                  {
-                    <FormatPrice
-                      price={item.product_variant.price_sale * item.quantity}
-                    />
-                  }
+                  {<FormatPrice price={item.price * item.quantity} />}
                 </td>
               </tr>
             ))}
@@ -134,21 +118,23 @@ const Bill = () => {
         </table>
         <Link to="/">
           <button className="m-b-100 bor11 hov-btn3 bor10 p-l-20 p-r-20 p-t-6 p-b-6 ">
-          Back to home page
+            Back to home page
           </button>
         </Link>
       </div>
       <div className="bor4 p-l-40 p-r-110 h-25 ct mb-4">
-        <h4 className="m-t-20 m-b-20 text-[1.5rem]">Thank you for your purchase.</h4>
+        <h4 className="m-t-20 m-b-20 text-[1.5rem]">
+          Thank you for your purchase.
+        </h4>
         <ul className="dh ">
           <li>
-          Order code :
+            Order code :
             <strong style={{ textTransform: "uppercase" }} className="ml-1">
               {data[0]?.order.order_code && data[0]?.order.order_code}
             </strong>
           </li>
           <li>
-          Day :
+            Day :
             <strong className="ml-1">
               {data[0]?.order.created_at && (
                 <span>
@@ -169,19 +155,19 @@ const Bill = () => {
             </strong>
           </li>
           <li>
-          Payment method :{" "}
+            Payment method :{" "}
             <strong style={{ textTransform: "uppercase" }}>
               {data[0]?.order.payment_method && data[0]?.order.payment_method}
             </strong>
           </li>
           <li>
-          Order Status :{" "}
+            Order Status :{" "}
             <strong style={{ textTransform: "uppercase" }}>
               {data[0]?.order.status && getOrderStatus(data[0]?.order.status)}
             </strong>
           </li>
           <li>
-          Payment Status :
+            Payment Status :
             <strong style={{ textTransform: "uppercase" }} className="ml-1">
               {data[0]?.order.payment_status && data[0]?.order.payment_status}
             </strong>

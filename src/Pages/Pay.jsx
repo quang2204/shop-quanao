@@ -34,7 +34,10 @@ const Pay = () => {
           return {
             product_variant_id: data.id,
             quantity: quantity[index],
-            price: data.price,
+            price: data.price_sale,
+            product_name: variant[index].product.name,
+            size_name: variant[index].size.name,
+            color_name: variant[index].color.name,
           };
         }),
       });

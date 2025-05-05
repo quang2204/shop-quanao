@@ -5,12 +5,11 @@ import {
   useUpdateSize,
   useDeleteSize,
 } from "../../../Hook/useSize";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Modal, Spin, Pagination, message, Button } from "antd";
 import { useForm } from "react-hook-form";
 
 const Sizes = () => {
-  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -26,7 +25,7 @@ const Sizes = () => {
   const [currentSizeDetail, setCurrentSizeDetail] = useState(null);
   const [currentSize, setCurrentSize] = useState(null);
   const [idDelete, setIdDelete] = useState("");
-  const onShowSizeChange = (current, pageSize) => {
+  const onShowSizeChange = (current) => {
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("page", current);
     navigate(`${location.pathname}?${searchParams.toString()}`);
@@ -145,7 +144,7 @@ const Sizes = () => {
                 <tbody className="list form-check-all">
                   {size?.data.map((item, index) => (
                     <tr key={item.id}>
-                      <td>{(currentPage - 1) * size.per_page + index + 1}</td>
+                      <td>{index + 1}</td>
                       <td>{item.name}</td>
                       <td>
                         <ul className="list-inline hstack gap-2 mb-0">

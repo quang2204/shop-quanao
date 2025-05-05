@@ -52,7 +52,7 @@ const Layout = () => {
 
                   <button
                     type="button"
-                    className="btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger"
+                    className="btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger border-none bg-none"
                     id="topnav-hamburger-icon"
                   >
                     <span className="hamburger-icon">
@@ -208,9 +208,8 @@ const Layout = () => {
           </div>
           {/*=== App Menu=== */}
           <div className="app-menu navbar-menu bg-[#405189]">
-
-            <div className="navbar-brand-box py-4 ml-9">
-              <Link to={""} className="logo">
+            <div className="navbar-brand-box py-4 ">
+              <Link to={""} className="logo mr-0">
                 <span className="logo-lg ">
                   <img src={img} alt="" />
                 </span>

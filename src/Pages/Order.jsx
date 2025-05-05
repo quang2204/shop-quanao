@@ -1,10 +1,8 @@
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { Spin, Empty, message, Modal } from "antd";
 import { FormatPrice } from "../Format.jsx";
-import UseOrderByStatus from "../Hook/useOrderByStatus.jsx";
 import {
   useDetailOrderByUserId,
-  useStatusOrder,
   useStatusOrderCline,
 } from "../Hook/useOrder.jsx";
 import { UseDetailUser } from "../Hook/useDetailUser.jsx";
@@ -23,6 +21,7 @@ const Order = () => {
   const { data: order, isLoading: isLoadingOrder } = useDetailOrderByUserId({
     status,
   });
+  console.log(order);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalConfim, setIsModalConfim] = useState(false);
   const [isid, setId] = useState(false);
@@ -249,12 +248,12 @@ const Order = () => {
                           to={`/bill/${item.order.id}`}
                           style={{ maxWidth: 580 }}
                         >
-                          {product.product_variant.product.name}
+                          {product.product_name}
                         </Link>
                         <p>
-                          Product Classification: Size:{" "}
-                          {product.product_variant.size.name}, Color:{" "}
-                          {product?.product_variant?.color?.name}
+                          Product Classification: Size:
+                          {product.size_name}, Color:
+                          {product?.color_name}
                         </p>
                         <strong>x {product.quantity}</strong>
                       </div>
@@ -264,9 +263,7 @@ const Order = () => {
                         style={{ color: "red" }}
                         className={`fs-20 ${item.order.status !== 5 ? "m-b-20" : "mt-3"} m-l-80`}
                       >
-                        <FormatPrice
-                          price={product.product_variant.price_sale}
-                        />
+                        <FormatPrice price={product.price} />
                       </p>
                       {item.order.status === 5 && (
                         <button

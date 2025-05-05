@@ -5,8 +5,6 @@ import {
   useRestoreDeleteSize,
   useSizeTrashed,
 } from "../../../Hook/useSize";
-import { color } from "framer-motion";
-
 const SizeTrashed = () => {
   const { size, isSize } = useSizeTrashed();
   const { mutate, isLoading } = useForceDeleteSize();

@@ -11,11 +11,10 @@ import {
   useProductGalleries,
   useProductVariants,
 } from "../../../Hook/useDetailProduct";
-import { Image, Select, Space, Spin, Table, Tag } from "antd";
+import { Image, Spin, Table } from "antd";
 import { FormatDate, FormatPrice } from "../../../Format";
 import StarRating from "../../../Ui/StarRating";
 const Detail_Product = () => {
-  const { id } = useParams();
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const { detailProduct, isDetailProduct } = useDetailProduct();
   const { isProductVariants, productVariant } = useProductVariants();
@@ -29,8 +28,6 @@ const Detail_Product = () => {
       detailProduct?.[0]?.comments?.filter((item) => item.is_active == 1)
         .length || 0;
   const roundNumber = Math.round(starPercentage) || 0;
-  console.log(starPercentage);
-  // console.log(productVariant);
   if (isDetailProduct || isProductVariants || isproductGalleries) {
     return (
       <Spin
@@ -68,7 +65,7 @@ const Detail_Product = () => {
       dataIndex: "quantity",
     },
   ];
-  const data = productVariant.map((item) => ({
+  const data = productVariant.variants.map((item) => ({
     color: item?.color?.name,
     size: item?.size?.name,
     quantity: item.quantity,
@@ -171,17 +168,22 @@ const Detail_Product = () => {
                     </div>
                   </div>
                   <div className="d-flex flex-wrap gap-2 align-items-center mt-3">
-                    <div className="text-muted fs-16 !text-yellow-500" >
+                    <div className="text-muted fs-16 !text-yellow-500">
                       <StarRating rating={roundNumber} />
                     </div>
                     <div className="text-muted">
-                      ({" "}
+                      (
                       {
                         detailProduct?.[0]?.comments?.filter(
                           (item) => item.is_active == 1
                         )?.length
                       }
                       Customer Review)
+                    </div>
+                    |
+                    <div className="text-muted">
+                      ({productVariant.total_sold}
+                      Sold)
                     </div>
                   </div>
                   <br />

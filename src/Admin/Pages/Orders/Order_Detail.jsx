@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Modal, Spin } from "antd";
-import {
-  UseDetailOrder,
-  useStatusOrder,
-  useStatusOrderAdmin,
-} from "../../../Hook/useOrder";
+import { UseDetailOrder, useStatusOrderAdmin } from "../../../Hook/useOrder";
 import { FormatDate, FormatDateTime, FormatPrice } from "../../../Format";
 import { useDetailUserId } from "../../../Hook/useDetailUser";
 import { useForm } from "react-hook-form";
@@ -128,45 +124,32 @@ const Order_Detail = () => {
                                   to={`/admin/product_detail/${item.product_variant.product.id}`}
                                   className="link-primary"
                                 >
-                                  {item.product_variant.product.name.length > 20
-                                    ? item.product_variant.product.name.slice(
-                                        0,
-                                        40
-                                      ) + "..."
-                                    : item.product_variant.product.name}
+                                  {item.product_name.length > 20
+                                    ? item.product_name.slice(0, 40) + "..."
+                                    : item.product_name}
                                 </Link>
                               </h5>
                               <p className="text-muted mb-0">
                                 Color:{" "}
                                 <span className="fw-medium">
-                                  {item.product_variant.color.name}
+                                  {item.color_name}
                                 </span>
                               </p>
                               <p className="text-muted mb-0">
                                 Size:{" "}
                                 <span className="fw-medium">
-                                  {item.product_variant.size.name}
+                                  {item.size_name}
                                 </span>
                               </p>
                             </div>
                           </div>
                         </td>
                         <td className="text-center">
-                          {
-                            <FormatPrice
-                              price={item.product_variant.price_sale}
-                            />
-                          }
+                          {<FormatPrice price={item.price} />}
                         </td>
                         <td className="text-center">{item.quantity}</td>
                         <td className="fw-medium text-end">
-                          {
-                            <FormatPrice
-                              price={
-                                item.product_variant.price_sale * item.quantity
-                              }
-                            />
-                          }
+                          {<FormatPrice price={item.price * item.quantity} />}
                         </td>
                       </tr>
                     ))}

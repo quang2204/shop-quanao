@@ -1,16 +1,10 @@
 import { useEffect, useState } from "react";
-import { useProduct, useProducts } from "../Hook/useProduct";
 import { Empty, Spin } from "antd";
 import { Link } from "react-router-dom";
 import { FormatPrice } from "../Format";
-import { useProductVariant } from "../Hook/useDetailProduct";
 import { motion } from "framer-motion";
-import { useBanners } from "../Hook/useBanner";
-import ChatApp from "../Ui/Chatbot";
 import getHomes from "../Hook/useHome";
 const Home = () => {
-  // const { banners, loading, error } = useBanners();
-  // const { products, isProducts } = useProduct();
   const { data, isLoading } = getHomes();
   const [count, setCount] = useState(0);
   const next = () => {

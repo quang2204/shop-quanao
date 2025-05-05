@@ -1,4 +1,3 @@
-
 const Contact = () => {
   return (
     <div>
@@ -74,7 +73,7 @@ const Contact = () => {
                 <div className="size-212 p-t-2">
                   <span className="mtext-110 cl2"> Sale Support </span>
                   <p className="stext-115 cl1 size-213 p-t-18">
-                    cozastore@gmail.com
+                    cazastore@gmail.com
                   </p>
                 </div>
               </div>

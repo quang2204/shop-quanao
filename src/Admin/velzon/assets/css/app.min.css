@@ -336,7 +336,7 @@
         background-color: transparent !important;
         position: relative;
         width: auto;
-        text-align: left
+        /* text-align: left */
     }
 
     [data-layout=vertical][data-layout-style=detached]:is([data-sidebar-size=sm], [data-sidebar-size=sm-hover]) .navbar-brand-box .logo-sm {

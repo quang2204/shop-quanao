@@ -7,11 +7,8 @@ import { Empty, Image, Modal, Pagination, Spin } from "antd";
 import { FormatDate, FormatPrice } from "../../../Format.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import Emptys from "../../Ui/Emty.jsx";
 const Harddelete = () => {
-  const [id, setId] = useState("");
   const navigate = useNavigate();
-
   const { isProducts, products } = harddeleteProducts();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idDelete, setIdDelete] = useState("");

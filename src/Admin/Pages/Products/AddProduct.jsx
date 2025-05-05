@@ -28,7 +28,6 @@ const AddProduct = () => {
   const [selectedvalue1, setSelectedvalue1] = useState([]);
   const { colors, isLoading: isLoadingColor } = useColors();
   const { sizes, isLoadingSize } = useSizes();
-  const test = sizes?.data?.find((item) => item.id === selectedvalue[0])?.name;
   const [valueVariants, setvalueVariants] = useState();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -102,8 +101,6 @@ const AddProduct = () => {
     });
   }, [tabs]);
   const [value, setValue] = useState();
-  const [fileList1, setFileList1] = useState([]);
-
   const handleSelect = (index, value) => {
     handleGenericSelect(
       index,
@@ -214,17 +211,7 @@ const AddProduct = () => {
     }
     return isImage || Upload.LIST_IGNORE;
   };
-  const handleDeleteSelect = () => {
-    setClassify(false);
-    setSelectedIds([]);
-    setClassifys([
-      {
-        id: 0,
-      },
-    ]);
-    setSelectedvalue([]);
-    setSelect("");
-  };
+
   useEffect(() => {
     if (classify === false && classify1 === false) {
       setTypes([

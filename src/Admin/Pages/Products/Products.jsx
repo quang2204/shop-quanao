@@ -1,11 +1,10 @@
 import { useDeleteProduct, useProduct } from "../../../Hook/useProduct.jsx";
 import { Image, Modal, Pagination, Spin } from "antd";
-import { FormatDate, FormatDateTime, FormatPrice } from "../../../Format.jsx";
+import { FormatDate, FormatPrice } from "../../../Format.jsx";
 import {
   Link,
   useLocation,
   useNavigate,
-  useParams,
   useSearchParams,
 } from "react-router-dom";
 import { useState } from "react";
@@ -16,7 +15,6 @@ const Products = () => {
   const page = parseInt(searchParams.get("page")) || 1;
   const [id, setId] = useState("");
   const [sorttype, setSorttype] = useState(1);
-  const [pageProduct, setPageProduct] = useState(1);
   const [searchParam] = useSearchParams();
   const navigate = useNavigate();
   const search = searchParam.get("search");
@@ -112,11 +110,7 @@ const Products = () => {
                     >
                       Add product
                     </Link>
-                    <button
-                      className="btn btn-soft-danger"
-                      id="remove-actions"
-                      onclick="deleteMultiple()"
-                    >
+                    <button className="btn btn-soft-danger" id="remove-actions">
                       <i className="ri-delete-bin-2-line" />
                     </button>
                   </div>

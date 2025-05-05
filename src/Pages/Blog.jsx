@@ -2,9 +2,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useBlogs } from "../Hook/useBlog";
 import { Empty, Spin } from "antd";
 import { FormatPrice } from "../Format";
-import Emptys from "../Admin/Ui/Emty";
 import { useState } from "react";
-
 const Blog = () => {
   const [searchParam] = useSearchParams();
   const [searchValue,setSearchValue]=useState()

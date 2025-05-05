@@ -68,7 +68,7 @@ const UpdateProduct = () => {
   useEffect(() => {
     if (!productVariant || productVariant.length === 0) return;
 
-    const product = productVariant[0].product;
+    const product = productVariant.variants[0].product;
 
     // Set các field cố định
     form.setFieldsValue({
@@ -174,10 +174,12 @@ const UpdateProduct = () => {
       );
     };
 
-    const allSizes = productVariant?.flatMap((variant) => variant.size || []);
+    const allSizes = productVariant?.variants?.flatMap(
+      (variant) => variant.size || []
+    );
     const priceAll = Array.from(
       new Map(
-        productVariant?.map((variant) => [
+        productVariant?.variants?.map((variant) => [
           variant?.id,
           {
             quantity: variant.quantity,
@@ -188,7 +190,9 @@ const UpdateProduct = () => {
       ).values()
     );
 
-    const allColors = productVariant?.flatMap((variant) => variant.color || []);
+    const allColors = productVariant?.variants?.flatMap(
+      (variant) => variant.color || []
+    );
     const uniqueSizes = extractUniqueItems(
       allSizes,
       (item) => item?.id,
@@ -377,36 +381,6 @@ const UpdateProduct = () => {
     }
   }, [classify, classify1]);
 
-  const handleDeleteSelect1 = () => {
-    setClassify1(false);
-    setSelectedIds1([]);
-    setClassifys1([
-      {
-        id: 0,
-      },
-    ]);
-    setSelect1("");
-    setSelectedvalue1([]);
-    const check = selectedvalue ? selectedvalue : selectedvalue1;
-    const result = check.map((item, index) => ({
-      id: index,
-      type: item,
-    }));
-  };
-  const onhandluploadimgPl = (e) => {
-    let newFileList = [...e.fileList];
-
-    // Nếu upload thành công, cập nhật URL
-    newFileList = newFileList.map((file) => {
-      if (file.response) {
-        file.url = file.response.url; // URL trả về từ server
-      }
-      return file;
-    });
-
-    setFileList1(newFileList);
-    // setImg(!img);
-  };
   const onSearch = () => {
     // console.log("search:", value);
   };
@@ -453,7 +427,7 @@ const UpdateProduct = () => {
         const outerIndex = isColorFirst ? colorIndex : sizeIndex;
         const innerIndex = isColorFirst ? sizeIndex : colorIndex;
 
-        const variantData = productVariant.find(
+        const variantData = productVariant.variants.find(
           (variant) =>
             variant.color_id === color_id && variant.size_id === size_id
         );

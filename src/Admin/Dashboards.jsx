@@ -5,7 +5,6 @@ import useDashboard from "../Hook/useDashboard";
 import { Spin } from "antd";
 import useAuth from "../Hook/useAuth";
 import { FormatPrice } from "../Format";
-import { split } from "postcss/lib/list";
 
 const Dashboards = () => {
   const { search } = useLocation();
@@ -274,17 +273,17 @@ const Dashboards = () => {
                             </div>
                             <div>
                               <h5 className="fs-14 my-1">
-                                <a
-                                  href="apps-ecommerce-product-details.html"
+                                <Link
+                                  to={`product_detail/${item.id}`}
                                   className="text-reset"
                                 >
                                   {item.product_name.length > 20
                                     ? item.product_name.slice(0, 20) + "..."
                                     : item.product_name}
-                                </a>
+                                </Link>
                               </h5>
                               <span className="text-muted">
-                              Phân loại : {item.variant_name}
+                                Phân loại : {item.variant_name}
                               </span>
                               <br />
                               <span className="text-muted">
@@ -349,8 +348,8 @@ const Dashboards = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {data.recentOrders.map((item) => (
-                      <tr>
+                    {data.recentOrders.map((item, index) => (
+                      <tr key={index}>
                         <td>
                           <Link
                             to={`order_detail/${item.id}`}

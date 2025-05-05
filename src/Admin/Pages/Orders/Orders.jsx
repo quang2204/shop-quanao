@@ -25,10 +25,8 @@ const Orders = () => {
   const [status, setStatus] = useState();
   const { isLoading: isLoadingorder, mutate } = useStatusOrder(page);
   const {
-    register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm();
   const handleOpen = (id) => {
     setIdOpen(id);

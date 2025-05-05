@@ -71,7 +71,7 @@ const ProductDetail = () => {
     }
   };
   useEffect(() => {
-    const checkid = productVariant?.filter(
+    const checkid = productVariant?.variants?.filter(
       (item) =>
         item.size_id === size && item.color_id === color && item.quantity >= 0
     );
@@ -129,7 +129,7 @@ const ProductDetail = () => {
           </Link>
           <span className="stext-109 cl4">
             {" "}
-            {productVariant[0]?.product?.name}
+            {productVariant?.variants[0]?.product?.name}
           </span>
         </div>
       </div>
@@ -194,7 +194,7 @@ const ProductDetail = () => {
             <div className="col-md-6 col-lg-5 p-b-30">
               <div className="p-r-50 p-t-5 p-lr-0-lg">
                 <h4 className="mtext-105 cl2 js-name-detail p-b-14">
-                  {productVariant[0]?.product?.name}
+                  {productVariant?.variants[0]?.product?.name}
                 </h4>
                 <div className="flex gap-2">
                   <div className="flex gap-2 items-center border-r-2 ">
@@ -207,6 +207,12 @@ const ProductDetail = () => {
                     <span className="text-[18px]">{data?.comments.length}</span>
                     <span className="pr-2 text-[#767676]">Evaluate</span>
                   </div>
+                  <div className="flex gap-2 items-center border-r-2 ">
+                    <span className="text-[18px]">
+                      {productVariant?.total_sold}
+                    </span>
+                    <span className="pr-2 text-[#767676]">Sold</span>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 mt-3">
                   <span className="text-3xl text-red-500">
@@ -214,7 +220,7 @@ const ProductDetail = () => {
                       <FormatPrice
                         price={
                           idVariants?.price_sale ??
-                          productVariant?.[0]?.price_sale
+                          productVariant?.variants[0]?.price_sale
                         }
                       />
                     }
@@ -222,7 +228,10 @@ const ProductDetail = () => {
                   <span className="text-2xl cl4 text-decoration-line-through">
                     {
                       <FormatPrice
-                        price={idVariants?.price ?? productVariant?.[0]?.price}
+                        price={
+                          idVariants?.price ??
+                          productVariant?.variants[0]?.price
+                        }
                       />
                     }
                   </span>
@@ -242,7 +251,8 @@ const ProductDetail = () => {
                           }
                           options={Array.from(
                             new Map(
-                              productVariant
+                              productVariant?.variants
+
                                 ?.flatMap((variant) => variant.size) // Lấy tất cả size từ các biến thể
                                 ?.map((item) => [
                                   item?.id,
@@ -272,7 +282,8 @@ const ProductDetail = () => {
                           }
                           options={Array.from(
                             new Map(
-                              productVariant
+                              productVariant?.variants
+
                                 ?.flatMap((variant) => variant.color || []) // đề phòng variant.color là undefined
                                 ?.filter((item) => item?.id && item?.name) // loại bỏ item không hợp lệ
                                 .map((item) => [
@@ -315,7 +326,7 @@ const ProductDetail = () => {
                       </div>
                       <div>
                         {idVariants?.quantity ??
-                          productVariant.reduce(
+                          productVariant?.variants.reduce(
                             (acc, item) => acc + item.quantity,
                             0
                           )}
